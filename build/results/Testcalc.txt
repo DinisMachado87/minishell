@@ -1,5 +1,0 @@
-test/Testcalc.c:22:test_add:PASS
-
------------------------
-1 Tests 0 Failures 0 Ignored 
-OK
