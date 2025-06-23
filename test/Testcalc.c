@@ -20,6 +20,5 @@ int	main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_add);
-	UNITY_END();
-	return (0);
+	return (UNITY_END());
 }
