@@ -12,7 +12,7 @@ void	test_add()
 {
 	int	output;
 
-	output = add(20, 20);
+	output = add(10, 20);
 	TEST_ASSERT_EQUAL(30, output);
 }
 
