@@ -1,5 +1,4 @@
-#include "unity.h"
-#include "calc.h"
+#include "../include/calc.h"
 
 void	setUp()
 {
