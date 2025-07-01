@@ -1,1 +1,12 @@
-Hello
+# Minishell
+## Basic Idea
+1. Parse input
+2. Generate basic AST
+3. Execute the extracted command
+
+### Parser
+Parse the input and extract command, flags and arguments
+### AST
+Generate a basic AST containing the command with it's flags and args and pipes/redirects
+### Executor
+Execute the commands and pipes/redirects provided by the AST
