@@ -6,9 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/07/02 15:35:34 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/07/02 18:19:34 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "minishell.h"
 
 //[NOTE:]
 // @make_node creates a node for a new expression and set it as next of the previous or ast head if the first
@@ -20,8 +22,10 @@ int	parser(char **str, t_ast *ast)
 {
 	make_node(ast, str);
 	extract(ast);
-	tokenize(ast);
+	tokenize_and_save_vars(ast);
 	compose_node(ast, str);
+	expand_vars();
+	return (0);
 }
 
 // [NOTE:]
@@ -35,6 +39,7 @@ int	main(char *str)
 
 	cur_ltr = str;
 	ast_list = 0;
+	ast_tree = 0;
 	while (*cur_ltr)
 		parser(&ast_list, &cur_ltr);
 	make_tree(&ast_list, &ast_tree);
