@@ -33,7 +33,6 @@ LINK=gcc
 DEPEND=gcc -MM -MG -MF
 CFLAGS=-Wall -Werror -Wextra
 
-
 RESULTS = $(patsubst $(PATHT)Test%.c,$(PATHR)Test%.txt,$(SRCT) )
 
 PASSED = `grep -s PASS $(PATHR)*.txt`
