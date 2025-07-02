@@ -1,0 +1,7 @@
+test/Testparser.c:62:test_make_node_initializes_list_when_ast_is_null:PASS
+test/Testparser.c:63:test_make_node_appends_to_existing_list:PASS
+test/Testparser.c:64:test_make_node_creates_three_nodes:PASS
+
+-----------------------
+3 Tests 0 Failures 0 Ignored 
+OK
