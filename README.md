@@ -1,7 +1,7 @@
 # Minishell
 ## Basic Idea
 1. Tokenize/Lex the input (create tokens out of the input)
-2. Expansion, expand variables echo $var, command substitution echo $(ls), arithmetic echo $((2 + 2)) and wildcars echo *
+2. Expansion, expand variables echo \$var, command substitution echo $(ls), arithmetic echo $((2 + 2)) and wildcars echo *
 3. Parse the tokens into the AST
 4. Execute the AST
 
