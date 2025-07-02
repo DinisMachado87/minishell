@@ -6,19 +6,9 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/07/02 15:25:54 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/07/02 15:35:34 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-typedef struct s_ast
-{
-	int				type;
-	int				subtype_maybe;
-	char			**args;
-	struct s_ast	*next;
-	struct s_ast	*left;
-	struct s_ast	*right;
-}					t_ast;
 
 //[NOTE:]
 // @make_node creates a node for a new expression and set it as next of the previous or ast head if the first
