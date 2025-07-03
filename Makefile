@@ -49,7 +49,7 @@ test: submodules $(BUILD_PATHS) $(RESULTS)
 	@echo "\nDONE"
 
 submodules: 
-	@git submodules update --init --recursive
+	@git submodule update --init --recursive
 
 $(PATHR)%.txt: $(PATHB)%.$(TARGET_EXTENSION)
 	-./$< > $@ 2>&1
