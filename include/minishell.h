@@ -26,6 +26,6 @@ typedef struct s_ast
 	struct s_ast	*right;
 }					t_ast;
 
-void    make_node(t_ast **ast);
+int make_node(t_ast **ast);
 
 #endif
