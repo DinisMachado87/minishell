@@ -33,6 +33,6 @@ int	make_node(t_ast **ast)
 			ast_cpy = ast_cpy->next;
 		ast_cpy->next = new_node;
 	}
-	return (1)
+	return (1);
 }
 
