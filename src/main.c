@@ -1,12 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
-
-void  prompt_loop(void);
+#include "../include/minishell.h"
 
 void	sig_c_handler(int sig)
 {

@@ -19,6 +19,11 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <errno.h>
+# include <string.h>
+# include <unistd.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
 
 typedef struct s_ast
 {
@@ -39,5 +44,6 @@ typedef struct	s_state_ext_cmd
 
 int	make_node(t_ast **ast);
 int	extract_cmd(t_ast *ast, char *str);
+void	prompt_loop(void);
 
 #endif
