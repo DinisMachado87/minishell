@@ -1,7 +1,0 @@
-	- Have a look at signal handling:
-		- ctrl-C = displays a new prompt on a new line
-		- ctrl-D = exits the shell
-	  - ctrl-\ = does nothing
-	- In externals_testing->src->readline_history_example.c there is a working prompt
-	- There is also a working history
-	- 
