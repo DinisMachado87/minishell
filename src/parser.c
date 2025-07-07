@@ -12,33 +12,46 @@
 
 #include "../include/minishell.h"
 
-//[NOTE:]
 // @make_node creates a node for a new expression and set it as next of the previous or ast head if the first
-// @extract extracts the first word of the input string and stores it as the first args in the s_ast node
+
 // @tokenize stores str_compares extracted word into token and stores token
-// @compose_node calls the right callback function to extract and store remaining arguments according to tokenized cmd
-// @Returns the ast still as a list and a pointer by reference on the current letter not split yet
-int	parser(char **str, t_ast *ast)
+int	tokenize_and_save_vars(t_ast **ast)
 {
-	make_node(ast, str);
-	extract(ast);
+	return(0);
+}
+// @compose_node calls the right callback function to extract and store remaining arguments according to tokenized cmd
+int	compose_node(t_ast **ast, char **str)
+{
+	return(0);
+}
+
+int expand_vars(t_ast **ast, char **str)
+{
+	return(0);
+}
+
+
+// @Returns the ast still as a list and a pointer by reference on the current letter not split yet
+int	parser_core(char **str, t_ast **ast)
+{
+	make_node(ast);
+	extract_cmd(*ast, *str);
 	tokenize_and_save_vars(ast);
 	compose_node(ast, str);
-	expand_vars();
+	expand_vars(ast, str);
 	return (0);
 }
 
 // @Parser extracts action nodes into ast using the next linear list pointers
-t_ast	*parser(char **str)
+t_ast	*parser(char *cur_ltr)
 {
-	(void)str;
-	t_ast *ast;
+	t_ast *ast_list;
+	t_ast *ast_tree;
 
-	cur_ltr = str;
 	ast_list = 0;
 	ast_tree = 0;
 	while (*cur_ltr)
-		parser(&ast_list, &cur_ltr);
-	make_tree(&ast_list, &ast_tree);
-	return (0);
+		parser_core(&cur_ltr, &ast_list);
+	//make_tree(&ast_list, &ast_tree);
+	return (ast_tree);
 }
