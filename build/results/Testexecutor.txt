@@ -1,5 +1,0 @@
-test/Testexecutor.c:18:test_arr_cmp:PASS
-
------------------------
-1 Tests 0 Failures 0 Ignored 
-OK

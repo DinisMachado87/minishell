@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/wait.h>
 #include "../include/minishell.h"
 
 void  execute_ast(t_ast *node);

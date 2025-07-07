@@ -15,6 +15,9 @@
 
 # include "../unity/src/unity.h"
 # include <stdlib.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <sys/wait.h>
 
 typedef struct s_ast
 {

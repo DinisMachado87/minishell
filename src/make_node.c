@@ -12,8 +12,6 @@
 
 #include "../include/minishell.h"
 
-
-
 // @make_node creates a node for a new expression and set it as next of the previous or ast head if the first
 int	make_node(t_ast **ast)
 {
