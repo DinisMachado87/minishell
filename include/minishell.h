@@ -20,24 +20,47 @@
 # include <stdio.h>
 # include <errno.h>
 
+typedef enum {
+	CMD,
+	PIPE,
+	REDIRECT_OUT,
+	REDIRECT_IN,
+	SUBSHELL,
+	OR,
+	AND,
+	APPEND,
+	HEREDOC,
+} t_type;
+
 typedef struct s_ast
 {
 	int				type;
 	int				subtype_maybe;
 	char			**args;
+	int				n_args;
 	struct s_ast	*next;
 	struct s_ast	*left;
 	struct s_ast	*right;
 }					t_ast;
 
-typedef struct	s_state_ext_cmd
+typedef struct	s_state_parser
 {
 	char	*str;
+	int		needle;
 	int 	i_word;
 	int		error;
-}				t_s_ext_cmd;
+}				t_s_parser;
 
-int	make_node(t_ast **ast);
-int	extract_cmd(t_ast *ast, char *str);
+// ast_utils
+t_ast	*make_node(t_ast **ast);
+t_ast	*free_all(t_ast *ast);
+// parser_utils
+int		is_operator(char *str);
+char	*ms_strcpy(char *str, int len);
+// gen_utils
+void	ms_bzero(void *s, size_t n);
+// extract cmd
+t_ast	*extract_cmd(char **str, t_s_parser *s);
+// int		split_parser(t_ast *ast, char *str, int *error);
 
 #endif
