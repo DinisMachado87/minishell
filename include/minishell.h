@@ -18,6 +18,7 @@
 # include "../unity/src/unity.h"
 # include <stdlib.h>
 # include <stdio.h>
+# include <unistd.h>
 # include <errno.h>
 # include <string.h>
 # include <unistd.h>
@@ -55,6 +56,7 @@ typedef struct	s_state_parser
 	char	*str;
 	int		needle;
 	int 	i_word;
+	int		n_cmd_ltrs;
 	int		error;
 }				t_s_parser;
 
@@ -65,10 +67,13 @@ t_ast	*free_all(t_ast *ast);
 // parser_utils
 int		is_operator(char *str);
 char	*ms_strcpy(char *str, int len);
+// extract_utils
+int	allocate_ast_args(t_ast *ast, int n_strs);
 // gen_utils
 void	ms_bzero(void *s, size_t n);
 // extract cmd
 t_ast	*extract_cmd(char **str, t_s_parser *s);
+t_ast	*extract_subshell(char **str);
 // int		split_parser(t_ast *ast, char *str, int *error);
 
 #endif
