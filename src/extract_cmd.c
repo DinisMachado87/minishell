@@ -22,21 +22,22 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	int		i_ltr;
 	int		spaces;
 	char	*word;
-	char	limiter;
 
-	limiter =' ';
 	spaces = 0;
 	while (str[spaces] && str[spaces] == ' ')
 		spaces++;
 	if (!str[spaces])
 		return (spaces);
-	i_ltr = skip_count_word((str + spaces), limiter);
+	i_ltr = skip_count_word((str + spaces), ' ');
 	s->i_word++;
 	if (str[spaces + i_ltr] && !is_operator(str + spaces + i_ltr))
 		s->n_cmd_ltrs += extract_word_recursive(ast, str + spaces + i_ltr, s);
 	if (!ast->args && !allocate_ast_args(ast, s->i_word))
 		return (0);
-	word = ms_strcpy((str + spaces), i_ltr);
+	if (str[spaces] == '\'' || str[spaces] == '\"')
+		word = ms_strcpy((str + spaces + 1), i_ltr - 2);
+	else
+		word = ms_strcpy((str + spaces), i_ltr);
 	if (!word)
 		return (0);
 	ast->args[--s->i_word] = word;
