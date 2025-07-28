@@ -43,7 +43,6 @@ typedef enum {
 typedef struct s_ast
 {
 	int				type;
-	int				subtype_maybe;
 	char			**args;
 	int				n_args;
 	struct s_ast	*next;
