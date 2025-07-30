@@ -24,9 +24,10 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	char	*word;
 
 	spaces = 0;
+	i_ltr = 0;
 	while (str[spaces] && str[spaces] == ' ')
 		spaces++;
-	if (!str[spaces])
+	if (!str[spaces] || str[spaces] == '(')
 		return (spaces);
 	i_ltr = skip_count_word((str + spaces), ' ');
 	s->i_word++;
@@ -44,18 +45,16 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	return(spaces + i_ltr);
 }
 
-t_ast	*extract_cmd(char **str, t_s_parser *s)
+t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s)
 {
-	t_ast	*ast_nd;
-
-	ast_nd = NULL;
 	s->i_word = 0;
-	if (!make_node(&ast_nd))
+	s->n_cmd_ltrs = 0;
+	if (!make_node(ast_nd))
 		return (NULL);
-	s->n_cmd_ltrs = extract_word_recursive(ast_nd, *str, s);
+	s->n_cmd_ltrs += extract_word_recursive(*ast_nd, *str, s);
 	if (!s->n_cmd_ltrs)
-		return (free_all(ast_nd), NULL);
-	ast_nd->type = CMD;
+		return (free_all(*ast_nd), NULL);
+	(*ast_nd)->type = CMD;
 	*str += s->n_cmd_ltrs;
-	return (ast_nd);
+	return (*ast_nd);
 }

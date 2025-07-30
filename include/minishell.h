@@ -70,9 +70,12 @@ char	*ms_strcpy(char *str, int len);
 int	allocate_ast_args(t_ast *ast, int n_strs);
 // gen_utils
 void	ms_bzero(void *s, size_t n);
+// parser
+t_ast	*parser(char *str);
 // extract cmd
-t_ast	*extract_cmd(char **str, t_s_parser *s);
-t_ast	*extract_subshell(char **str);
+t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
+t_ast	*extract_subshell(t_ast **ast_nd, char **str);
+t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
 // int		split_parser(t_ast *ast, char *str, int *error);
 
 #endif

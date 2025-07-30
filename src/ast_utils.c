@@ -1,23 +1,26 @@
 #include "../include/minishell.h"
 #include <strings.h>
 
+static void	free_and_null(void **ptr)
+{
+	free(*ptr);
+	*ptr = NULL;
+}
+
 t_ast	*free_all(t_ast *ast_head)
 {
 	t_ast *next_head;
 	
-	if (ast_head)
-		next_head = ast_head->next;
+	next_head = NULL;
 	while (ast_head)
 	{
-		while (ast_head && ast_head->args && --ast_head->n_args >= 0)
-			free(ast_head->args[ast_head->n_args]);
-		if (ast_head && ast_head->args)
-			free(ast_head->args);
-		if (ast_head)
-			free(ast_head);
+		next_head = ast_head->next;
+		while (ast_head->args && --ast_head->n_args >= 0)
+			free_and_null((void *)&ast_head->args[ast_head->n_args]);
+		if (ast_head->args)
+			free_and_null((void *)&ast_head->args);
+		free_and_null((void *)&ast_head);
 		ast_head = next_head;
-		if (ast_head)
-			next_head = ast_head->next;
 	}
 	return (NULL);
 }

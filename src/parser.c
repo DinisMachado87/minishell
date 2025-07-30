@@ -6,12 +6,22 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/07/03 13:37:43 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/07/29 15:27:00 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+#include <stdio.h>
 #include <stdlib.h>
+
+int	is_end_of_string(char **str)
+{
+	while (**str == ' ')
+		(*str)++;
+	if (!**str)
+		return (1);
+	return (0);
+}
 
 // @Parser extracts action nodes into ast using the next linear list pointers
 t_ast	*parser(char *str)
@@ -23,33 +33,33 @@ t_ast	*parser(char *str)
 	while (*str && *str == ' ')
 		str++;
 	if (is_operator(str))
-		return (0);
-	head_ast = extract_cmd(&str, &s);
-	if (head_ast == NULL)
-		return (NULL);
+		return (perror("Error: Input must start with a command not an operator"), NULL);
+	if (!extract_subshell(&head_ast, &str)
+		&& !extract_cmd(&head_ast, &str, &s))
+			return (NULL);
 	cur_ast = head_ast;
 	while (*str)
 	{
-		if (str && is_operator(str) == SUBSHELL)
-			cur_ast->next = extract_subshell(&str);
-		else
+		if (is_end_of_string(&str))
 			return (head_ast);
-		if (cur_ast->next == NULL)
+		if (!extract_subshell(&cur_ast->next, &str))
+			if (!extract_operator(&cur_ast->next, &str, is_operator(str)))
+				return (NULL);
+		if (is_end_of_string(&str))
 			return (head_ast);
-		cur_ast = cur_ast->next;
-		if (str && is_operator(str))
+		if (is_operator(str))
 			return (perror("ERROR: input includes two consecutive operators"), NULL);
-		if (str)
-			cur_ast->next = extract_cmd(&str, &s);
-		else
-			return (head_ast);
-		if (cur_ast->next == NULL)
+		cur_ast = cur_ast->next;
+		if (!extract_subshell(&cur_ast->next, &str)
+			&& !extract_cmd(&cur_ast->next, &str, &s))
+				return (NULL);
+		if (is_end_of_string(&str))
 			return (head_ast);
 		cur_ast = cur_ast->next;
+	}
 	// tokenize_and_save_vars();
 	// compose_node();
 	// expand_vars();
 	//make_tree(&ast_list, &ast_tree);
-	}
 	return (head_ast);
 }

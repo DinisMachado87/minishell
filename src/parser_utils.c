@@ -6,8 +6,6 @@ int	is_operator(char *str)
 		return (AND);
 	if (*str == '|' && *(str + 1) == '|')
 		return (OR);
-	if (*str == '(')
-		return (SUBSHELL);
 	if (*str == '|')
 		return (PIPE);
 	if (*str == '>' && *(str + 1) == '>')
