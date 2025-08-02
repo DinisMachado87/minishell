@@ -28,17 +28,32 @@
 # include <sys/wait.h>
 # include <stddef.h>
 
-typedef enum {
+typedef enum e_type {
 	CMD,
+	REDIRECT,
 	PIPE,
-	REDIRECT_OUT,
-	REDIRECT_IN,
+	LOGICAL,
+} t_type;
+
+typedef enum e_subtype {
+	NONE,
+	EXTERNAL,
+	VAR,
 	SUBSHELL,
-	OR,
-	AND,
+	ECHO,
+	CD,
+	PWD,
+	EXPORT,
+	UNSET,
+	ENV,
+	EXIT,
+	OUT,
+	IN,
 	APPEND,
 	HEREDOC,
-} t_type;
+	OR,
+	AND,
+} t_subtype;
 
 typedef struct s_ast
 {
@@ -76,6 +91,10 @@ t_ast	*parser(char *str);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
-// int		split_parser(t_ast *ast, char *str, int *error);
+// structure_ast
+t_ast	*structure_ast(t_ast *cur_list);
+// print_ast
+void	print_ast(t_ast *ast, char *testname);
+void	print_nd_list(t_ast *ast, char *testname);
 
 #endif
