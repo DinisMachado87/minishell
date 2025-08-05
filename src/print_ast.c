@@ -44,13 +44,13 @@ static void print_ast_str(char *name, char *element, int indent, char *new_line)
 {
 	print_indent(indent);
 	if (element)
-		printf("%s:%s", name, element);
+		printf("%s:%s:", name, element);
 	else
 		printf("%s:NONE", name);
 	printf("%s", new_line);
 };
 
-static void print_ast_arr(char **arr, int indent)
+static void print_ast_arr(char **arr)
 {
 	int	i;
 
@@ -59,8 +59,7 @@ static void print_ast_arr(char **arr, int indent)
 		return ;
 	while (arr[i])
 	{
-		print_indent(indent + 1);
-		print_ast_str("", arr[i], indent, "\n");
+		print_ast_str("", arr[i], 0, "\t");
 		i++;
 	}
 };
@@ -80,22 +79,40 @@ static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 	if (testname)
 		printf("== %s ==\n\n", testname);
 	print_indent(indent);
+	printf("|%d ", ast->type);
 	printf("TYPE:%s\t", type_str[ast->type]);
-	print_ast_str("SUBTYPE", (char *)type_str[ast->type], indent, "\n");
+	if (ast->type == REDIRECT)
+	{
+		printf("%d ", ast->subtype);
+		print_ast_str("SUBTYPE", (char *)redirect_subtype_str[ast->subtype], 0, "\n");
+	}
+	else
+	{
+		printf("%d ", ast->subtype);
+		print_ast_str("SUBTYPE", (char *)subtype_str[ast->subtype], 0, "\n");
+	}
 	print_indent(indent);
-	printf("N_ARGS:\t%d\n", ast->n_args);
-	print_ast_arr(ast->args, indent);
-	print_ast_str("RED_IN", ast->red_args[IN], indent, "\t");
-	print_ast_str("RED_OUT", ast->red_args[OUT], indent, "\n");
-	print_node_type(ast->next, "NEXT", indent, "");
-	print_node_type(ast->left, "LEFT", indent, "");
-	print_node_type(ast->right, "RIGHT", indent, "\n");
+	printf("|N_ARGS:%d\t", ast->n_args);
+	print_ast_arr(ast->args);
 	printf("\n");
+	print_ast_str("|RED_IN", ast->red_args[IN], indent, "\t");
+	print_ast_str("RED_OUT", ast->red_args[OUT], 0, "\n");
+	print_node_type(ast->next, "|NEXT", indent, "");
+	print_node_type(ast->left, "LEFT", 0, "");
+	print_node_type(ast->right, "RIGHT", 0, "\n");
+	// printf("\n");
+	print_indent(indent);
+	printf("=====\n\n");
 }
 
 
 void	print_nd_list(t_ast *ast, char *testname)
 {
+	if (!ast)
+	{
+		printf("== %s == \n NO AST \n", testname);
+		return;
+	}
 	while (ast)
 	{
 		print_ast_nd(ast, testname, 0);
@@ -105,11 +122,19 @@ void	print_nd_list(t_ast *ast, char *testname)
 
 void	print_ast_core(t_ast *ast, int *indent)
 {
+	if (ast->left || ast->right)
+		(*indent)++;
 	if (ast->left)
 		print_ast_core(ast->left, indent);
+	if (ast->left || ast->right)
+		(*indent)--;
 	print_ast_nd(ast, 0, *indent);
+	if (ast->left || ast->right)
+		(*indent)++;
 	if (ast->right)
 		print_ast_core(ast->right, indent);
+	if (ast->left || ast->right)
+		(*indent)--;
 }
 
 void	print_ast(t_ast *ast, char *testname)
@@ -118,5 +143,10 @@ void	print_ast(t_ast *ast, char *testname)
 
 	indent = 0;
 	printf("== %s ==\n\n", testname);
+	if (!ast)
+	{
+		printf(" NO AST \n");
+		return;
+	}
 	print_ast_core(ast, &indent);
 }

@@ -43,6 +43,13 @@ static int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
 	word = ms_strcpy((str + spaces), i_ltr);
 	if (!word)
 		return (0);
+	if (red_subtype == OUT)
+		ast->append = 0;
+	else if (red_subtype == APPEND)
+	{
+		ast->append = 1;
+		red_subtype = OUT;
+	}
 	if (ast->red_args[red_subtype]) 
 		free(ast->red_args[red_subtype]);
 	ast->red_args[red_subtype] = word;
@@ -63,7 +70,7 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	if (!str[spaces] || str[spaces] == '(')
 		return (spaces);
 	if (REDIRECT == type(str + spaces))
-		return (spaces + extract_redirect(ast, str + spaces + i_ltr, s));
+		return (spaces + extract_redirect(ast, str + spaces, s));
 	i_ltr = skip_count_word((str + spaces), ' ');
 	s->i_word++;
 	if (str[spaces + i_ltr] && CMD == type(str + spaces + i_ltr))
@@ -85,8 +92,9 @@ t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s)
 		return (NULL);
 	s->n_cmd_ltrs += extract_word_recursive(*ast_nd, *str, s);
 	if (!s->n_cmd_ltrs)
-		return (free_all(*ast_nd), NULL);
+		return (free_all(ast_nd), NULL);
 	(*ast_nd)->type = CMD;
+	(*ast_nd)->subtype = subtype(*str);
 	*str += s->n_cmd_ltrs;
 	return (*ast_nd);
 }
