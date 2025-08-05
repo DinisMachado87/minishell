@@ -105,15 +105,11 @@ void	print_nd_list(t_ast *ast, char *testname)
 
 void	print_ast_core(t_ast *ast, int *indent)
 {
-	while (ast)
-	{
-		if (ast->left)
-			print_ast_core(ast->left, indent);
-		print_ast_nd(ast, 0, *indent);
-		if (ast->right)
-			print_ast_core(ast->right, indent);
-
-	}
+	if (ast->left)
+		print_ast_core(ast->left, indent);
+	print_ast_nd(ast, 0, *indent);
+	if (ast->right)
+		print_ast_core(ast->right, indent);
 }
 
 void	print_ast(t_ast *ast, char *testname)

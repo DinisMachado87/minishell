@@ -19,7 +19,7 @@ int	main()
 	char	*str_cmd = "echo <file.txt 'the city<file.txt\"is wilder\" than you think'\"'and think' better\"    ";
 	char	*str_par = "(echo \"I am them\")";
 	char	*str_pipe = "|";
-	char	*str_input = "echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ";
+	char	*str_input = "1echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ";
 
 	ast = NULL;
 	extract_cmd(&ast, &str_cmd, &s);

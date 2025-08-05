@@ -30,6 +30,8 @@ t_ast	*parser(char *str)
 	t_ast	*cur_list;
 	t_s_parser	s;
 
+	head_ast = NULL;
+	cur_list = NULL;
 	while (*str && *str == ' ')
 		str++;
 	if (type(str) > REDIRECT)
