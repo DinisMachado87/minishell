@@ -35,7 +35,6 @@ t_ast	*structure_ast(t_ast *cur_list)
 			ast_head = cur_list;
 		}
 		cur_list = cur_list->next;
-		print_ast(ast_head, "== IN PROCESS ==");
 	}
 	return (ast_head);
 }
