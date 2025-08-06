@@ -6,11 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:56 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:38:13 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:47:42 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 void	place_between_higher_and_lower_precedence(t_ast *cur_list, t_ast *cur_right)
 {

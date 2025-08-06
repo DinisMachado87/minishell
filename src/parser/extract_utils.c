@@ -6,11 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:48 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:36:52 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:46:28 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	allocate_ast_args(t_ast *ast, int n_strs)
 {

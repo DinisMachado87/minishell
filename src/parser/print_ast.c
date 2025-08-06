@@ -6,11 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:44 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:37:48 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:47:33 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 const char *type_str[] = {
 	"SUBSHELL",

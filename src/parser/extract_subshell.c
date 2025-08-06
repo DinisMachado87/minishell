@@ -6,11 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:36:38 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:46:19 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 #include <stdio.h>
 
 t_ast	*extract_subshell(t_ast **ast_nd, char **str)

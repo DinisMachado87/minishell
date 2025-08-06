@@ -6,11 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:33:50 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:37:15 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:46:54 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 const char *test_strs[] = {
     "   echo Hello | cat signal.txt   ",

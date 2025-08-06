@@ -6,11 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:41:33 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:45:25 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s);
 

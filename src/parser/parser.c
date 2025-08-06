@@ -6,11 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/04 22:36:31 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:47:12 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 #include <stdio.h>
 
 int	is_end_of_string(char **str)
