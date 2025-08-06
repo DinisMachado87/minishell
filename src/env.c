@@ -13,23 +13,37 @@ t_env	*gen_env_node(char *key, char *value)
 	return (node);
 }
 
-void	free_env_node(t_env **head, char *key)
+void	free_env_node(t_env **node)
 {
-	t_env *node_cpy;
-
-	if (!*head || !head)
+	if (!node || !(*node))
 		return ;
-	node_cpy = *head;
-	while (node_cpy)
+	if ((*node)->key)
+		free((*node)->key);
+	if ((*node)->value)
+		free((*node)->value);
+	free(*node);
+	*node = NULL;
+}
+
+void	free_env_node_by_key(t_env **head, char *key)
+{
+	t_env *curr = *head;
+	t_env *prev = NULL;
+
+	while (curr)
 	{
-		if (strcmp(node_cpy->key, key) == 0)
-		{
-			free(node_cpy->key);
-			free(node_cpy->value);
-			free(node_cpy);
-			break ;
-		}
-		node_cpy = node_cpy->next;
+			if (strcmp(curr->key, key) == 0)
+			{
+					if (prev)
+							prev->next = curr->next;
+					else
+							*head = curr->next;
+
+					free_env_node(&curr);
+					return;
+			}
+			prev = curr;
+			curr = curr->next;
 	}
 }
 
@@ -42,10 +56,15 @@ void	set_env_node(t_env **head, char *key, char *value)
 		*head = new_node;
 	else
 	{
-		free_env_node(head, key);
-		while ((*head)->next)
-			*head = (*head)->next;
-		(*head)->next = new_node;
+		free_env_node_by_key(head, key);
+		if (!(*head))
+			*head = new_node;
+		else
+		{
+			while ((*head)->next)
+				*head = (*head)->next;
+			(*head)->next = new_node;
+		}
 	}
 }
 
@@ -79,8 +98,11 @@ char	*get_env_str(char *key, char *value)
 	char	*str;
 
 	total_len = strlen(key);
-	total_len += strlen(value) + 1;
+	total_len += strlen(value) + 2;
 	str = malloc(sizeof(char) * total_len);
+	if (!str)
+		return (NULL);
+	bzero(str, total_len);
 	strncpy(str, key, strlen(key));
 	strncat(str, "=", 1);
 	strncat(str, value, strlen(value));
@@ -106,30 +128,40 @@ char	**convert_env_to_list(t_env *head)
 	return (list);
 }
 
+void	free_env_list(char	**list)
+{
+	int	i;
+
+	i = 0;
+	while (list[i])
+		free(list[i++]);
+	free(list);
+}
+
 void	free_env(t_env **head)
 {
-	t_env	*tmp;
 	t_env	*next;
 
-	tmp = *head;
-	while (tmp)
+	while (*head)
 	{
-		next = tmp->next;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp);
-		tmp = next;
+		next = (*head)->next;
+		free_env_node(head);
+		*head = next;
 	}
 }
 
 int	main(void)
 {
 	t_env	*head;
-	t_env	*tmp;
+	char	**list;
 
 	head = NULL;
 	set_env_node(&head, "USER", "jlind");
-	tmp = get_env_node(head, "USER");
-	printf("%s\n", tmp->value);
+	set_env_node(&head, "USER2", "dimachad");
+	list = convert_env_to_list(head);
+	printf("%s\n", list[0]);
+	printf("%s\n", list[1]);
+	free_env(&head);
+	free_env_list(list);
 	return (0);
 }

@@ -33,13 +33,26 @@ int	ft_echo(t_ast *node)
 
 int	ft_cd(t_ast *node)
 {
+	char	*pwd;
+
 	if (node->n_args > 2)
 		return (1);
+	pwd = getcwd(NULL, 0);
+	if (strncmp(node->args[0], "-", 1) == 0)
+	{
+		if (chdir(get_env_node(env, "OLDPWD")) == -1)
+		{
+			perror("chdir");
+			return (1);
+		}
+	}
 	if (chdir(node->args[1]) == -1)
 	{
 		perror("chdir");
 		return (1);
 	}
+	set_env_node(env, strndup("OLDPWD", 6), pwd);
+	free(pwd);
 	return (0);
 }
 
