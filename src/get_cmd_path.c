@@ -1,0 +1,75 @@
+#include "../include/minishell.h"
+
+char	*split_at_sep(char **str, char sep)
+{
+	int		len;
+	char	*start;
+	char	*dir;
+
+	start = *str;
+	len = 0;
+	while (*(*str))
+	{
+		if (*(*str) == sep)
+		{
+			(*str)++;
+			break ;
+		}
+		len++;
+		(*str)++;
+	}
+	dir = malloc(sizeof(char) * (len + 1));
+	if (!dir)
+		return (NULL);
+	strncpy(dir, start, len);
+	dir[len] = '\0';
+	return (dir);
+}
+
+char	*append_cmd(char *dir, char *cmd)
+{
+	char	*path;
+	int		total_len;
+
+	total_len = strlen(dir) + strlen(cmd) + 1;
+	path = malloc(sizeof(char) * (total_len + 1));
+	if (!path)
+		return (NULL);
+	strcpy(path, dir);
+	strcat(path, "/");
+	strcat(path, cmd);
+	return (path);
+}
+
+int	cmd_valid(char *path)
+{
+	struct stat statbuf;
+
+	if (stat(path, &statbuf) == 0)
+		return (1);
+	return (0);
+}
+
+char	*get_cmd_path(char *cmd, char *env)
+{
+	char	sep = ':';
+	char	*dir;
+	char	*path;
+
+	if (cmd_valid(cmd))
+		return (cmd);
+	while (*env)
+	{
+		dir = split_at_sep(&env, sep);
+		if (!dir)
+			return (NULL);
+		path = append_cmd(dir, cmd);
+		if (!path)
+			return (NULL);
+		free(dir);
+		if (cmd_valid(path))
+			return (path);
+		free(path);
+	}
+	return (NULL);
+}

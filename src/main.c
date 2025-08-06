@@ -1,90 +1,51 @@
 #include "../include/minishell.h"
 
-void	sig_c_handler(int sig)
+int	main(void)
 {
-	(void)sig;
-	rl_replace_line("", 0);
-	write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
-	rl_redisplay();
-}
+	t_ast		*n1;
+	t_ast		*n2;
+	t_ast		*n3;
+	t_shell	*shell;
+	t_env		*env;
 
-char  *get_prompt(void)
-{
-  char  *cwd;
-  size_t  len;
-  char  *prompt;
+	env = NULL;
+	set_env_node(&env, "PATH", "/usr/bin");
 
-  cwd = getcwd(NULL, 0);
-  if (!cwd)
-    return (NULL);
-  len = strlen(cwd);
-  prompt = malloc(len + 3);
-  if (!prompt)
-  {
-    free(cwd);
-    return (NULL);
-  }
-  prompt[0] = '\0';
-  strncat(prompt, cwd, len);
-  strncat(prompt, "$ ", 3);
-  free(cwd);
-  return (prompt);
-}
+	n1 = malloc(sizeof(t_ast));
+	n2 = malloc(sizeof(t_ast));
+	n3 = malloc(sizeof(t_ast));
 
-/*
- * On EOF redline returns NULL
- */
-char  *get_input(char *prompt)
-{
-  char  *input;
+	n1->next = n2;
+	n2->next = n3;
 
-  input = readline(prompt);
-  if (!input)
-	{
-		free(prompt);
-    exit(1);
-	}
-  if (*input)
-    add_history(input);
-  return (input);
-}
+	shell = malloc(sizeof(t_shell));
 
-/*
- * SIGINT = ctrl_c
- * SIGQUIT = ctrl_\
- */
-void	prompt_loop(void)
-{
-  char  *input;
-  char  *prompt;
-	struct sigaction	sa_c;
+	shell->ast_tree = n1;
+	shell->ast_head = n1;
+	shell->env = env;
 
-  while (1)
-	{
-		sa_c.sa_flags = SA_RESTART;
-		sigemptyset(&sa_c.sa_mask);
-		sa_c.sa_handler = sig_c_handler;
-		if (sigaction(SIGINT, &sa_c, NULL) == -1)
-			perror("sigaction");
-		signal(SIGQUIT, SIG_IGN);
-		prompt = get_prompt();
-		if (!prompt)
-			return ;
-		input = get_input(prompt);
-		if (!input)
-		{
-			free(prompt);
-			return ;
-		}
-	}
-	if (input)
-		free(input);
-	free(prompt);
-}
+	n1->type = AND;
+	n1->args = NULL;
+	n1->left = n2;
+	n1->right = n3;
 
-int main(void)
-{
-	prompt_loop();
-  return (0);
+	n2->type = CMD;
+	n2->subtype = ECHO;
+	n2->args = malloc(sizeof(char *) * 3);
+	n2->args[0] = "echo";
+	n2->args[1] = "hello";
+	n2->args[2] = NULL;
+	n2->n_args = 2;
+
+	n3->type = CMD;
+	n3->subtype = ECHO;
+	n3->args = malloc(sizeof(char *) * 3);
+	n3->args[0] = "echo";
+	n3->args[1] = "bye";
+	n3->args[2] = NULL;
+	n3->n_args = 2;
+
+	execute_ast(shell, n1);
+	cleanup(&shell);
+	return (0);
 }

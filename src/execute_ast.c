@@ -1,187 +1,144 @@
 #include "../include/minishell.h"
 
-void  execute_ast(t_ast *node);
-void  execute_pipe(t_ast *node);
-
-void	execute_ast(t_ast *node)
+int	execute_external(t_shell *shell, t_ast *node)
 {
-	if (!node)
-		return ;
-	if (node->type == 1)
-		execute_pipe(node);
-	else
-		system(node->args);
+	char	*cmd;
+	char	**list;
+	int		pid;
+	int		status;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		cmd = get_cmd_path(node->args[0], get_env_node(shell->env, "PATH")->value);
+		if (!cmd)
+		{
+			print_err(node->args[0], "command not found");
+			exit(1);
+		}
+		list = convert_env_to_list(shell->env);
+		if (execve(cmd, node->args, list) == -1)
+		{
+			perror("execve");
+			free_env_list(list);
+			exit(1);
+		}
+		free_env_list(list);
+		exit(0);
+	}
+	waitpid(pid, &status, 0);
+	return (status);
 }
 
-void	execute_pipe(t_ast *node)
+int	execute_built_in(t_shell *shell, t_ast *node)
+{
+	if (node->subtype == ECHO)
+		return (ft_echo(node));
+	else if (node->subtype == CD)
+		return (ft_cd(shell, node));
+	else if (node->subtype == PWD)
+		return (ft_pwd());
+	else if (node->subtype == EXPORT)
+		return (ft_export(shell, node));
+	else if (node->subtype == UNSET)
+		return (ft_unset(shell, node));
+	else if (node->subtype == ENV)
+		return (ft_env(shell, node));
+	else if (node->subtype == EXIT)
+		ft_exit(shell);
+	return (0);
+}
+
+int	execute_ast(t_shell *shell, t_ast *node)
+{
+	int		status;
+	char	*stat;
+
+	status = 0;
+	if (!shell->ast_tree || !node)
+		return (1);
+	if (node->type == AND)
+		status = execute_and(shell, node);
+	else if (node->type == OR)
+		status = execute_or(shell, node);
+	else if (node->type == PIPE)
+		status = execute_pipe(shell, node);
+	else if (node->type == CMD)
+	{
+		if (node->subtype == EXTERNAL)
+			status = execute_external(shell, node);
+		else
+			status = execute_built_in(shell, node);
+	}
+	stat = itoa(status);
+	set_env_node(&shell->env, "?", stat);
+	//free(stat);
+	return (status);
+}
+
+int	execute_and(t_shell *shell, t_ast *node)
+{
+	int	status;
+
+	status = 0;
+	status = execute_ast(shell, node->left);
+	if (status == 0)
+		status = execute_ast(shell, node->right);
+	return (status);
+}
+
+int	execute_or(t_shell *shell, t_ast *node)
+{
+	int	status;
+
+	status = 0;
+	status = execute_ast(shell, node->left);
+	if (status != 0)
+		status = execute_ast(shell, node->right);
+	return (status);
+}
+
+int	execute_pipe(t_shell *shell, t_ast *node)
 {
 	int			left_pid;
 	int			right_pid;
 	int			fd[2];
-	int			wstatus;
+	int			lstatus;
+	int			rstatus;
 	
-	wstatus = 0;
+	lstatus = 0;
+	rstatus = 0;
 	if (pipe(fd) < 0)
-		return ;
+		return (1);
 	left_pid = fork();
 	if (left_pid < 0)
-		return ;
+		return (1);
 	if (left_pid == 0)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		execute_ast(node->left);
+		execute_ast(shell, node->left);
 		exit(0);
 	}
 	right_pid = fork();
 	if (right_pid < 0)
-		return ;
+		return (1);
 	if (right_pid == 0)
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
-		execute_ast(node->right);
+		execute_ast(shell, node->right);
 		exit(0);
 	}
 	close(fd[0]);
 	close(fd[1]);
-	waitpid(left_pid, &wstatus, 0);
-	waitpid(right_pid, &wstatus, 0);
-}	
-
-/*
- * type (1 = pipe; 2 = cmd)
- * subtype (1 = echo, 2 = external)
- * args = e.g. "echo hi"
- */
-int	main(void)
-{
-	t_ast	*n1;
-	t_ast	*n2;
-	t_ast	*n3;
-	t_ast	*n4;
-	t_ast	*n5;
-
-	n1 = malloc(sizeof(t_ast));
-	n2 = malloc(sizeof(t_ast));
-	n3 = malloc(sizeof(t_ast));
-	n4 = malloc(sizeof(t_ast));
-	n5 = malloc(sizeof(t_ast));
-
-	// |
-	n1->type = 1;
-	n1->left = n2;
-	n1->right = n3;
-	// |
-	n2->type = 1;
-	n2->left = n4;
-	n2->right = n5;
-	// wc -l
-	n3->type = 2;
-	n3->subtype = 2;
-	n3->args = "wc -l";
-	// echo hi
-	n4->type = 2;
-	n4->subtype = 1;
-	n4->args = "ls";
-	// cat
-	n5->type = 2;
-	n5->subtype = 2;
-	n5->args = "cat";
-	execute_ast(n1);
-	free(n1);
-	free(n2);
-	free(n3);
-	free(n4);
-	free(n5);
+	waitpid(left_pid, &lstatus, 0);
+	waitpid(right_pid, &rstatus, 0);
+	if (lstatus)
+		return (lstatus);
+	else if (rstatus)
+		return (rstatus);
 	return (0);
-}
-
-/*
-void	pipex(void)
-{
-	int			pid1;
-	int			pid2;
-	int			fd[2];
-	char		*str;
-	size_t	n;
-	int			wstatus;
-	
-	str = NULL;
-	n = 0;
-	wstatus = 0;
-	if (pipe(fd) < 0)
-		return ;
-	pid1 = fork();
-	if (pid1 < 0)
-		return ;
-	if (pid1 == 0)
-	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		system("echo Hello");
-		close(fd[1]);
-		exit(0);
-	}
-	pid2 = fork();
-	if (pid2 < 0)
-		return ;
-	if (pid2 == 0)
-	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		getline(&str, &n, stdin);
-		close(fd[0]);
-		printf("%s\n", str);
-		free(str);
-		exit(0);
-	}
-	close(fd[0]);
-	close(fd[1]);
-	waitpid(pid1, &wstatus, 0);
-	waitpid(pid2, &wstatus, 0);
 }	
-
-void	pipex(t_ast *node)
-{
-	int			pid1;
-	int			pid2;
-	int			fd[2];
-	int			wstatus;
-	
-	if (!node->left)
-		return ;
-	pipex(node->left);
-	wstatus = 0;
-	if (pipe(fd) < 0)
-		return ;
-	pid1 = fork();
-	if (pid1 < 0)
-		return ;
-	if (pid1 == 0)
-	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		system(node->left->args);
-		close(fd[1]);
-		exit(0);
-	}
-	pid2 = fork();
-	if (pid2 < 0)
-		return ;
-	if (pid2 == 0)
-	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		system(node->right->args);
-		close(fd[0]);
-		exit(0);
-	}
-	close(fd[0]);
-	close(fd[1]);
-	waitpid(pid1, &wstatus, 0);
-	waitpid(pid2, &wstatus, 0);
-}	
-*/
