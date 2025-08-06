@@ -84,6 +84,27 @@ static const t_token g_types[] =
 	{0, 0, 0},
 };
 
+enum	e_type
+{
+	AND,
+	OR,
+	REDIRECT,
+	PIPE,
+	CMD
+};
+
+enum	e_subtype
+{
+	ECHO,
+	CD,
+	PWD,
+	EXPORT,
+	UNSET,
+	ENV,
+	EXIT,
+	EXTERNAL
+};
+
 typedef struct s_ast
 {
 	int				type;
@@ -131,5 +152,15 @@ void	print_ast(t_ast *ast, char *testname);
 void	print_nd_list(t_ast *ast, char *testname);
 // prompt_loop
 void	prompt_loop(void);
+void	execute_ast(t_ast *node);
+void	execute_pipe(t_ast *node);
+void	ft_echo(t_ast *node);
+void	ft_cd(t_ast *node);
+void	ft_pwd(t_ast *node);
+void	ft_export(t_ast *node);
+void	ft_unset(t_ast *node);
+void	ft_env(t_ast *node);
+void	ft_exit(t_ast *node);
+char  *get_cmd_path(char *cmd, char *env);
 
 #endif

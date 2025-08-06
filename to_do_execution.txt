@@ -1,0 +1,12 @@
+	- Search for executables in the PATH
+	- Check if command was found, if not print (cmd_name: command not found)
+	- Built-in commands
+		- echo (with flag -n) (just check if the second arg is '-n')
+		- cd
+		- pwd
+		- export
+		- unset
+		- env
+		- exit
+	- Redirects
+	- && + ||

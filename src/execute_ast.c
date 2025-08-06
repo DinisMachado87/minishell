@@ -1,16 +1,53 @@
 #include "../include/minishell.h"
 
-void  execute_ast(t_ast *node);
-void  execute_pipe(t_ast *node);
+void	execute_external(t_ast *node)
+{
+	char	*cmd;
+	char	*env[2];
+
+	env[0] = getenv("PATH");
+	env[1] = NULL;
+
+	cmd = get_cmd_path(node->args[0], env[0]);
+	if (execve(cmd, node->args, env) == -1)
+	{
+		perror("execve");
+		exit(1);
+	}
+}
+
+void	execute_built_in(t_ast *node)
+{
+	if (node->subtype == ECHO)
+		ft_echo(node);
+	else if (node->subtype == CD)
+		ft_cd(node);
+	else if (node->subtype == PWD)
+		ft_pwd(node);
+	else if (node->subtype == EXPORT)
+		ft_export(node);
+	else if (node->subtype == UNSET)
+		ft_unset(node);
+	else if (node->subtype == ENV)
+		ft_env(node);
+	else if (node->subtype == EXIT)
+		ft_exit(node);
+}
 
 void	execute_ast(t_ast *node)
 {
+
 	if (!node)
 		return ;
-	if (node->type == 1)
+	if (node->type == PIPE)
 		execute_pipe(node);
 	else
-		system(node->args);
+	{
+		if (node->subtype == EXTERNAL)
+			execute_external(node);
+		else
+			execute_built_in(node);
+	}
 }
 
 void	execute_pipe(t_ast *node)
@@ -56,6 +93,61 @@ void	execute_pipe(t_ast *node)
  * subtype (1 = echo, 2 = external)
  * args = e.g. "echo hi"
  */
+
+/*
+int	main(void)
+{
+	t_ast	*n1;
+
+	n1 = malloc(sizeof(t_ast));
+	n1->type = CMD;
+	n1->subtype = ECHO;
+	n1->args = malloc(sizeof(char *) * 5);
+	n1->args[0] = "/usr/bin/echo";
+	n1->args[1] = "-n";
+	n1->args[2] = "Hello World";
+	n1->args[3] = "How are you?";
+	n1->args[4] = NULL;
+	execute_ast(n1);
+	free(n1);
+	return (0);
+}
+*/
+
+int	main(void)
+{
+	t_ast	*n1;
+	t_ast	*n2;
+	t_ast	*n3;
+
+	n1 = malloc(sizeof(t_ast));
+	n2 = malloc(sizeof(t_ast));
+	n3 = malloc(sizeof(t_ast));
+	n1->type = PIPE;
+	n1->left = n2;
+	n1->right = n3;
+	n2->type = CMD;
+	n2->subtype = ECHO;
+	n2->args = malloc(sizeof(char *) * 4);
+	//n2->args[0] = "/usr/bin/echo";
+	n2->args[0] = "/usr/bin/echo";
+	n2->args[1] = "Hello World";
+	n2->args[2] = "How are you?";
+	n2->args[3] = NULL;
+	n3->type = CMD;
+	n3->subtype = EXTERNAL;
+	n3->args = malloc(sizeof(char *) * 2);
+	n3->args[0] = "wc";
+	n3->args[1] = NULL;
+	execute_ast(n1);
+	free(n1);
+	free(n2->args);
+	free(n2);
+	free(n3);
+	return (0);
+}
+
+/*
 int	main(void)
 {
 	t_ast	*n1;
@@ -81,7 +173,7 @@ int	main(void)
 	// wc -l
 	n3->type = 2;
 	n3->subtype = 2;
-	n3->args = "wc -l";
+	n3->args = "wc";
 	// echo hi
 	n4->type = 2;
 	n4->subtype = 1;
@@ -98,6 +190,7 @@ int	main(void)
 	free(n5);
 	return (0);
 }
+*/
 
 /*
 void	pipex(void)
