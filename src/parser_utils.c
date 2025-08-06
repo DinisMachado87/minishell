@@ -1,23 +1,33 @@
 #include "../include/minishell.h"
 
-int	is_operator(char *str)
+int	type(char *str)
 {
-	if (*str == '&' && *(str + 1) == '&')
-		return (AND);
-	if (*str == '|' && *(str + 1) == '|')
-		return (OR);
-	if (*str == '|')
-		return (PIPE);
-	if (*str == '>' && *(str + 1) == '>')
-		return (APPEND);
-	if (*str == '<' && *(str + 1) == '<')
-		return (HEREDOC);
-	if (*str == '>')
-		return (REDIRECT_OUT);
-	if (*str == '<')
-		return (REDIRECT_IN);
-	return (0);
+	int	i;
+
+	i = 0;
+	while (g_types[i].str)
+	{
+		if (ms_strcmp(g_types[i].str, str))
+			return (g_types[i].type);
+		i++;
+	}
+	return (CMD);
 }
+
+int	subtype(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (g_types[i].str)
+	{
+		if (ms_strcmp(g_types[i].str, str))
+			return (g_types[i].subtype);
+		i++;
+	}
+	return (CMD);
+}
+
 
 void	*handle_error(char *err_msg, int *error)
 {
@@ -30,6 +40,11 @@ char	*ms_strcpy(char *str, int len)
 {
 	char	*substring;
 
+	if (*str == '\'' || *str == '\"')
+	{
+		str++;
+		len -= 2;
+	}
 	substring = malloc((len + 1) * sizeof(char));
 	if (!substring)
 		return (perror("Err extracting substring"), NULL);

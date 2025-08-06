@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/07/29 15:27:00 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/04 22:36:31 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,39 +27,37 @@ int	is_end_of_string(char **str)
 t_ast	*parser(char *str)
 {
 	t_ast	*head_ast;
-	t_ast	*cur_ast;
+	t_ast	*cur_list;
 	t_s_parser	s;
 
 	while (*str && *str == ' ')
 		str++;
-	if (is_operator(str))
-		return (perror("Error: Input must start with a command not an operator"), NULL);
+	if (type(str) > REDIRECT)
+		return (perror("Error: Input must start with a command or redirection"), NULL);
 	if (!extract_subshell(&head_ast, &str)
 		&& !extract_cmd(&head_ast, &str, &s))
 			return (NULL);
-	cur_ast = head_ast;
+	cur_list = head_ast;
 	while (*str)
 	{
 		if (is_end_of_string(&str))
 			return (head_ast);
-		if (!extract_subshell(&cur_ast->next, &str))
-			if (!extract_operator(&cur_ast->next, &str, is_operator(str)))
+		if (!extract_subshell(&cur_list->next, &str))
+			if (!extract_operator(&cur_list->next, &str, type(str)))
 				return (NULL);
 		if (is_end_of_string(&str))
 			return (head_ast);
-		if (is_operator(str))
+		if (type(str) > REDIRECT)
 			return (perror("ERROR: input includes two consecutive operators"), NULL);
-		cur_ast = cur_ast->next;
-		if (!extract_subshell(&cur_ast->next, &str)
-			&& !extract_cmd(&cur_ast->next, &str, &s))
+		cur_list = cur_list->next;
+		if (!extract_subshell(&cur_list->next, &str)
+			&& !extract_cmd(&cur_list->next, &str, &s))
 				return (NULL);
 		if (is_end_of_string(&str))
 			return (head_ast);
-		cur_ast = cur_ast->next;
+		cur_list = cur_list->next;
 	}
-	// tokenize_and_save_vars();
-	// compose_node();
 	// expand_vars();
-	//make_tree(&ast_list, &ast_tree);
+	head_ast = structure_ast(head_ast);
 	return (head_ast);
 }

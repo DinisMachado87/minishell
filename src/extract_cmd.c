@@ -1,20 +1,53 @@
 #include "../include/minishell.h"
 
+static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s);
+
 static int	skip_count_word(char *str, char limiter)
 {
 	int	i_ltr;
+	int	char_type;
 
 	i_ltr = 0;
-	while (str[i_ltr]
-		&& (str[i_ltr] != limiter && !is_operator(str + i_ltr)))
+	char_type = type(str + i_ltr);
+	while (str[i_ltr] && str[i_ltr] != limiter && (char_type == CMD || limiter != ' '))
 	{
-		if (limiter == ' ' && (str[i_ltr] == '\'' || str[i_ltr] == '"'))
-			limiter = str[i_ltr];
+		if (limiter == ' '
+			&& (str[i_ltr] == '\'' || str[i_ltr] == '"'))
+				limiter = str[i_ltr];
 		i_ltr++;
+		char_type = type(str + i_ltr);
 	}
 	if (str[i_ltr] && str[i_ltr] == limiter && limiter != ' ')
 		i_ltr++;
 	return (i_ltr);
+}
+
+static int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
+{
+	int 	i_ltr;
+	int 	spaces;
+	int		red_subtype;
+	char	*word;
+
+	i_ltr = 0;
+	spaces = 0;
+	red_subtype = subtype(str);
+	spaces++;
+	if (red_subtype == HEREDOC || red_subtype == APPEND)
+		spaces++;
+	while (str[spaces] && str[spaces] == ' ')
+		spaces++;
+	if (!str[spaces] || str[spaces] == '(')
+		return (spaces);
+	i_ltr = skip_count_word((str + spaces), ' ');
+	word = ms_strcpy((str + spaces), i_ltr);
+	if (!word)
+		return (0);
+	if (ast->red_args[red_subtype]) 
+		free(ast->red_args[red_subtype]);
+	ast->red_args[red_subtype] = word;
+	s->n_cmd_ltrs += extract_word_recursive(ast, str + spaces + i_ltr, s);
+	return(spaces + i_ltr);
 }
 
 static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
@@ -29,16 +62,15 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 		spaces++;
 	if (!str[spaces] || str[spaces] == '(')
 		return (spaces);
+	if (REDIRECT == type(str + spaces))
+		return (spaces + extract_redirect(ast, str + spaces + i_ltr, s));
 	i_ltr = skip_count_word((str + spaces), ' ');
 	s->i_word++;
-	if (str[spaces + i_ltr] && !is_operator(str + spaces + i_ltr))
+	if (str[spaces + i_ltr] && CMD == type(str + spaces + i_ltr))
 		s->n_cmd_ltrs += extract_word_recursive(ast, str + spaces + i_ltr, s);
 	if (!ast->args && !allocate_ast_args(ast, s->i_word))
 		return (0);
-	if (str[spaces] == '\'' || str[spaces] == '\"')
-		word = ms_strcpy((str + spaces + 1), i_ltr - 2);
-	else
-		word = ms_strcpy((str + spaces), i_ltr);
+	word = ms_strcpy((str + spaces), i_ltr);
 	if (!word)
 		return (0);
 	ast->args[--s->i_word] = word;

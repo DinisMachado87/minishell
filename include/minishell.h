@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 15:36:44 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/06 15:40:48 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,17 @@
 # include <stddef.h>
 
 typedef enum e_type {
+	SUBSHELL,
 	CMD,
 	REDIRECT,
 	PIPE,
-	LOGICAL,
-} t_type;
+	OPERATOR,
+}	t_type;
 
 typedef enum e_subtype {
 	NONE,
 	EXTERNAL,
 	VAR,
-	SUBSHELL,
 	ECHO,
 	CD,
 	PWD,
@@ -47,19 +47,24 @@ typedef enum e_subtype {
 	UNSET,
 	ENV,
 	EXIT,
-	OUT,
-	IN,
-	APPEND,
-	HEREDOC,
 	OR,
 	AND,
 } t_subtype;
 
+typedef enum e_redirect_subtype {
+	IN,
+	OUT,
+	APPEND,
+	HEREDOC,
+}	t_redirect_subtype;
+
 typedef struct s_ast
 {
 	int				type;
+	int				subtype;
 	char			**args;
 	int				n_args;
+	char			*red_args[2];
 	struct s_ast	*next;
 	struct s_ast	*left;
 	struct s_ast	*right;
@@ -74,17 +79,38 @@ typedef struct	s_state_parser
 	int		error;
 }				t_s_parser;
 
-void	prompt_loop(void);
+typedef struct s_token
+{
+	char	*str;
+	int		type;
+	int		subtype;
+}	t_token;
+
+static const t_token g_types[] =
+{
+	{"&&", OPERATOR, AND},
+	{"||", OPERATOR, OR},
+	{"|", PIPE, NONE},
+	{"<<", REDIRECT, HEREDOC},
+	{">>", REDIRECT, APPEND},
+	{"<", REDIRECT, IN},
+	{">", REDIRECT, OUT},
+	{"VAR=", CMD, VAR},
+	{0, 0, 0},
+};
+
 // ast_utils
 t_ast	*make_node(t_ast **ast);
 t_ast	*free_all(t_ast *ast);
 // parser_utils
-int		is_operator(char *str);
+int		type(char *str);
+int		subtype(char *str);
 char	*ms_strcpy(char *str, int len);
 // extract_utils
-int	allocate_ast_args(t_ast *ast, int n_strs);
+int		allocate_ast_args(t_ast *ast, int n_strs);
 // gen_utils
 void	ms_bzero(void *s, size_t n);
+int		ms_strcmp(char *ref, char *str);
 // parser
 t_ast	*parser(char *str);
 // extract cmd
@@ -96,5 +122,7 @@ t_ast	*structure_ast(t_ast *cur_list);
 // print_ast
 void	print_ast(t_ast *ast, char *testname);
 void	print_nd_list(t_ast *ast, char *testname);
+// prompt_loop
+void	prompt_loop(void);
 
 #endif

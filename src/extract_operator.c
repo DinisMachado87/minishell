@@ -6,10 +6,9 @@ t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator)
 		return (perror("ERROR allocating node "
 				 "while extracting subshell"), NULL);
 	(*ast_nd)->type = operator;
-	if (operator == PIPE
-		|| operator == REDIRECT_IN
-		|| operator == REDIRECT_OUT)
+	if (operator == PIPE)
 		(*str)++;
-	*str += 2;
+	else
+		*str += 2;
 	return (*ast_nd);
 }
