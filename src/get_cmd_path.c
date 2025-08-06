@@ -35,14 +35,13 @@ char	*append_cmd(char *dir, char *cmd)
 	char	*path;
 	int		total_len;
 
-	total_len = strlen(dir) + strlen(cmd);
-	path = malloc(sizeof(char) * (total_len + 2));
+	total_len = strlen(dir) + strlen(cmd) + 1;
+	path = malloc(sizeof(char) * (total_len + 1));
 	if (!path)
 		return (NULL);
-	strncpy(path, dir, strlen(dir));
-	strncat(path, "/", 1);
-	strncat(path, cmd, strlen(cmd));
-	path[total_len + 1] = '\0';
+	strcpy(path, dir);
+	strcat(path, "/");
+	strcat(path, cmd);
 	return (path);
 }
 
@@ -61,12 +60,16 @@ char	*get_cmd_path(char *cmd, char *env)
 	char	*dir;
 	char	*path;
 
+	if (cmd_valid(cmd))
+		return (cmd);
 	while (*env)
 	{
 		dir = split_at_sep(&env, sep);
 		if (!dir)
 			return (NULL);
 		path = append_cmd(dir, cmd);
+		if (!path)
+			return (NULL);
 		free(dir);
 		if (cmd_valid(path))
 			return (path);

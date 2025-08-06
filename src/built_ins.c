@@ -1,21 +1,20 @@
 #include "../include/minishell.h"
 
-// buggy? in combindation with wc i get weird results..
-void  ft_echo(t_ast *node)
+int	ft_echo(t_ast *node)
 {
 	int	i;
 	int	j;
 	int	newline;
 
-	if (strcmp(node->args[1], "-n") == 0)
+	if (!strcmp(node->args[1], "-n"))
 	{
 		newline = 0;
-		i = 1;
+		i = 2;
 	}
 	else
 	{
 		newline = 1;
-		i = 2;
+		i = 1;
 	}
 	while (node->args[i])
 	{
@@ -29,40 +28,51 @@ void  ft_echo(t_ast *node)
 	}
 	if (newline)
 		write(1, "\n", 1);
+	return (0);
 }
 
-void  ft_cd(t_ast *node)
+int	ft_cd(t_ast *node)
 {
-	(void)node;
-	return ;
+	if (node->n_args > 2)
+		return (1);
+	if (chdir(node->args[1]) == -1)
+	{
+		perror("chdir");
+		return (1);
+	}
+	return (0);
 }
 
-void  ft_pwd(t_ast *node)
+int	ft_pwd(void)
 {
-	(void)node;
-	return ;
+	char		*path;
+
+	path = getcwd(NULL, 0);
+	printf("%s\n", path);
+	free(path);
+	return (0);
 }
 
-void  ft_export(t_ast *node)
+int	ft_export(t_ast *node)
 {
 	(void)node;
-	return ;
+	return (0);
 }
 
-void  ft_unset(t_ast *node)
+int  ft_unset(t_ast *node)
 {
 	(void)node;
-	return ;
+	return (0);
 }
 
-void  ft_env(t_ast *node)
+int  ft_env(t_ast *node)
 {
 	(void)node;
-	return ;
+	return (0);
 }
 
-void  ft_exit(t_ast *node)
+int	ft_exit(t_ast *node)
 {
 	(void)node;
-	return ;
+	return (0);
 }

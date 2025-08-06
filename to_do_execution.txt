@@ -1,7 +1,5 @@
-	- Search for executables in the PATH
 	- Check if command was found, if not print (cmd_name: command not found)
 	- Built-in commands
-		- echo (with flag -n) (just check if the second arg is '-n')
 		- cd
 		- pwd
 		- export
@@ -10,3 +8,16 @@
 		- exit
 	- Redirects
 	- && + ||
+	- Replace all the strcpy, strcat, strlen, etc. functions with own
+	- Do we need a proper exit code?
+	/*
+	int status;
+    waitpid(pid, &status, 0);
+
+    if (WIFEXITED(status))
+        return WEXITSTATUS(status); // Pass child exit code
+    else
+        return 1; // Abnormal exit
+	*/
+	- Figure out advantage of global variable for signal handling
+	- Figure out what those functions are usefull for ( tcsetattr, tcgetattr, tgetent, tgetflag, tgetnum, tgetstr, tgoto, tputs)

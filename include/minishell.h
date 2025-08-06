@@ -127,6 +127,21 @@ typedef struct	s_state_parser
 	int		error;
 }				t_s_parser;
 
+typedef struct	s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
+
+typedef struct	s_shell
+{
+	t_ast	*ast_head;
+	t_ast	*ast_tree;
+	t_env	*env;
+	t_env	*var;
+}	t_shell;
+
 // ast_utils
 t_ast	*make_node(t_ast **ast);
 t_ast	*free_all(t_ast **ast);
@@ -152,15 +167,24 @@ void	print_ast(t_ast *ast, char *testname);
 void	print_nd_list(t_ast *ast, char *testname);
 // prompt_loop
 void	prompt_loop(void);
-void	execute_ast(t_ast *node);
-void	execute_pipe(t_ast *node);
-void	ft_echo(t_ast *node);
-void	ft_cd(t_ast *node);
-void	ft_pwd(t_ast *node);
-void	ft_export(t_ast *node);
-void	ft_unset(t_ast *node);
-void	ft_env(t_ast *node);
-void	ft_exit(t_ast *node);
-char  *get_cmd_path(char *cmd, char *env);
+int		execute_ast(t_ast *node);
+int		execute_pipe(t_ast *node);
+int		ft_echo(t_ast *node);
+int		ft_cd(t_ast *node);
+int		ft_pwd(void);
+int		ft_export(t_ast *node);
+int		ft_unset(t_ast *node);
+int		ft_env(t_ast *node);
+int		ft_exit(t_ast *node);
+int		execute_and(t_ast *node);
+char	*get_cmd_path(char *cmd, char *env);
+t_env	*gen_env_node(char *key, char *value);
+void	free_env_node(t_env **head, char *key);
+void	set_env_node(t_env **head, char *key, char *value);
+t_env	*get_env_node(t_env *head, char *key);
+int		get_env_length(t_env *head);
+char	*gen_env_str(char *key, char *value);
+char	**convert_env_to_list(t_env *head);
+void	free_env(t_env **head);
 
 #endif
