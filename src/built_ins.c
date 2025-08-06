@@ -121,6 +121,6 @@ int  ft_env(t_shell *shell, t_ast *node)
 
 void	ft_exit(t_shell *shell)
 {
-	cleanup(&shell);
+	free_all(&shell->ast_head);
 	exit(0);
 }

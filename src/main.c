@@ -46,6 +46,6 @@ int	main(void)
 	n3->n_args = 2;
 
 	execute_ast(shell, n1);
-	cleanup(&shell);
+	free_all(&shell->ast_head);
 	return (0);
 }
