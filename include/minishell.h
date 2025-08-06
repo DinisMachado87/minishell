@@ -25,6 +25,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <stddef.h>
 
 typedef enum e_type {
@@ -84,64 +85,6 @@ static const t_token g_types[] =
 	{0, 0, 0},
 };
 
-enum	e_type
-{
-	AND,
-	OR,
-	REDIRECT,
-	PIPE,
-	CMD
-};
-
-enum	e_subtype
-{
-	ECHO,
-	CD,
-	PWD,
-	EXPORT,
-	UNSET,
-	ENV,
-	EXIT,
-	EXTERNAL
-};
-
-typedef struct s_ast
-{
-	int				type;
-	int				subtype;
-	char			**args;
-	int				n_args;
-	char			*red_args[2];
-	int				append;
-	struct s_ast	*next;
-	struct s_ast	*left;
-	struct s_ast	*right;
-}					t_ast;
-
-typedef struct	s_state_parser
-{
-	char	*str;
-	int		needle;
-	int 	i_word;
-	int		n_cmd_ltrs;
-	int		error;
-}				t_s_parser;
-
-typedef struct	s_env
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next;
-}	t_env;
-
-typedef struct	s_shell
-{
-	t_ast	*ast_head;
-	t_ast	*ast_tree;
-	t_env	*env;
-	t_env	*var;
-}	t_shell;
-
 // ast_utils
 t_ast	*make_node(t_ast **ast);
 t_ast	*free_all(t_ast **ast);
@@ -167,10 +110,10 @@ void	print_ast(t_ast *ast, char *testname);
 void	print_nd_list(t_ast *ast, char *testname);
 // prompt_loop
 void	prompt_loop(void);
-int		execute_ast(t_ast *node);
-int		execute_pipe(t_ast *node);
+int		execute_ast(t_shell *shell, t_ast *node);
+int		execute_pipe(t_shell *shell, t_ast *node);
 int		ft_echo(t_ast *node);
-int		ft_cd(t_ast *node);
+int		ft_cd(t_shell *shell, t_ast *node);
 int		ft_pwd(void);
 int		ft_export(t_ast *node);
 int		ft_unset(t_ast *node);

@@ -88,14 +88,66 @@ int	main(void)
 	t_ast	*n1;
 	t_ast	*n2;
 	t_ast	*n3;
-	t_ast	*n4;
-	t_ast	*n5;
+
+	n1 = malloc(sizeof(t_ast));
+	n2 = malloc(sizeof(t_ast));
+	n3 = malloc(sizeof(t_ast));
+
+  t_shell *shell;
+  shell = malloc(sizeof(t_shell));
+  shell->ast_tree = n1;
+  set_env_node(&shell->env, "PATH", getenv("PATH"));
+
+	n1->type = AND;
+	n1->left = n2;
+	n1->right = n3;
+
+	n2->type = CMD;
+	n2->subtype = ECHO;
+	n2->args = malloc(sizeof(char *) * 3);
+	n2->args[0] = "echo";
+	n2->args[1] = "Hello";
+	n2->args[2] = NULL;
+
+	n3->type = CMD;
+	n3->subtype = ECHO;
+	n3->args = malloc(sizeof(char *) * 3);
+	n3->args[0] = "echo";
+	n3->args[1] = "World";
+	n3->args[2] = NULL;
+
+	execute_ast(shell, n1);
+	free(shell);
+	free(n1);
+	free(n2->args);
+	free(n2);
+	free(n3->args);
+	free(n3);
+	return (0);
+}
+
+/*
+int	main(void)
+{
+	t_shell	*shell;
+	t_ast		*n1;
+	t_ast		*n2;
+	t_ast		*n3;
+	t_ast		*n4;
+	t_ast		*n5;
+
+	shell = malloc(sizeof(t_shell));
 
 	n1 = malloc(sizeof(t_ast));
 	n2 = malloc(sizeof(t_ast));
 	n3 = malloc(sizeof(t_ast));
 	n4 = malloc(sizeof(t_ast));
 	n5 = malloc(sizeof(t_ast));
+	
+	//shell->env = malloc(sizeof(t_env));
+	shell->ast_tree = n4;
+
+	set_env_node(&shell->env, "PATH", getenv("PATH"));
 
 	n1->type = AND;
 	n1->left = n2;
@@ -125,10 +177,10 @@ int	main(void)
 	n5->n_args = 2;
 	n5->args = malloc(sizeof(char *) * 3);
 	n5->args[0] = "cd";
-	n5->args[1] = "-";
+	n5->args[1] = "..";
 	n5->args[2] = NULL;
 
-	execute_ast(n4);
+	execute_ast(shell, n4);
 
 	free(n1);
 	free(n2->args);
@@ -138,9 +190,10 @@ int	main(void)
 	free(n4);
 	free(n5->args);
 	free(n5);
+	free(shell);
 	return (0);
 }
-
+*/
 
 
 /*
@@ -161,6 +214,11 @@ int	main(void)
 	n5 = malloc(sizeof(t_ast));
 	n6 = malloc(sizeof(t_ast));
 	n7 = malloc(sizeof(t_ast));
+
+	t_shell *shell;
+  shell = malloc(sizeof(t_shell));
+  shell->ast_tree = n1;
+  set_env_node(&shell->env, "PATH", getenv("PATH"));
 
 	n1->type = AND;
 	n1->left = n2;
@@ -203,7 +261,7 @@ int	main(void)
 	n7->args[2] = "A-Z";
 	n7->args[3] = NULL;
 
-	execute_ast(n1);
+	execute_ast(shell, n1);
 	free(n1);
 	free(n2);
 	free(n3);

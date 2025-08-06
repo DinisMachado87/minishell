@@ -150,6 +150,7 @@ void	free_env(t_env **head)
 	}
 }
 
+/*
 int	main(void)
 {
 	t_env	*head;
@@ -165,3 +166,4 @@ int	main(void)
 	free_env_list(list);
 	return (0);
 }
+*/

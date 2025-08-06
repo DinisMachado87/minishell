@@ -31,7 +31,7 @@ int	ft_echo(t_ast *node)
 	return (0);
 }
 
-int	ft_cd(t_ast *node)
+int	ft_cd(t_shell *shell, t_ast *node)
 {
 	char	*pwd;
 
@@ -40,7 +40,7 @@ int	ft_cd(t_ast *node)
 	pwd = getcwd(NULL, 0);
 	if (strncmp(node->args[0], "-", 1) == 0)
 	{
-		if (chdir(get_env_node(env, "OLDPWD")) == -1)
+		if (chdir(get_env_node(shell->env, "OLDPWD")->value) == -1)
 		{
 			perror("chdir");
 			return (1);
@@ -51,7 +51,7 @@ int	ft_cd(t_ast *node)
 		perror("chdir");
 		return (1);
 	}
-	set_env_node(env, strndup("OLDPWD", 6), pwd);
+	set_env_node(&shell->env, strndup("OLDPWD", 6), pwd);
 	free(pwd);
 	return (0);
 }
@@ -66,26 +66,26 @@ int	ft_pwd(void)
 	return (0);
 }
 
-int	ft_export(t_ast *node)
+int	ft_export(t_shell *shell)
 {
-	(void)node;
+	(void)shell;
 	return (0);
 }
 
-int  ft_unset(t_ast *node)
+int  ft_unset(t_shell *shell)
 {
-	(void)node;
+	(void)shell;
 	return (0);
 }
 
-int  ft_env(t_ast *node)
+int  ft_env(t_shell *shell)
 {
-	(void)node;
+	(void)shell;
 	return (0);
 }
 
-int	ft_exit(t_ast *node)
+int	ft_exit(t_shell *shell)
 {
-	(void)node;
+	(void)shell;
 	return (0);
 }
