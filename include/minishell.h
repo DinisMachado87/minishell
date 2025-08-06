@@ -27,6 +27,7 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <stddef.h>
+# include <fcntl.h>
 
 typedef enum e_type {
 	SUBSHELL,
@@ -115,19 +116,27 @@ int		execute_pipe(t_shell *shell, t_ast *node);
 int		ft_echo(t_ast *node);
 int		ft_cd(t_shell *shell, t_ast *node);
 int		ft_pwd(void);
-int		ft_export(t_ast *node);
-int		ft_unset(t_ast *node);
-int		ft_env(t_ast *node);
-int		ft_exit(t_ast *node);
-int		execute_and(t_ast *node);
-char	*get_cmd_path(char *cmd, char *env);
-t_env	*gen_env_node(char *key, char *value);
-void	free_env_node(t_env **head, char *key);
-void	set_env_node(t_env **head, char *key, char *value);
-t_env	*get_env_node(t_env *head, char *key);
-int		get_env_length(t_env *head);
-char	*gen_env_str(char *key, char *value);
-char	**convert_env_to_list(t_env *head);
-void	free_env(t_env **head);
+int		ft_export(t_shell *shell, t_ast *node);
+int		ft_unset(t_shell *shell, t_ast *node);
+int		ft_env(t_shell *shell, t_ast *node);
+void	ft_exit(t_shell *shell);
+int		execute_and(t_shell *shell, t_ast *node);
+int		execute_or(t_shell *shell, t_ast *node);
+char  *get_cmd_path(char *cmd, char *env);
+t_env *gen_env_node(char *key, char *value);
+void  free_env_node(t_env **node);
+void  free_env_node_by_key(t_env **head, char *key);
+void  set_env_node(t_env **head, char *key, char *value);
+t_env *get_env_node(t_env *head, char *key);
+int 	get_env_length(t_env *head);
+char  *gen_env_str(char *key, char *value);
+char  **convert_env_to_list(t_env *head);
+void  free_env(t_env **head);
+void  print_env(t_shell *shell, int export);
+void  cleanup(t_shell **shell);
+void  free_env_list(char  **list);
+void  print_err(char *cmd_name, char *err_msg);
+char  *itoa(int num);
+int execute_r_in(t_shell *shell, t_ast *node);
 
 #endif

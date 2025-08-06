@@ -3,51 +3,77 @@
 int	execute_external(t_shell *shell, t_ast *node)
 {
 	char	*cmd;
+	char	**list;
+	int		pid;
+	int		status;
 
-	cmd = get_cmd_path(node->args[0], get_env_node(shell->env, "PATH")->value);
-	if (execve(cmd, node->args, convert_env_to_list(shell->env)) == -1)
+	pid = fork();
+	if (pid == 0)
 	{
-		perror("execve");
-		return (1);
+		cmd = get_cmd_path(node->args[0], get_env_node(shell->env, "PATH")->value);
+		if (!cmd)
+		{
+			print_err(node->args[0], "command not found");
+			exit(1);
+		}
+		list = convert_env_to_list(shell->env);
+		if (execve(cmd, node->args, list) == -1)
+		{
+			perror("execve");
+			free_env_list(list);
+			exit(1);
+		}
+		free_env_list(list);
+		exit(0);
 	}
-	return (0);
+	waitpid(pid, &status, 0);
+	return (status);
 }
 
 int	execute_built_in(t_shell *shell, t_ast *node)
 {
 	if (node->subtype == ECHO)
-		return (ft_echo( node));
-	else if (shell->ast_tree->subtype == CD)
+		return (ft_echo(node));
+	else if (node->subtype == CD)
 		return (ft_cd(shell, node));
-	else if (shell->ast_tree->subtype == PWD)
+	else if (node->subtype == PWD)
 		return (ft_pwd());
-	else if (shell->ast_tree->subtype == EXPORT)
-		return (ft_export(shell));
-	else if (shell->ast_tree->subtype == UNSET)
-		return (ft_unset(shell));
-	else if (shell->ast_tree->subtype == ENV)
-		return (ft_env(shell));
-	else if (shell->ast_tree->subtype == EXIT)
-		return (ft_exit(shell));
+	else if (node->subtype == EXPORT)
+		return (ft_export(shell, node));
+	else if (node->subtype == UNSET)
+		return (ft_unset(shell, node));
+	else if (node->subtype == ENV)
+		return (ft_env(shell, node));
+	else if (node->subtype == EXIT)
+		ft_exit(shell);
 	return (0);
 }
 
 int	execute_ast(t_shell *shell, t_ast *node)
 {
+	int		status;
+	char	*stat;
+
+	status = 0;
 	if (!shell->ast_tree || !node)
 		return (1);
 	if (node->type == AND)
-		return (execute_and(shell, node));
-	if (node->type == PIPE)
-		return (execute_pipe(shell, node));
+		status = execute_and(shell, node);
+	else if (node->type == OR)
+		status = execute_or(shell, node);
+	else if (node->type == PIPE)
+		status = execute_pipe(shell, node);
 	else if (node->type == CMD)
 	{
 		if (node->subtype == EXTERNAL)
-			return (execute_external(shell, node));
+			status = execute_external(shell, node);
 		else
-			return (execute_built_in(shell, node));
+			status = execute_built_in(shell, node);
 	}
-	return (0);
+	stat = itoa(status);
+	set_env_node(&shell->env, "?", stat);
+	//free(stat);
+	return (status);
 }
 
 int	execute_and(t_shell *shell, t_ast *node)
@@ -57,6 +83,17 @@ int	execute_and(t_shell *shell, t_ast *node)
 	status = 0;
 	status = execute_ast(shell, node->left);
 	if (status == 0)
+		status = execute_ast(shell, node->right);
+	return (status);
+}
+
+int	execute_or(t_shell *shell, t_ast *node)
+{
+	int	status;
+
+	status = 0;
+	status = execute_ast(shell, node->left);
+	if (status != 0)
 		status = execute_ast(shell, node->right);
 	return (status);
 }

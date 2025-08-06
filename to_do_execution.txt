@@ -1,23 +1,43 @@
-	- Check if command was found, if not print (cmd_name: command not found)
-	- Built-in commands
-		- cd
-		- pwd
-		- export
-		- unset
-		- env
-		- exit
 	- Redirects
-	- && + ||
 	- Replace all the strcpy, strcat, strlen, etc. functions with own
-	- Do we need a proper exit code?
-	/*
-	int status;
-    waitpid(pid, &status, 0);
-
-    if (WIFEXITED(status))
-        return WEXITSTATUS(status); // Pass child exit code
-    else
-        return 1; // Abnormal exit
-	*/
-	- Figure out advantage of global variable for signal handling
 	- Figure out what those functions are usefull for ( tcsetattr, tcgetattr, tgetent, tgetflag, tgetnum, tgetstr, tgoto, tputs)
+	- Figure out how to return the return value properly
+	- Add type subshell??
+	- Fix history (when i do ctrl+c the behaviour on going to earlier commands gets weird)
+	- Make use of volatile global variable to terminate the main loop when a signal was received (see man 7 signal-safety) to get a list of functions that are 			safe to use inside a signal handler
+	- Make the global variable of type tig_atomic_t
+	- How to handle variable definition?
+	- How to test for memleaks when exit is in the command chain
+	- Block signals in parent when a subshell is created (on ctrl+d only the child is supposed to exit)
+	- "< test.txt cat" is valid
+	Redirects:
+		- <:
+			- It seems to output the content of the file that comes after to stdin. When there is multiple redirects, unless their output has not been "consumed"
+				by a command, the latter one overrides the prior one. The problem is, when i redirect the output of the file to the general stdin, it will be
+				consumed by the TTY (Terminal). I wonder if that is also the case for our minishell, but that I can only test with the whole chain working.
+			- < test.txt cat
+				file content
+			- cat < test.txt
+				file content
+			- cat < test.txt test2.txt
+				file2 content
+			- < test.txt test2.txt cat
+				bash: test2.txt: command not found
+			- cat test.txt test2.txt
+				file content
+				file2 content
+		- >:
+			- Redirects the prior stdout into the following file, overriding its current content
+			- echo "file content" > test.txt
+			minishell/src$ cat test.txt
+			minishell/src$ echo "Hello" > test.txt
+			minishell/src$ cat test.txt
+			Hello
+			minishell/src$ cd .. > test.txt
+			minishell$ cd src/
+			minishell/src$ cat test.txt
+			minishell/src$
+		- >>:
+			- Same but in append mode
+		- <<:
+			- Heredoc. A EOF is defined and all the following content up until the EOF is entered again will be redirected to stdin
