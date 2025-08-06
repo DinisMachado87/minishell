@@ -75,6 +75,13 @@ static const t_token g_types[] =
 	{"<", REDIRECT, IN},
 	{">", REDIRECT, OUT},
 	{"VAR=", CMD, VAR},
+	{"echo", CMD, ECHO},
+	{"cd", CMD, CD},
+	{"pwd", CMD, PWD},
+	{"export", CMD, EXPORT},
+	{"unset", CMD, UNSET},
+	{"env", CMD, ENV},
+	{"exit", CMD, EXIT},
 	{0, 0, 0},
 };
 

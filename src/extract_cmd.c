@@ -94,7 +94,7 @@ t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s)
 	if (!s->n_cmd_ltrs)
 		return (free_all(ast_nd), NULL);
 	(*ast_nd)->type = CMD;
-	(*ast_nd)->subtype = subtype(*str);
+	(*ast_nd)->subtype = subtype((*ast_nd)->args[0]);
 	*str += s->n_cmd_ltrs;
 	return (*ast_nd);
 }
