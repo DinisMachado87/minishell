@@ -2,6 +2,12 @@
 
 int	main(void)
 {
+	prompt_loop();
+}
+
+/*
+int	main(void)
+{
 	t_ast		*n1;
 	t_ast		*n2;
 	t_ast		*n3;
@@ -49,3 +55,4 @@ int	main(void)
 	free_all(&shell->ast_head);
 	return (0);
 }
+*/

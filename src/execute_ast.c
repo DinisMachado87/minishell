@@ -57,9 +57,9 @@ int	execute_ast(t_shell *shell, t_ast *node)
 	status = 0;
 	if (!shell->ast_tree || !node)
 		return (1);
-	if (node->type == AND)
+	if (node->type == OPERATOR && node->subtype == AND)
 		status = execute_and(shell, node);
-	else if (node->type == OR)
+	else if (node->type == OPERATOR && node->subtype == OR)
 		status = execute_or(shell, node);
 	else if (node->type == PIPE)
 		status = execute_pipe(shell, node);

@@ -57,9 +57,13 @@ char  *get_input(char *prompt)
  */
 void	prompt_loop(void)
 {
-  char  *input;
-  char  *prompt;
+	char  *input;
+	char  *prompt;
 	struct sigaction	sa_c;
+	t_shell	shell;
+
+	ms_bzero((void *)&shell, sizeof(t_shell));
+	set_env_node(&shell.env, "PATH", "/usr/bin");
 
   while (1)
 	{
@@ -78,6 +82,14 @@ void	prompt_loop(void)
 			free(prompt);
 			return ;
 		}
+		shell.ast_tree = parser(input, &shell.ast_head);
+		print_ast(shell.ast_tree, "loop");
+		execute_ast(&shell, shell.ast_tree);
+		free_all(&shell.ast_head);
+		free(prompt);
+		free(input);
+		prompt = NULL;
+		input = NULL;
 	}
 	if (input)
 		free(input);
