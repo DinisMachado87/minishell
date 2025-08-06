@@ -9,7 +9,7 @@ void	test_make_node_initializes_list_when_ast_is_null(void)
 {
 	t_ast	*ast = NULL;
 	char	*str = "echo the city is wilder than you think";
-	char	*str2 = "echo 'the city is wilder than you think'";
+//	char	*str2 = "echo 'the city is wilder than you think'";
 
 	make_node(&ast);
 
