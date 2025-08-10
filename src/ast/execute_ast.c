@@ -1,4 +1,4 @@
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	execute_external(t_shell *shell, t_ast *node)
 {

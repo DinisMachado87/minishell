@@ -1,4 +1,4 @@
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 t_env	*gen_env_node(char *key, char *value)
 {

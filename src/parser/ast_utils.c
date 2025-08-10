@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <strings.h>
 
 static void	free_and_null(void **ptr)
 {

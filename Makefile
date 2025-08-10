@@ -1,92 +1,56 @@
-ifeq ($(OS),Windows_NT)
-  ifeq ($(shell uname -s),) # not in a bash-like shell
-	CLEANUP = del /F /Q
-	MKDIR = mkdir
-  else # in a bash-like shell, like msys
-	CLEANUP = rm -f
-	MKDIR = mkdir -p
-  endif
-	TARGET_EXTENSION=exe
-else
-	CLEANUP = rm -f
-	MKDIR = mkdir -p
-	TARGET_EXTENSION=out
-endif
+NAME = minishell
 
-.PHONY: clean
-.PHONY: test
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -lreadline
+DEBUG_FLAGS = $(CFLAGS) -g -O0
 
-PATHU = unity/src/
-PATHS = src/
-PATHT = test/
-PATHB = build/
-PATHD = build/depends/
-PATHO = build/objs/
-PATHR = build/results/
+HEADER_DIR = include
+HEADER = $(HEADER_DIR)/minishell.h
 
-BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHR)
+SRC_DIR = src
+AST_DIR = $(SRC_DIR)/ast
+CMD_DIR = $(SRC_DIR)/commands
+HELPER_DIR = $(SRC_DIR)/helper
+PARSER_DIR = $(SRC_DIR)/parser
 
-SRCT = $(wildcard $(PATHT)*.c)
+AST_SRC_FILES =		execute_ast.c
+CMD_SRC_FILES =		built_ins.c export_utils.c get_cmd_path.c
+HELPER_SRC_FILES =	env.c itoa.c loop.c print_err.c
+PARSER_SRC_FILES =	ast_utils.c extract_operator.c extract_utils.c parser_utils.c structure_ast.c extract_cmd.c extract_subshell.c\
+			  		gen_utils.c parser.c print_ast.c
 
-COMPILE=gcc -c
-LINK=gcc
-DEPEND=gcc -MM -MG -MF
-CFLAGS=-Wall -Werror -Wextra
+MAIN = $(SRC_DIR)/main.c
 
-RESULTS = $(patsubst $(PATHT)Test%.c,$(PATHR)Test%.txt,$(SRCT) )
+AST_SRCS = $(addprefix $(AST_DIR)/, $(AST_SRC_FILES))
+CMD_SRCS = $(addprefix $(CMD_DIR)/, $(CMD_SRC_FILES))
+HELPER_SRCS = $(addprefix $(HELPER_DIR)/, $(HELPER_SRC_FILES))
+PARSER_SRCS = $(addprefix $(PARSER_DIR)/, $(PARSER_SRC_FILES))
 
-PASSED = `grep -s PASS $(PATHR)*.txt`
-FAIL = `grep -s FAIL $(PATHR)*.txt`
-IGNORE = `grep -s IGNORE $(PATHR)*.txt`
+OBJ_DIR = obj
 
-test: clean submodules $(BUILD_PATHS) $(RESULTS)
-	@echo "-----------------------\nIGNORES:\n-----------------------"
-	@echo "$(IGNORE)"
-	@echo "-----------------------\nFAILURES:\n-----------------------"
-	@echo "$(FAIL)"
-	@echo "-----------------------\nPASSED:\n-----------------------"
-	@echo "$(PASSED)"
-	@echo "\nDONE"
+AST_OBJ_FILES = $(AST_SRC:.c=.o)
+AST_OBJS = $(addprefix $(OBJ_DIR)/, $(AST_OBJ_FILES))
+CMD_OBJ_FILES = $(CMD_SRC:.c=.o)
+CMD_OBJS = $(addprefix $(OBJ_DIR)/, $(CMD_OBJ_FILES))
+HELPER_OBJ_FILES = $(HELPER_SRC:.c=.o)
+HELPER_OBJS = $(addprefix $(OBJ_DIR)/, $(HELPER_OBJ_FILES))
+PARSER_OBJ_FILES = $(PARSER_SRC:.c=.o)
+PARSER_OBJS = $(addprefix $(OBJ_DIR)/, $(PARSER_OBJ_FILES))
 
-submodules: 
-	@git submodule update --init --recursive
+all: $(NAME)
 
-$(PATHR)%.txt: $(PATHB)%.$(TARGET_EXTENSION)
-	-./$< > $@ 2>&1
+$(NAME): $(AST_OBJS) $(CMD_OBJS) $(HELPER_OBJS) $(PARSER_OBJS) $(HEADER) $(MAIN)
+	$(CC) $(CFLAGS) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN) -o $(NAME)
 
-$(PATHB)Test%.$(TARGET_EXTENSION): $(PATHO)Test%.o $(PATHO)%.o $(PATHO)unity.o #$(PATHD)Test%.d
-	$(LINK) -o $@ $^
-
-$(PATHO)%.o:: $(PATHT)%.c
-	$(COMPILE) $(CFLAGS) $< -o $@
-
-$(PATHO)%.o:: $(PATHS)%.c
-	$(COMPILE) $(CFLAGS) $< -o $@
-
-$(PATHO)%.o:: $(PATHU)%.c $(PATHU)%.h
-	$(COMPILE) $(CFLAGS) $< -o $@
-
-$(PATHD)%.d:: $(PATHT)%.c
-	$(DEPEND) $@ $<
-
-$(PATHB):
-	$(MKDIR) $(PATHB)
-
-$(PATHD):
-	$(MKDIR) $(PATHD)
-
-$(PATHO):
-	$(MKDIR) $(PATHO)
-
-$(PATHR):
-	$(MKDIR) $(PATHR)
+debug: $(AST_OBJS) $(CMD_OBJS) $(HELPER_OBJS) $(PARSER_OBJS) $(HEADER) $(MAIN)
+	$(CC) $(DEBUG_FLAGS) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN) -o $(NAME)
 
 clean:
-	$(CLEANUP) $(PATHO)*.o
-	$(CLEANUP) $(PATHB)*.$(TARGET_EXTENSION)
-	$(CLEANUP) $(PATHR)*.txt
+	rm -f $(NAME)
 
-.PRECIOUS: $(PATHB)Test%.$(TARGET_EXTENSION)
-.PRECIOUS: $(PATHD)%.d
-.PRECIOUS: $(PATHO)%.o
-.PRECIOUS: $(PATHR)%.txt
+fclean:
+	rm -f $(NAME)
+
+re: fclean $(NAME)
+
+.PHONY: all clean fclean re
