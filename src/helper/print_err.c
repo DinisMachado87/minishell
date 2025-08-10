@@ -1,4 +1,4 @@
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 void	print_err(char *cmd_name, char *err_msg)
 {

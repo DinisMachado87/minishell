@@ -1,4 +1,4 @@
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 /*
  * int export => if 1, basic formatting, else env formatting
