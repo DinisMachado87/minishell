@@ -12,21 +12,23 @@ void	sig_c_handler(int sig)
 char  *get_prompt(void)
 {
   char  *cwd;
-  size_t  len;
   char  *prompt;
+  char	*user;
 
   cwd = getcwd(NULL, 0);
+  user = getenv("USER");
   if (!cwd)
     return (NULL);
-  len = strlen(cwd);
-  prompt = malloc(len + 3);
+  prompt = malloc((strlen(cwd) + strlen(user) + 6));
   if (!prompt)
   {
     free(cwd);
     return (NULL);
   }
   prompt[0] = '\0';
-  strncat(prompt, cwd, len);
+  strncat(prompt, user, strlen(user));
+  strncat(prompt, ":", 2);
+  strncat(prompt, cwd, strlen(cwd));
   strncat(prompt, "$ ", 3);
   free(cwd);
   return (prompt);
