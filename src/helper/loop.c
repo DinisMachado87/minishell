@@ -65,7 +65,8 @@ void	prompt_loop(void)
 	t_shell	shell;
 
 	ms_bzero((void *)&shell, sizeof(t_shell));
-	set_env_node(&shell.env, "PATH", "/usr/bin");
+	shell.env = init_env();
+	//set_env_node(&shell.env, "PATH", "/usr/bin");
 
   while (1)
 	{
@@ -97,3 +98,4 @@ void	prompt_loop(void)
 		free(input);
 	free(prompt);
 }
+
