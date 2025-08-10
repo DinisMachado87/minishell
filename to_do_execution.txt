@@ -9,7 +9,9 @@
 	- How to handle variable definition?
 	- How to test for memleaks when exit is in the command chain
 	- Block signals in parent when a subshell is created (on ctrl+d only the child is supposed to exit)
+	- signals (man signal-safety)
 	- "< test.txt cat" is valid
+	- Call minishell from within itself
 	Redirects:
 		- <:
 			- It seems to output the content of the file that comes after to stdin. When there is multiple redirects, unless their output has not been "consumed"

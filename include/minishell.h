@@ -15,7 +15,6 @@
 
 # define ERROR -1
 
-# include "../unity/src/unity.h"
 # include <stdlib.h>
 # include <stdio.h>
 # include <errno.h>
@@ -28,6 +27,7 @@
 # include <sys/stat.h>
 # include <stddef.h>
 # include <fcntl.h>
+# include <limits.h>
 
 typedef enum e_type {
 	SUBSHELL,
@@ -177,5 +177,6 @@ void  free_env_list(char  **list);
 void  print_err(char *cmd_name, char *err_msg);
 char  *itoa(int num);
 int execute_r_in(t_shell *shell, t_ast *node);
+t_env   *init_env(void);
 
 #endif

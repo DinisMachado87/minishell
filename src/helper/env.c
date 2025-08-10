@@ -152,3 +152,12 @@ void	free_env(t_env **head)
 	}
 	free(*head);
 }
+
+t_env	*init_env(void)
+{
+	t_env	*env;
+
+	env = gen_env_node("PATH", getenv("PATH"));
+	set_env_node(&env, "TERM", getenv("TERM"));
+	return (env);
+}
