@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/11 13:56:17 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/11 14:10:00 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,10 @@ typedef enum e_subtype {
 	EXIT,
 	OR,
 	AND,
-} t_subtype;
+}	t_subtype;
 
-typedef enum e_redirect_subtype {
+typedef enum e_redirect_subtype
+{
 	IN,
 	OUT,
 	APPEND,
@@ -64,7 +65,7 @@ typedef struct s_token
 	char	*str;
 	int		type;
 	int		subtype;
-}	t_token;
+}			t_token;
 
 static const t_token g_types[] =
 {
@@ -88,25 +89,40 @@ static const t_token g_types[] =
 
 typedef struct s_ast
 {
-	int				type;
-	int				subtype;
-	char			**args;
-	int				n_args;
-	char			*red_args[2];
-	int				append;
-	struct s_ast	*next;
-	struct s_ast	*left;
-	struct s_ast	*right;
+    int             type;
+    int             subtype;
+    char            **args;
+    int             n_args;
+    char            *red_args[2];
+    int             append;
+    struct s_ast    *next;
+    struct s_ast    *left;
+    struct s_ast    *right;
 }					t_ast;
 
-typedef struct	s_state_parser
+typedef struct  s_state_parser
 {
-	char	*str;
-	int		needle;
-	int 	i_word;
-	int		n_cmd_ltrs;
-	int		error;
-}				t_s_parser;
+	char    *str;
+	int     needle;
+	int     i_word;
+	int     n_cmd_ltrs;
+	int     error;
+}			t_s_parser;
+
+typedef struct  s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}   				t_env;
+
+typedef struct  s_shell
+{
+	t_ast   *ast_head;
+	t_ast   *ast_tree;
+	t_env   *env;
+	t_env   *var;
+}			t_shell;
 
 // ast_utils
 t_ast	*make_node(t_ast **ast);
