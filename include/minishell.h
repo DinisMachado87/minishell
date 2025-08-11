@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 16:12:38 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/11 13:56:17 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,28 @@ static const t_token g_types[] =
 	{0, 0, 0},
 };
 
+typedef struct s_ast
+{
+	int				type;
+	int				subtype;
+	char			**args;
+	int				n_args;
+	char			*red_args[2];
+	int				append;
+	struct s_ast	*next;
+	struct s_ast	*left;
+	struct s_ast	*right;
+}					t_ast;
+
+typedef struct	s_state_parser
+{
+	char	*str;
+	int		needle;
+	int 	i_word;
+	int		n_cmd_ltrs;
+	int		error;
+}				t_s_parser;
+
 // ast_utils
 t_ast	*make_node(t_ast **ast);
 t_ast	*free_all(t_ast **ast);
@@ -98,6 +120,7 @@ int		allocate_ast_args(t_ast *ast, int n_strs);
 // gen_utils
 void	ms_bzero(void *s, size_t n);
 int		ms_strcmp(char *ref, char *str);
+int		ms_strlen(char *str);
 // parser
 t_ast	*parser(char *str, t_ast **head_list);
 // extract cmd

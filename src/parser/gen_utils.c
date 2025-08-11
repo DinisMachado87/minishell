@@ -6,11 +6,12 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:59 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:46:41 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/11 13:01:30 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <stdio.h>
 
 void	ms_bzero(void *s, size_t n)
 {
@@ -32,3 +33,14 @@ int	ms_strcmp(char *ref, char *str)
 		return (0);
 	return (1);
 }
+
+int	ms_strlen(char *str)
+{
+	int	len;
+
+	len = 0;
+	while (str && str[len])
+		len++;
+	return (len);
+}
+

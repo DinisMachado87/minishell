@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:45:25 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/11 13:56:04 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@ static int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
 	spaces = 0;
 	red_subtype = subtype(str);
 	spaces++;
-	if (red_subtype == HEREDOC || red_subtype == APPEND)
+	if (red_subtype == HEREDOC)
+		return(ms_heredoc());
+	if (red_subtype == APPEND)
 		spaces++;
 	while (str[spaces] && str[spaces] == ' ')
 		spaces++;
