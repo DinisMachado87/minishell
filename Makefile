@@ -1,7 +1,7 @@
 NAME = minishell
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -lreadline
+CFLAGS = -Wall -Wextra -Werror
 DEBUG_FLAGS = $(CFLAGS) -g -O0
 
 HEADER_DIR = include
@@ -40,10 +40,10 @@ PARSER_OBJS = $(addprefix $(OBJ_DIR)/, $(PARSER_OBJ_FILES))
 all: $(NAME)
 
 $(NAME): $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN)
-	$(CC) $(CFLAGS) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN) -o $(NAME)
+	$(CC) $(CFLAGS) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN) -lreadline -o $(NAME)
 
 debug: $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN)
-	$(CC) $(DEBUG_FLAGS) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN) -o $(NAME)
+	$(CC) $(DEBUG_FLAGS) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN) -lreadline -o $(NAME)
 
 clean:
 	rm -f $(NAME)
