@@ -53,7 +53,12 @@ int	execute_ast(t_shell *shell, t_ast *node)
 {
 	int		status;
 	char	*stat;
-
+	int		fd;
+	int		save_stdin;
+	int		save_stdout;
+	
+	save_stdin = dup(STDIN_FILENO);
+	save_stdout = dup(STDOUT_FILENO);
 	status = 0;
 	if (!shell->ast_tree || !node)
 		return (1);
@@ -65,14 +70,36 @@ int	execute_ast(t_shell *shell, t_ast *node)
 		status = execute_pipe(shell, node);
 	else if (node->type == CMD)
 	{
+		if (node->red_args[IN])
+		{
+			fd = open(node->red_args[IN], O_RDONLY);
+			dup2(fd, STDIN_FILENO);
+		}
+		else if (node->red_args[OUT])
+		{
+			if (node->append)
+				fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_APPEND, 0644);
+			else
+				fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			dup2(fd, STDOUT_FILENO);
+		}
+		close(fd);
+		if (fd == -1)
+		{
+			perror(node->red_args[OUT]);
+			dup2(save_stdin, STDIN_FILENO);
+			dup2(save_stdout, STDOUT_FILENO);
+			return (-1);
+		}
 		if (node->subtype == EXTERNAL)
 			status = execute_external(shell, node);
 		else
 			status = execute_built_in(shell, node);
+		dup2(save_stdin, STDIN_FILENO);
+		dup2(save_stdout, STDOUT_FILENO);
 	}
 	stat = itoa(status);
 	set_env_node(&shell->env, "?", stat);
-	//free(stat);
 	return (status);
 }
 

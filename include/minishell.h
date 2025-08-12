@@ -175,7 +175,6 @@ void  cleanup(t_shell **shell);
 void  free_env_list(char  **list);
 void  print_err(char *cmd_name, char *err_msg);
 char  *itoa(int num);
-int execute_r_in(t_shell *shell, t_ast *node);
 t_env   *init_env(void);
 
 #endif
