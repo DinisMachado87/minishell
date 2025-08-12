@@ -14,6 +14,7 @@
 # define MINISHELL_H
 
 # define ERROR -1
+# define TEMP_PREFIX "temp_heredoc"
 
 # include <stdlib.h>
 # include <stdio.h>
@@ -107,6 +108,7 @@ typedef struct  s_state_parser
 	int     i_word;
 	int     n_cmd_ltrs;
 	int     error;
+	int		n_heredoc;
 }			t_s_parser;
 
 typedef struct  s_env
@@ -122,6 +124,7 @@ typedef struct  s_shell
 	t_ast   *ast_tree;
 	t_env   *env;
 	t_env   *var;
+	int		n_heredoc;
 }			t_shell;
 
 // ast_utils
@@ -143,6 +146,7 @@ t_ast	*parser(char *str, t_ast **head_list);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
+int 	ms_heredoc(t_ast *ast, t_s_parser *s);
 // structure_ast
 t_ast	*structure_ast(t_ast *cur_list);
 // print_ast

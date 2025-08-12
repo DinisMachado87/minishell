@@ -72,27 +72,31 @@ int	create_heredoc_file(char *eof, char *temp_file)
 	exit(0);
 }
 
-int ms_heredoc(char *eof, int heredoc_count, t_ast *ast)
+int ms_heredoc(t_ast *ast, t_s_parser *s)
 {
 	int			pid;
-	const char	*temp_prefix = "temp_heredoc";
-	char		*temp_file;
-
-	temp_file = unique_tmp("temp_heredoc", itoa(heredoc_count));
-	if (!temp_file)
+	char		*temp_file_name;
+	
+	s->n_heredoc++;
+	temp_file_name = unique_tmp(TEMP_PREFIX, itoa(s->n_heredoc));
+	if (!temp_file_name)
 		return (perror("ERROR: Failed concatenating heredoc filename"), ERROR);
 	pid = fork();
 	if (pid < 0)
 		return (0);
 	if (pid == 0)
-		create_heredoc_file(eof, temp_file);
+		create_heredoc_file(ast->red_args[IN], temp_file_name);
 	else
 	{
 		waitpid(pid, NULL, 0);
-		if (ast->red_args[IN] && ms_strcmp((char *)temp_prefix, ast->red_args[IN]))
+		if (ast->red_args[IN] && ms_strcmp((char *)TEMP_PREFIX, ast->red_args[IN]))
 			unlink(ast->red_args[IN]);
 		if (ast->red_args[IN])
-			ast->red_args[IN] = temp_file;
+		{
+			free(ast->red_args[IN]);
+			ast->red_args[IN] = NULL;
+		}
+		ast->red_args[IN] = temp_file_name;
 	}
 	return (1);
 }

@@ -40,14 +40,16 @@ static int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
 	int 	spaces;
 	int		red_subtype;
 	char	*word;
+	int		heredoc;
 
 	i_ltr = 0;
 	spaces = 0;
+	heredoc = 0;
 	red_subtype = subtype(str);
 	spaces++;
 	if (red_subtype == HEREDOC)
-		return(ms_heredoc());
-	if (red_subtype == APPEND)
+		heredoc = 1;
+	if (red_subtype == APPEND || red_subtype == HEREDOC)
 		spaces++;
 	while (str[spaces] && str[spaces] == ' ')
 		spaces++;
@@ -64,9 +66,11 @@ static int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
 		ast->append = 1;
 		red_subtype = OUT;
 	}
-	if (ast->red_args[red_subtype]) 
+	if (ast->red_args[red_subtype])
 		free(ast->red_args[red_subtype]);
 	ast->red_args[red_subtype] = word;
+	if (red_subtype == heredoc)
+		ms_heredoc(ast, s);
 	s->n_cmd_ltrs += extract_word_recursive(ast, str + spaces + i_ltr, s);
 	return(spaces + i_ltr);
 }
