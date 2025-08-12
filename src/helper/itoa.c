@@ -26,7 +26,7 @@ char	*itoa(int num)
 		return ("0");
 	digits = get_digits(num);
 	str = malloc(sizeof(char) * digits + 1);
-	str[digits] = '\n';
+	str[digits] = '\0';
 	while (num)
 	{
 		str[--digits] = (num % 10) + '0';
