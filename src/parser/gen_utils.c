@@ -30,8 +30,8 @@ int	ms_strcmp(char *ref, char *str)
 		str++;
 	}
 	if (*ref)
-		return (0);
-	return (1);
+		return (1);
+	return (0);
 }
 
 int	ms_strlen(char *str)

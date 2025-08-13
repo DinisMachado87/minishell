@@ -15,6 +15,8 @@
 
 # define ERROR -1
 # define TEMP_PREFIX "temp_heredoc"
+# define POTENCIALLY_EXPAND 2
+# define EXPAND 1
 
 # include <stdlib.h>
 # include <stdio.h>
@@ -93,9 +95,11 @@ typedef struct s_ast
     int             type;
     int             subtype;
     char            **args;
+    int				*exp_args;
     int             n_args;
     char            *red_args[2];
     int             append;
+    int             heredoc;
     struct s_ast    *next;
     struct s_ast    *left;
     struct s_ast    *right;
@@ -138,7 +142,7 @@ typedef struct  s_shell
 
 // ast_utils
 t_ast	*make_node(t_ast **ast);
-t_ast	*free_all(t_ast **ast);
+t_ast	*free_ast(t_ast **ast);
 // parser_utils
 int		type(char *str);
 int		subtype(char *str);
@@ -152,7 +156,7 @@ int		ms_strlen(char *str);
 // parser
 t_ast	*parser(char *str, t_ast **head_list);
 // extract cmd
-int		skip_count_word(char *str, char limiter);
+int		skip_count_word(char *str, char limiter, int *exp_args);
 void	free_red_args(t_ast *ast, int subtype);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
 int		extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s);

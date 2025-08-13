@@ -12,7 +12,7 @@
 
 #include "../../include/minishell.h"
 
-int	skip_count_word(char *str, char limiter)
+int	skip_count_word(char *str, char limiter, int *exp_args)
 {
 	int	i_ltr;
 	int	char_type;
@@ -21,9 +21,11 @@ int	skip_count_word(char *str, char limiter)
 	char_type = type(str + i_ltr);
 	while (str[i_ltr] && str[i_ltr] != limiter && (char_type == CMD || limiter != ' '))
 	{
+		if (str[i_ltr] == '$' && *exp_args == POTENCIALLY_EXPAND)
+			*exp_args = EXPAND;
 		if (limiter == ' '
 			&& (str[i_ltr] == '\'' || str[i_ltr] == '"'))
-				limiter = str[i_ltr];
+			limiter = str[i_ltr];
 		i_ltr++;
 		char_type = type(str + i_ltr);
 	}
@@ -36,8 +38,12 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 {
 	int		i_ltr;
 	char	*word;
+	int		exp_args;
 
-	i_ltr = skip_count_word(str, ' ');
+	exp_args = 0;
+	if (*str == '\"')
+		exp_args = POTENCIALLY_EXPAND;
+	i_ltr = skip_count_word(str, ' ', &exp_args);
 	s->i_word++;
 	if (str[i_ltr])
 		s->n_cmd_ltrs += extract_cmd_recursive(ast, str + i_ltr, s);
@@ -47,6 +53,7 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	if (!word)
 		return (0);
 	ast->args[--s->i_word] = word;
+	ast->exp_args[s->i_word] = exp_args;
 	return(i_ltr);
 }
 
@@ -74,7 +81,7 @@ t_ast	*extract_cmd(t_ast **ast, char **str, t_s_parser *s)
 		return (NULL);
 	s->n_cmd_ltrs += extract_cmd_recursive(*ast, *str, s);
 	if (!s->n_cmd_ltrs)
-		return (free_all(ast), NULL);
+		return (free_ast(ast), NULL);
 	(*ast)->type = CMD;
 	if ((*ast)->args[0])
 		(*ast)->subtype = subtype((*ast)->args[0]);

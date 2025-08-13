@@ -40,19 +40,19 @@ int	main(int argc, char **argv)
 	i = 0;
 	extract_cmd(&ast, &str_cmd, &s);
 	print_nd_list(ast, "Extract Cmd");
-	ast = free_all(&ast);
+	ast = free_ast(&ast);
 	extract_subshell(&ast, &str_par);
 	print_nd_list(ast, "Extract Subshell");
-	ast = free_all(&ast);
+	ast = free_ast(&ast);
 	extract_operator(&ast, &str_pipe, PIPE);
 	print_nd_list(ast, "Extract operator");
-	ast = free_all(&ast);
+	ast = free_ast(&ast);
 	while (test_strs[i])
 	{
 		printf("== %s ==\n", test_strs[i]);
 		ast_ast = parser((char *)test_strs[i], &ast);
 		print_ast(ast_ast, "Parser AST");
-		ast = free_all(&ast);
+		ast = free_ast(&ast);
 		ast_ast = NULL;
 		i++;
 	}
@@ -62,7 +62,7 @@ int	main(int argc, char **argv)
 		printf("== %s ==", argv[1]);
 		print_nd_list(ast, "Parser List");
 		print_ast(ast_ast, "Parser AST");
-		ast = free_all(&ast);
+		ast = free_ast(&ast);
 		ast_ast = NULL;
 	}
 	return (0);

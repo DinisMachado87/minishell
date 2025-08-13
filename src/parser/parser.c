@@ -37,16 +37,16 @@ t_ast	*parser(char *str, t_ast **head_list)
 	while (*str)
 	{
 		if (type(str) > REDIRECT)
-			return (perror("Error: Input must start with a command or redirection"), free_all(head_list));
+			return (perror("Error: Input must start with a command or redirection"), free_ast(head_list));
 		if (!extract_subshell(&cur_list, &str)
 			&& !extract_cmd(&cur_list, &str, &s))
-				return (free_all(head_list));
+				return (free_ast(head_list));
 		if (!*head_list)
 			*head_list = cur_list;
 		if (is_end_of_string(&str))
 			break;
 		if (!extract_operator(&cur_list, &str, type(str)))
-			return (free_all(head_list));
+			return (free_ast(head_list));
 		if (is_end_of_string(&str))
 			break;
 	}

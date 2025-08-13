@@ -22,15 +22,20 @@ static void	convert_append_heredoc_to_in_out(t_ast *ast, t_s_red *r)
 	}
 	else if (r->red_subtype == HEREDOC)
 	{
+		ast->heredoc = 1;
 		r->heredoc = 1;
 		r->red_subtype = IN;
 	}
+	else if (r->red_subtype == OUT)
+		ast->append = 0;
+	else if (r->red_subtype == IN)
+		ast->heredoc = 0;
 }
 
 void	free_red_args(t_ast *ast, int subtype)
 {
 	if (subtype == IN && ast->red_args[IN]
-		&& ms_strcmp((char *)TEMP_PREFIX, ast->red_args[IN]))
+		&& !ms_strcmp((char *)TEMP_PREFIX, ast->red_args[IN]))
 	{
 		unlink(ast->red_args[IN]);
 		ast->red_args[IN] = NULL;
@@ -45,7 +50,9 @@ void	free_red_args(t_ast *ast, int subtype)
 int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
 {
 	t_s_red	r;
+	int		exp_args;
 
+	exp_args = 0;
 	r.i_ltr = 0;
 	r.spaces = 0;
 	r.heredoc = 0;
@@ -58,7 +65,7 @@ int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
 		r.spaces++;
 	if (!str[r.spaces] || type(str + r.spaces) != CMD)
 		return (perror("Error: redirect is not followed by file"), 0);
-	r.i_ltr = skip_count_word((str + r.spaces), ' ');
+	r.i_ltr = skip_count_word((str + r.spaces), ' ', &exp_args);
 	r.word = ms_strcpy((str + r.spaces), r.i_ltr);
 	if (!r.word)
 		return (perror("Error malloc redirection argument"), 0);

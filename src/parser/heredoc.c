@@ -56,7 +56,7 @@ int	create_heredoc_file(char *eof, char *temp_file)
 		line = readline("> ");
 		if (!line)
 			return (perror("ERROR: readline error in heredoc"), ERROR);
-		if (ms_strcmp(eof, line))
+		if (!ms_strcmp(eof, line))
 		{
 			free(line);
 			line = NULL;
