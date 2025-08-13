@@ -28,6 +28,7 @@ t_ast	*parser(char *str, t_ast **head_list)
 	t_ast	*cur_list;
 	t_s_parser	s;
 
+	ms_bzero((void *)&s, sizeof(t_s_parser));
 	cur_list = NULL;
 	if (!str || *str == '\0')
 		return (perror("ERROR: No str or empty str"), NULL);

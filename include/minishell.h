@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/13 02:20:23 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/13 02:21:27 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,15 @@ typedef struct  s_state_parser
 	int		n_heredoc;
 }			t_s_parser;
 
+typedef struct s_state_redirect
+{
+	int 	i_ltr;
+	int 	spaces;
+	int		red_subtype;
+	char	*word;
+	int		heredoc;
+}	t_s_red;
+
 typedef struct  s_env
 {
 	char			*key;
@@ -143,9 +152,13 @@ int		ms_strlen(char *str);
 // parser
 t_ast	*parser(char *str, t_ast **head_list);
 // extract cmd
+int		skip_count_word(char *str, char limiter);
+void	free_red_args(t_ast *ast, int subtype);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
+int		extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
+int		extract_redirect(t_ast *ast, char *str, t_s_parser *s);
 int 	ms_heredoc(t_ast *ast, t_s_parser *s);
 // structure_ast
 t_ast	*structure_ast(t_ast *cur_list);

@@ -6,15 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/11 13:56:04 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/13 01:14:17 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s);
-
-static int	skip_count_word(char *str, char limiter)
+int	skip_count_word(char *str, char limiter)
 {
 	int	i_ltr;
 	int	char_type;
@@ -34,72 +32,38 @@ static int	skip_count_word(char *str, char limiter)
 	return (i_ltr);
 }
 
-static int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
-{
-	int 	i_ltr;
-	int 	spaces;
-	int		red_subtype;
-	char	*word;
-	int		heredoc;
-
-	i_ltr = 0;
-	spaces = 0;
-	heredoc = 0;
-	red_subtype = subtype(str);
-	spaces++;
-	if (red_subtype == HEREDOC)
-		heredoc = 1;
-	if (red_subtype == APPEND || red_subtype == HEREDOC)
-		spaces++;
-	while (str[spaces] && str[spaces] == ' ')
-		spaces++;
-	if (!str[spaces] || str[spaces] == '(')
-		return (spaces);
-	i_ltr = skip_count_word((str + spaces), ' ');
-	word = ms_strcpy((str + spaces), i_ltr);
-	if (!word)
-		return (0);
-	if (red_subtype == OUT)
-		ast->append = 0;
-	else if (red_subtype == APPEND)
-	{
-		ast->append = 1;
-		red_subtype = OUT;
-	}
-	if (ast->red_args[red_subtype])
-		free(ast->red_args[red_subtype]);
-	ast->red_args[red_subtype] = word;
-	if (red_subtype == heredoc)
-		ms_heredoc(ast, s);
-	s->n_cmd_ltrs += extract_word_recursive(ast, str + spaces + i_ltr, s);
-	return(spaces + i_ltr);
-}
-
 static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 {
 	int		i_ltr;
-	int		spaces;
 	char	*word;
 
+	i_ltr = skip_count_word(str, ' ');
+	s->i_word++;
+	if (str[i_ltr])
+		s->n_cmd_ltrs += extract_cmd_recursive(ast, str + i_ltr, s);
+	if (!ast->args && !allocate_ast_args(ast, s->i_word))
+		return (0);
+	word = ms_strcpy(str, i_ltr);
+	if (!word)
+		return (0);
+	ast->args[--s->i_word] = word;
+	return(i_ltr);
+}
+
+int	extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s)
+{
+	int		spaces;
+
 	spaces = 0;
-	i_ltr = 0;
 	while (str[spaces] && str[spaces] == ' ')
 		spaces++;
 	if (!str[spaces] || str[spaces] == '(')
 		return (spaces);
-	if (REDIRECT == type(str + spaces))
-		return (spaces + extract_redirect(ast, str + spaces, s));
-	i_ltr = skip_count_word((str + spaces), ' ');
-	s->i_word++;
-	if (str[spaces + i_ltr] && CMD == type(str + spaces + i_ltr))
-		s->n_cmd_ltrs += extract_word_recursive(ast, str + spaces + i_ltr, s);
-	if (!ast->args && !allocate_ast_args(ast, s->i_word))
-		return (0);
-	word = ms_strcpy((str + spaces), i_ltr);
-	if (!word)
-		return (0);
-	ast->args[--s->i_word] = word;
-	return(spaces + i_ltr);
+	if (str[spaces] && REDIRECT == type(str + spaces))
+		s->n_cmd_ltrs += extract_redirect(ast, str + spaces, s);
+	if (str[spaces] && CMD == type(str + spaces))
+		s->n_cmd_ltrs += extract_word_recursive(ast, str + spaces, s);
+	return (spaces);
 }
 
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s)
@@ -108,11 +72,12 @@ t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s)
 	s->n_cmd_ltrs = 0;
 	if (!make_node(ast_nd))
 		return (NULL);
-	s->n_cmd_ltrs += extract_word_recursive(*ast_nd, *str, s);
+	s->n_cmd_ltrs += extract_cmd_recursive(*ast_nd, *str, s);
 	if (!s->n_cmd_ltrs)
 		return (free_all(ast_nd), NULL);
 	(*ast_nd)->type = CMD;
-	(*ast_nd)->subtype = subtype((*ast_nd)->args[0]);
+	if ((*ast_nd)->args[0])
+		(*ast_nd)->subtype = subtype((*ast_nd)->args[0]);
 	*str += s->n_cmd_ltrs;
 	return (*ast_nd);
 }

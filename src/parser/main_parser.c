@@ -6,22 +6,23 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:33:50 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:46:54 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/12 23:57:36 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
 const char *test_strs[] = {
-    "   echo Hello | cat signal.txt   ",
-    "",
-    "   echo Hello <text.txt | cat signal.txt> text.txt   ",
-    "   echo Hello | (cat signal.txt <text.txt ) ",
-    "   (cat signal.txt <text.txt ) | echo Hello && ls -l   ",
-    "   echo Hello | cat signal.txt <text.txt  ",
-    "   cat signal.txt <text.txt  | echo Hello && ls -l   ",
-    "   ls -l || echo Hello | cat signal.txt   ",
-    "echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ",
+    // "   echo Hello | cat signal.txt   ",
+    // "",
+    // "   echo Hello <text.txt | cat signal.txt> text.txt   ",
+    // "   echo Hello | (cat signal.txt <text.txt ) ",
+    // "   (cat signal.txt <text.txt ) | echo Hello && ls -l   ",
+    // "   echo Hello | cat signal.txt <text.txt  ",
+    // "   cat signal.txt <text.txt  | echo Hello && ls -l   ",
+    // "   ls -l || echo Hello | cat signal.txt   ",
+    // "echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ",
+    "   <<eof cat signal.txt> text.txt   ",
 	NULL,
 };
 
@@ -48,10 +49,8 @@ int	main(int argc, char **argv)
 	ast = free_all(&ast);
 	while (test_strs[i])
 	{
-		ast_ast = parser((char *)test_strs[i], &ast);
-		// printf("== %s ==", test_strs[i]);
-		// print_nd_list(ast, "Parser List");
 		printf("== %s ==\n", test_strs[i]);
+		ast_ast = parser((char *)test_strs[i], &ast);
 		print_ast(ast_ast, "Parser AST");
 		ast = free_all(&ast);
 		ast_ast = NULL;

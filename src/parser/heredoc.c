@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/11 13:56:06 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/13 02:06:52 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ char	*unique_tmp(char *str1, char *str2)
 	cat_str = malloc(len + 1);
 	if (!cat_str)
 		return (0);
+	ms_bzero((void *)cat_str, len + 1);
 	while (*str1)
 	{
 		cat_str[i] = *str1;
@@ -37,7 +38,6 @@ char	*unique_tmp(char *str1, char *str2)
 		i++;
 		str2++;
 	}
-	cat_str[i] = 0;
 	return (cat_str);
 }
 
@@ -56,7 +56,7 @@ int	create_heredoc_file(char *eof, char *temp_file)
 		line = readline("> ");
 		if (!line)
 			return (perror("ERROR: readline error in heredoc"), ERROR);
-		if (strcmp(eof, line))
+		if (ms_strcmp(eof, line))
 		{
 			free(line);
 			line = NULL;
@@ -74,9 +74,11 @@ int	create_heredoc_file(char *eof, char *temp_file)
 
 int ms_heredoc(t_ast *ast, t_s_parser *s)
 {
-	int			pid;
-	char		*temp_file_name;
+	int		pid;
+	char	*temp_file_name;
+	int		status;
 	
+	status = 0;
 	s->n_heredoc++;
 	temp_file_name = unique_tmp(TEMP_PREFIX, itoa(s->n_heredoc));
 	if (!temp_file_name)
@@ -88,14 +90,13 @@ int ms_heredoc(t_ast *ast, t_s_parser *s)
 		create_heredoc_file(ast->red_args[IN], temp_file_name);
 	else
 	{
-		waitpid(pid, NULL, 0);
-		if (ast->red_args[IN] && ms_strcmp((char *)TEMP_PREFIX, ast->red_args[IN]))
-			unlink(ast->red_args[IN]);
-		if (ast->red_args[IN])
+		waitpid(pid, &status, 0);
+		if (WEXITSTATUS(status) != 0)
 		{
-			free(ast->red_args[IN]);
-			ast->red_args[IN] = NULL;
+			free(temp_file_name);
+			return (ERROR);
 		}
+		free_red_args(ast, IN);
 		ast->red_args[IN] = temp_file_name;
 	}
 	return (1);
