@@ -13,15 +13,15 @@
 #include "../../include/minishell.h"
 
 const char *test_strs[] = {
-    // "   echo Hello | cat signal.txt   ",
-    // "",
-    // "   echo Hello <text.txt | cat signal.txt> text.txt   ",
-    // "   echo Hello | (cat signal.txt <text.txt ) ",
-    // "   (cat signal.txt <text.txt ) | echo Hello && ls -l   ",
-    // "   echo Hello | cat signal.txt <text.txt  ",
-    // "   cat signal.txt <text.txt  | echo Hello && ls -l   ",
-    // "   ls -l || echo Hello | cat signal.txt   ",
-    // "echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ",
+    "   echo Hello | cat $signal.txt   ",
+    "",
+    "   echo Hello <text.txt | cat signal.txt> text.txt   ",
+    "   echo Hello | (cat signal.txt <text.txt ) ",
+    "   (cat signal.txt <text.txt ) | echo Hello && ls -l   ",
+    "   echo Hello | cat signal.txt <text.txt  ",
+    "   cat signal.txt <text.txt  | echo Hello && ls -l   ",
+    "   ls -l || echo Hello | cat $signal.txt   ",
+    "echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ",
     "   <<eof cat signal.txt> text.txt   ",
 	NULL,
 };

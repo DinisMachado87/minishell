@@ -31,6 +31,8 @@ int	skip_count_word(char *str, char limiter, int *exp_args)
 	}
 	if (str[i_ltr] && str[i_ltr] == limiter && limiter != ' ')
 		i_ltr++;
+	if (*exp_args == POTENCIALLY_EXPAND)
+		*exp_args = 0;
 	return (i_ltr);
 }
 
@@ -41,7 +43,7 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	int		exp_args;
 
 	exp_args = 0;
-	if (*str == '\"')
+	if (!(*str == '\''))
 		exp_args = POTENCIALLY_EXPAND;
 	i_ltr = skip_count_word(str, ' ', &exp_args);
 	s->i_word++;

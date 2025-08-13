@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <stdio.h>
 
 const char *type_str[] = {
 	"SUBSHELL",
@@ -62,7 +63,7 @@ static void print_ast_str(char *name, char *element, int indent, char *new_line)
 	printf("%s", new_line);
 };
 
-static void print_ast_arr(char **arr)
+static void print_ast_arr(char **arr, int *intarr)
 {
 	int	i;
 
@@ -71,6 +72,7 @@ static void print_ast_arr(char **arr)
 		return ;
 	while (arr[i])
 	{
+		printf("%d", intarr[i]);
 		print_ast_str("", arr[i], 0, "\t");
 		i++;
 	}
@@ -105,7 +107,7 @@ static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 	}
 	print_indent(indent);
 	printf("|N_ARGS:%d\t", ast->n_args);
-	print_ast_arr(ast->args);
+	print_ast_arr(ast->args, ast->exp_args);
 	printf("\n");
 	print_ast_str("|RED_IN", ast->red_args[IN], indent, "\t");
 	print_ast_str("RED_OUT", ast->red_args[OUT], 0, "\n");
