@@ -7,8 +7,8 @@ t_env	*gen_env_node(char *key, char *value)
 	node = malloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
-	node->key = strdup(key);
-	node->value = strdup(value);
+	node->key = ms_strndup(key, ms_strlen(key));
+	node->value = ms_strndup(value, ms_strlen(value));
 	node->next = NULL;
 	return (node);
 }
@@ -32,7 +32,7 @@ void	free_env_node_by_key(t_env **head, char *key)
 
 	while (curr)
 	{
-			if (strcmp(curr->key, key) == 0)
+			if (ms_strcmp2(curr->key, key) == 0)
 			{
 					if (prev)
 							prev->next = curr->next;
@@ -74,7 +74,7 @@ t_env	*get_env_node(t_env *head, char *key)
 {
 	while (head)
 	{
-		if (strcmp(head->key, key) == 0)
+		if (ms_strcmp2(head->key, key) == 0)
 			return (head);
 		head = head->next;
 	}
@@ -99,15 +99,15 @@ char	*get_env_str(char *key, char *value)
 	int		total_len;
 	char	*str;
 
-	total_len = strlen(key);
-	total_len += strlen(value) + 2;
+	total_len = ms_strlen(key);
+	total_len += ms_strlen(value) + 2;
 	str = malloc(sizeof(char) * total_len);
 	if (!str)
 		return (NULL);
 	bzero(str, total_len);
-	strncpy(str, key, strlen(key));
-	strncat(str, "=", 2);
-	strncat(str, value, strlen(value));
+	ms_strncpy(str, key, ms_strlen(key));
+	ms_strncat(str, "=", 2);
+	ms_strncat(str, value, ms_strlen(value));
 	return (str);
 }
 

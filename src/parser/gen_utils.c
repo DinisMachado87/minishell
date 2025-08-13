@@ -32,3 +32,15 @@ int	ms_strcmp(char *ref, char *str)
 		return (0);
 	return (1);
 }
+
+int	ms_strcmp2(char *ref, char *str)
+{
+	while (*ref && *str && *ref == *str)
+	{
+		ref++;
+		str++;
+	}
+	if (*ref)
+		return (1);
+	return (0);
+}

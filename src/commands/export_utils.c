@@ -11,7 +11,10 @@ void	print_env(t_shell *shell, int export)
 	var = shell->env;
 	while (var)
 	{
-		printf("key = %s value = %s\n", var->key, var->value);
+		if (export)
+			printf("declare -x %s=%s\n", var->key, var->value);
+		else
+			printf("%s=%s\n", var->key, var->value);
 		var = var->next;
 	}
 }

@@ -176,5 +176,11 @@ void  free_env_list(char  **list);
 void  print_err(char *cmd_name, char *err_msg);
 char  *itoa(int num);
 t_env   *init_env(void);
+size_t	ms_strlen(char *str);
+char    *ms_strndup(char *str, size_t n);
+char    *ms_strncat(char *dst, char *src, size_t ssize);
+char    *ms_strncpy(char *dst, char *src, size_t ssize);
+char    *ms_strchr(char *s, int c);
+int ms_strcmp2(char *ref, char *str);
 
 #endif

@@ -43,3 +43,4 @@
 			- Same but in append mode
 		- <<:
 			- Heredoc. A EOF is defined and all the following content up until the EOF is entered again will be redirected to stdin
+		- Make $? part of the t_shell instead of an environment variable

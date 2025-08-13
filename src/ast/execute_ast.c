@@ -7,6 +7,7 @@ int	execute_external(t_shell *shell, t_ast *node)
 	int		pid;
 	int		status;
 
+	status = 0;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -70,26 +71,29 @@ int	execute_ast(t_shell *shell, t_ast *node)
 		status = execute_pipe(shell, node);
 	else if (node->type == CMD)
 	{
-		if (node->red_args[IN])
+		if (node->red_args[IN] || node->red_args[OUT])
 		{
-			fd = open(node->red_args[IN], O_RDONLY);
-			dup2(fd, STDIN_FILENO);
-		}
-		else if (node->red_args[OUT])
-		{
-			if (node->append)
-				fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_APPEND, 0644);
+			if (node->red_args[IN])
+			{
+				fd = open(node->red_args[IN], O_RDONLY);
+				dup2(fd, STDIN_FILENO);
+			}
 			else
-				fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			dup2(fd, STDOUT_FILENO);
-		}
-		close(fd);
-		if (fd == -1)
-		{
-			perror(node->red_args[OUT]);
-			dup2(save_stdin, STDIN_FILENO);
-			dup2(save_stdout, STDOUT_FILENO);
-			return (-1);
+			{
+				if (node->append)
+					fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_APPEND, 0644);
+				else
+					fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				dup2(fd, STDOUT_FILENO);
+			}
+			if (fd == -1)
+			{
+				perror(node->red_args[OUT]);
+				dup2(save_stdin, STDIN_FILENO);
+				dup2(save_stdout, STDOUT_FILENO);
+				return (-1);
+			}
+			close(fd);
 		}
 		if (node->subtype == EXTERNAL)
 			status = execute_external(shell, node);

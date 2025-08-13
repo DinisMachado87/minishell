@@ -21,7 +21,7 @@ char	*split_at_sep(char **str, char sep)
 	dir = malloc(sizeof(char) * (len + 1));
 	if (!dir)
 		return (NULL);
-	strncpy(dir, start, len);
+	ms_strncpy(dir, start, len);
 	dir[len] = '\0';
 	return (dir);
 }
@@ -31,13 +31,13 @@ char	*append_cmd(char *dir, char *cmd)
 	char	*path;
 	int		total_len;
 
-	total_len = strlen(dir) + strlen(cmd) + 1;
+	total_len = ms_strlen(dir) + ms_strlen(cmd) + 1;
 	path = malloc(sizeof(char) * (total_len + 1));
 	if (!path)
 		return (NULL);
-	strcpy(path, dir);
-	strcat(path, "/");
-	strcat(path, cmd);
+	ms_strncpy(path, dir, ms_strlen(dir));
+	ms_strncat(path, "/", 1);
+	ms_strncat(path, cmd, ms_strlen(cmd));
 	return (path);
 }
 

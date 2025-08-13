@@ -15,7 +15,7 @@ PARSER_DIR = $(SRC_DIR)/parser
 
 AST_SRC_FILES =		execute_ast.c
 CMD_SRC_FILES =		built_ins.c export_utils.c get_cmd_path.c
-HELPER_SRC_FILES =	env.c itoa.c loop.c print_err.c
+HELPER_SRC_FILES =	env.c itoa.c loop.c print_err.c ms_strlen.c ms_strndup.c ms_strncat.c ms_strncpy.c ms_strchr.c
 PARSER_SRC_FILES =	ast_utils.c extract_operator.c extract_utils.c parser_utils.c structure_ast.c extract_cmd.c extract_subshell.c\
 			  		gen_utils.c parser.c print_ast.c
 

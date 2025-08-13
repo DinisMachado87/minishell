@@ -19,6 +19,7 @@ void	set_handler(int rdline)
 {
 	struct sigaction	sa_c;
 
+	sa_c.sa_flags = 0;
 	if (rdline)
 		sa_c.sa_flags = SA_RESTART;
 	sigemptyset(&sa_c.sa_mask);
@@ -28,7 +29,6 @@ void	set_handler(int rdline)
 	if (sigaction(SIGINT, &sa_c, NULL) == -1)
 		perror("sigaction");
 }
-
 
 char  *get_prompt(void)
 {
@@ -40,17 +40,17 @@ char  *get_prompt(void)
 	user = getenv("USER");
 	if (!cwd)
 	  return (NULL);
-	prompt = malloc((strlen(cwd) + strlen(user) + 6));
+	prompt = malloc((ms_strlen(cwd) + ms_strlen(user) + 6));
 	if (!prompt)
 	{
 	  free(cwd);
 	  return (NULL);
 	}
 	prompt[0] = '\0';
-	strncat(prompt, user, strlen(user));
-	strncat(prompt, ":", 2);
-	strncat(prompt, cwd, strlen(cwd));
-	strncat(prompt, "$ ", 3);
+	ms_strncat(prompt, user, ms_strlen(user));
+	ms_strncat(prompt, ":", 2);
+	ms_strncat(prompt, cwd, ms_strlen(cwd));
+	ms_strncat(prompt, "$ ", 3);
 	free(cwd);
 	return (prompt);
 }
@@ -101,7 +101,7 @@ void	prompt_loop(void)
 			return ;
 		}
 		shell.ast_tree = parser(input, &shell.ast_head);
-		print_ast(shell.ast_tree, "loop");
+		//print_ast(shell.ast_tree, "loop");
 		execute_ast(&shell, shell.ast_tree);
 		free_all(&shell.ast_head);
 		free(prompt);
