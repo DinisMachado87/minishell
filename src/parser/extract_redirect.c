@@ -29,7 +29,7 @@ static void	convert_append_heredoc_to_in_out(t_ast *ast, t_s_red *r)
 
 void	free_red_args(t_ast *ast, int subtype)
 {
-	if (ast->red_args[IN]
+	if (subtype == IN && ast->red_args[IN]
 		&& ms_strcmp((char *)TEMP_PREFIX, ast->red_args[IN]))
 	{
 		unlink(ast->red_args[IN]);

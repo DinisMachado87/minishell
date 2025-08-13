@@ -66,18 +66,18 @@ int	extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s)
 	return (spaces);
 }
 
-t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s)
+t_ast	*extract_cmd(t_ast **ast, char **str, t_s_parser *s)
 {
 	s->i_word = 0;
 	s->n_cmd_ltrs = 0;
-	if (!make_node(ast_nd))
+	if (!make_node(ast))
 		return (NULL);
-	s->n_cmd_ltrs += extract_cmd_recursive(*ast_nd, *str, s);
+	s->n_cmd_ltrs += extract_cmd_recursive(*ast, *str, s);
 	if (!s->n_cmd_ltrs)
-		return (free_all(ast_nd), NULL);
-	(*ast_nd)->type = CMD;
-	if ((*ast_nd)->args[0])
-		(*ast_nd)->subtype = subtype((*ast_nd)->args[0]);
+		return (free_all(ast), NULL);
+	(*ast)->type = CMD;
+	if ((*ast)->args[0])
+		(*ast)->subtype = subtype((*ast)->args[0]);
 	*str += s->n_cmd_ltrs;
-	return (*ast_nd);
+	return (*ast);
 }
