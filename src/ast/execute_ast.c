@@ -57,6 +57,7 @@ int	execute_ast(t_shell *shell, t_ast *node)
 	int		fd;
 	int		save_stdin;
 	int		save_stdout;
+	t_shell	subshell;
 	
 	save_stdin = dup(STDIN_FILENO);
 	save_stdout = dup(STDOUT_FILENO);
@@ -101,6 +102,14 @@ int	execute_ast(t_shell *shell, t_ast *node)
 			status = execute_built_in(shell, node);
 		dup2(save_stdin, STDIN_FILENO);
 		dup2(save_stdout, STDOUT_FILENO);
+	}
+	else if (node->type == SUBSHELL)
+	{
+		ms_bzero((void *)&subshell, sizeof(t_shell));
+		subshell.env = init_env();
+		subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
+		execute_ast(&subshell, subshell.ast_tree);
+		free_all(&subshell.ast_head);
 	}
 	stat = itoa(status);
 	set_env_node(&shell->env, "?", stat);

@@ -121,7 +121,6 @@ typedef struct  s_shell
 	t_ast   *ast_head;
 	t_ast   *ast_tree;
 	t_env   *env;
-	t_env   *var;
 }			t_shell;
 
 // ast_utils
