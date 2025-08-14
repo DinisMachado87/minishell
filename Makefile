@@ -28,25 +28,14 @@ PARSER_SRC_FILES =	ast_utils.c \
 					gen_utils.c \
 					parser.c \
 					print_ast.c \
-					heredoc.c
+					heredoc.c \
+					extract_redirect.c
 MAIN = $(SRC_DIR)/main.c
 
 AST_SRCS = $(addprefix $(AST_DIR)/, $(AST_SRC_FILES))
 CMD_SRCS = $(addprefix $(CMD_DIR)/, $(CMD_SRC_FILES))
 HELPER_SRCS = $(addprefix $(HELPER_DIR)/, $(HELPER_SRC_FILES))
 PARSER_SRCS = $(addprefix $(PARSER_DIR)/, $(PARSER_SRC_FILES))
-
-OBJ_DIR = obj
-
-AST_OBJ_FILES = $(AST_SRCS:.c=.o)
-AST_OBJS = $(addprefix $(OBJ_DIR)/, $(AST_OBJ_FILES))
-CMD_OBJ_FILES = $(CMD_SRCS:.c=.o)
-CMD_OBJS = $(addprefix $(OBJ_DIR)/, $(CMD_OBJ_FILES))
-HELPER_OBJ_FILES = $(HELPER_SRCS:.c=.o)
-HELPER_OBJS = $(addprefix $(OBJ_DIR)/, $(HELPER_OBJ_FILES))
-PARSER_OBJ_FILES = $(PARSER_SRCS:.c=.o)
-PARSER_OBJS = $(addprefix $(OBJ_DIR)/, $(PARSER_OBJ_FILES))
-PARSER_HELP_MAIN_FILES = $(PARSER_HELP_MAIN:.c=.o)
 
 all: $(NAME)
 
