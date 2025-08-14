@@ -18,7 +18,10 @@ void	ms_bzero(void *s, size_t n)
 
 	ptr = (unsigned char *)s;
 	while (n--)
-		*ptr++ = 0;
+	{
+		*ptr = 0;
+		ptr++;
+	}
 }
 
 int	ms_strcmp(char *ref, char *str)
