@@ -159,5 +159,6 @@ t_env	*init_env(void)
 
 	env = gen_env_node("PATH", getenv("PATH"));
 	set_env_node(&env, "TERM", getenv("TERM"));
+	set_env_node(&env, "USER", getenv("USER"));
 	return (env);
 }

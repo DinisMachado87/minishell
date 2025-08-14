@@ -3,6 +3,4 @@
 	- Block signals in parent when a subshell is created (on ctrl+d only the child is supposed to exit)
 	- signals (man signal-safety)
 	- Make $? part of the t_shell instead of an environment variable
-	- Figure out how to call minishell from within minishell
-	- Remove var from t_shell
 	- Have a look into wildcards
