@@ -15,8 +15,12 @@ PARSER_DIR = $(SRC_DIR)/parser
 
 AST_SRC_FILES =		execute_ast.c
 CMD_SRC_FILES =		built_ins.c export_utils.c get_cmd_path.c
+<<<<<<< HEAD
 PARSER_HELP_MAIN =	src/helper/itoa.c \
 					src/parser/main_parser.c
+=======
+HELPER_SRC_FILES =	env.c itoa.c loop.c print_err.c ms_strlen.c ms_strndup.c ms_strncat.c ms_strncpy.c ms_strchr.c
+>>>>>>> b80f310 (Rebase in parser main)
 PARSER_SRC_FILES =	ast_utils.c \
 					extract_operator.c \
 					extract_utils.c \
@@ -28,6 +32,12 @@ PARSER_SRC_FILES =	ast_utils.c \
 					parser.c \
 					print_ast.c \
 					heredoc.c
+<<<<<<< HEAD
+=======
+PARSER_HELP_MAIN =	src/helper/itoa.c \
+					src/parser/main_parser.c
+
+>>>>>>> b80f310 (Rebase in parser main)
 MAIN = $(SRC_DIR)/main.c
 
 AST_SRCS = $(addprefix $(AST_DIR)/, $(AST_SRC_FILES))

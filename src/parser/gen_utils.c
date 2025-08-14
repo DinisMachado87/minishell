@@ -6,12 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:59 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/14 12:51:23 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/14 13:15:13 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <stdio.h>
 
 void	ms_bzero(void *s, size_t n)
 {
