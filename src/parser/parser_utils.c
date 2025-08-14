@@ -19,7 +19,7 @@ int	type(char *str)
 	i = 0;
 	while (g_types[i].str)
 	{
-		if (ms_strcmp(g_types[i].str, str))
+		if (!ms_strcmp(g_types[i].str, str))
 			return (g_types[i].type);
 		i++;
 	}
@@ -33,7 +33,7 @@ int	subtype(char *str)
 	i = 0;
 	while (g_types[i].str)
 	{
-		if (ms_strcmp(g_types[i].str, str))
+		if (!ms_strcmp(g_types[i].str, str))
 			return (g_types[i].subtype);
 		i++;
 	}

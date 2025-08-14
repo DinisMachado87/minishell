@@ -37,6 +37,7 @@ t_ast	*extract_subshell(t_ast **ast_nd, char **str)
 	if (!allocate_ast_args(*ast_nd, 1))
 		return (NULL);
 	(*ast_nd)->args[0] = substr;
+	(*ast_nd)->exp_args[0] = 0;
 	(*ast_nd)->n_args = 1;
 	(*ast_nd)->type = SUBSHELL;
 	*str += i_ltr + paretheses;

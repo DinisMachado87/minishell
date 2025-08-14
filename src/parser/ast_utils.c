@@ -18,7 +18,7 @@ static void	free_and_null(void **ptr)
 	*ptr = NULL;
 }
 
-t_ast	*free_all(t_ast **ast_head)
+t_ast	*free_ast(t_ast **ast_head)
 {
 	t_ast *next_head;
 	
@@ -47,7 +47,7 @@ t_ast	*make_node(t_ast **ast)
 	new_node = malloc(sizeof(t_ast));
 	if (!new_node)
 	{
-		*ast = free_all(ast);
+		*ast = free_ast(ast);
 		return (NULL);
 	}
 	bzero(new_node, sizeof(t_ast));

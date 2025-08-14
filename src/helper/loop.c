@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   loop.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
+/*   Updated: 2025/08/14 12:49:14 by dimachad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 void	sig_c_handler(int sig)
@@ -101,9 +113,9 @@ void	prompt_loop(void)
 			return ;
 		}
 		shell.ast_tree = parser(input, &shell.ast_head);
-		//print_ast(shell.ast_tree, "loop");
+		print_ast(shell.ast_tree, "loop");
 		execute_ast(&shell, shell.ast_tree);
-		free_all(&shell.ast_head);
+		free_ast(&shell.ast_head);
 		free(prompt);
 		free(input);
 		prompt = NULL;

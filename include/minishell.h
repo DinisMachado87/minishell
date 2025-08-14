@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 16:12:38 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/14 12:33:02 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define MINISHELL_H
 
 # define ERROR -1
+# define TEMP_PREFIX "temp_heredoc"
+# define POTENCIALLY_EXPAND 2
+# define EXPAND 1
 
 # include <stdlib.h>
 # include <stdio.h>
@@ -92,9 +95,11 @@ typedef struct s_ast
     int             type;
     int             subtype;
     char            **args;
+    int				*exp_args;
     int             n_args;
     char            *red_args[2];
     int             append;
+    int             heredoc;
     struct s_ast    *next;
     struct s_ast    *left;
     struct s_ast    *right;
@@ -107,7 +112,17 @@ typedef struct  s_state_parser
 	int     i_word;
 	int     n_cmd_ltrs;
 	int     error;
+	int		n_heredoc;
 }			t_s_parser;
+
+typedef struct s_state_redirect
+{
+	int 	i_ltr;
+	int 	spaces;
+	int		red_subtype;
+	char	*word;
+	int		heredoc;
+}	t_s_red;
 
 typedef struct  s_env
 {
@@ -125,7 +140,7 @@ typedef struct  s_shell
 
 // ast_utils
 t_ast	*make_node(t_ast **ast);
-t_ast	*free_all(t_ast **ast);
+t_ast	*free_ast(t_ast **ast);
 // parser_utils
 int		type(char *str);
 int		subtype(char *str);
@@ -135,12 +150,18 @@ int		allocate_ast_args(t_ast *ast, int n_strs);
 // gen_utils
 void	ms_bzero(void *s, size_t n);
 int		ms_strcmp(char *ref, char *str);
+int		ms_strlen(char *str);
 // parser
 t_ast	*parser(char *str, t_ast **head_list);
 // extract cmd
+int		skip_count_word(char *str, char limiter, int *exp_args);
+void	free_red_args(t_ast *ast, int subtype);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
+int		extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
+int		extract_redirect(t_ast *ast, char *str, t_s_parser *s);
+int 	ms_heredoc(t_ast *ast, t_s_parser *s);
 // structure_ast
 t_ast	*structure_ast(t_ast *cur_list);
 // print_ast
@@ -175,11 +196,9 @@ void  free_env_list(char  **list);
 void  print_err(char *cmd_name, char *err_msg);
 char  *itoa(int num);
 t_env   *init_env(void);
-size_t	ms_strlen(char *str);
 char    *ms_strndup(char *str, size_t n);
 char    *ms_strncat(char *dst, char *src, size_t ssize);
 char    *ms_strncpy(char *dst, char *src, size_t ssize);
 char    *ms_strchr(char *s, int c);
-int ms_strcmp2(char *ref, char *str);
 
 #endif
