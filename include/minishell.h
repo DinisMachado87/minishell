@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/14 13:06:36 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/14 14:02:42 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,9 +196,9 @@ void  free_env_list(char  **list);
 void  print_err(char *cmd_name, char *err_msg);
 char  *itoa(int num);
 t_env   *init_env(void);
-char    *ms_strndup(char *str, size_t n);
-char    *ms_strncat(char *dst, char *src, size_t ssize);
-char    *ms_strncpy(char *dst, char *src, size_t ssize);
+char    *ms_strndup(char *str, int n);
+char    *ms_strncat(char *dst, char *src, int ssize);
+char    *ms_strncpy(char *dst, char *src, int ssize);
 char    *ms_strchr(char *s, int c);
 
 #endif

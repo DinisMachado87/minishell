@@ -15,12 +15,9 @@ PARSER_DIR = $(SRC_DIR)/parser
 
 AST_SRC_FILES =		execute_ast.c
 CMD_SRC_FILES =		built_ins.c export_utils.c get_cmd_path.c
-<<<<<<< HEAD
 PARSER_HELP_MAIN =	src/helper/itoa.c \
 					src/parser/main_parser.c
-=======
-HELPER_SRC_FILES =	env.c itoa.c loop.c print_err.c ms_strlen.c ms_strndup.c ms_strncat.c ms_strncpy.c ms_strchr.c
->>>>>>> b80f310 (Rebase in parser main)
+HELPER_SRC_FILES =	env.c itoa.c loop.c print_err.c ms_strndup.c ms_strncat.c ms_strncpy.c ms_strchr.c
 PARSER_SRC_FILES =	ast_utils.c \
 					extract_operator.c \
 					extract_utils.c \
@@ -32,12 +29,6 @@ PARSER_SRC_FILES =	ast_utils.c \
 					parser.c \
 					print_ast.c \
 					heredoc.c
-<<<<<<< HEAD
-=======
-PARSER_HELP_MAIN =	src/helper/itoa.c \
-					src/parser/main_parser.c
-
->>>>>>> b80f310 (Rebase in parser main)
 MAIN = $(SRC_DIR)/main.c
 
 AST_SRCS = $(addprefix $(AST_DIR)/, $(AST_SRC_FILES))
@@ -47,13 +38,13 @@ PARSER_SRCS = $(addprefix $(PARSER_DIR)/, $(PARSER_SRC_FILES))
 
 OBJ_DIR = obj
 
-AST_OBJ_FILES = $(AST_SRC:.c=.o)
+AST_OBJ_FILES = $(AST_SRCS:.c=.o)
 AST_OBJS = $(addprefix $(OBJ_DIR)/, $(AST_OBJ_FILES))
-CMD_OBJ_FILES = $(CMD_SRC:.c=.o)
+CMD_OBJ_FILES = $(CMD_SRCS:.c=.o)
 CMD_OBJS = $(addprefix $(OBJ_DIR)/, $(CMD_OBJ_FILES))
-HELPER_OBJ_FILES = $(HELPER_SRC:.c=.o)
+HELPER_OBJ_FILES = $(HELPER_SRCS:.c=.o)
 HELPER_OBJS = $(addprefix $(OBJ_DIR)/, $(HELPER_OBJ_FILES))
-PARSER_OBJ_FILES = $(PARSER_SRC:.c=.o)
+PARSER_OBJ_FILES = $(PARSER_SRCS:.c=.o)
 PARSER_OBJS = $(addprefix $(OBJ_DIR)/, $(PARSER_OBJ_FILES))
 PARSER_HELP_MAIN_FILES = $(PARSER_HELP_MAIN:.c=.o)
 

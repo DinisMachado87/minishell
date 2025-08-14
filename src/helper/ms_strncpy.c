@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-char	*ms_strncpy(char *dst, char *src, size_t ssize)
+char	*ms_strncpy(char *dst, char *src, int ssize)
 {
 	char	*ret;
 

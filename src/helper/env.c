@@ -32,7 +32,7 @@ void	free_env_node_by_key(t_env **head, char *key)
 
 	while (curr)
 	{
-			if (ms_strcmp2(curr->key, key) == 0)
+			if (ms_strcmp(curr->key, key) == 0)
 			{
 					if (prev)
 							prev->next = curr->next;
@@ -74,7 +74,7 @@ t_env	*get_env_node(t_env *head, char *key)
 {
 	while (head)
 	{
-		if (ms_strcmp2(head->key, key) == 0)
+		if (ms_strcmp(head->key, key) == 0)
 			return (head);
 		head = head->next;
 	}

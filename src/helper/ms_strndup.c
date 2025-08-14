@@ -1,10 +1,10 @@
 #include "../../include/minishell.h"
 
-char	*ms_strndup(char *str, size_t n)
+char	*ms_strndup(char *str, int n)
 {
-	size_t	len;
+	int	len;
 	char	*dup;
-	size_t	i;
+	int	i;
 
 	i = 0;
 	if ((int)n < 0)

@@ -6,7 +6,7 @@ int	ft_echo(t_ast *node)
 	int	j;
 	int	newline;
 
-	if (!ms_strcmp2(node->args[1], "-n"))
+	if (!ms_strcmp(node->args[1], "-n"))
 	{
 		newline = 0;
 		i = 2;
@@ -119,6 +119,6 @@ int  ft_env(t_shell *shell, t_ast *node)
 
 void	ft_exit(t_shell *shell)
 {
-	free_all(&shell->ast_head);
+	free_ast(&shell->ast_head);
 	exit(0);
 }
