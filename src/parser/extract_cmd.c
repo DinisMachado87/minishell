@@ -12,27 +12,49 @@
 
 #include "../../include/minishell.h"
 
-int	skip_count_word(char *str, char limiter, int *exp_args)
+enum e_quotes {
+	NO_QUOTES,
+	SINGLE,
+	DOUBLE,
+};
+
+static char	set_limiter(char *str, t_ast *ast, t_s_parser *s, int *i_ltr)
 {
-	int	i_ltr;
-	int	char_type;
+	if (!(*str == '\''))
+		ast->exp_args[s->i_word] = POTENCIALLY_EXPAND;
+	if (*str == '\'' || *str == '\"')
+	{
+		*i_ltr++;
+		return (str[0]);
+	}
+	return (' ');
+}
+
+int	skip_count_word(char *str, char *limiter, t_ast *ast, t_s_parser *s)
+{
+	int		i_ltr;
+	int		char_type;
 
 	i_ltr = 0;
 	char_type = type(str + i_ltr);
-	while (str[i_ltr] && str[i_ltr] != limiter && (char_type == CMD || limiter != ' '))
+	if (char_type != CMD)
+		return (i_ltr);
+	*limiter = set_limiter(str, ast, s, &i_ltr);
+	while (str[i_ltr] && char_type == CMD)
 	{
-		if (str[i_ltr] == '$' && *exp_args == POTENCIALLY_EXPAND)
-			*exp_args = EXPAND;
 		if (limiter == ' '
 			&& (str[i_ltr] == '\'' || str[i_ltr] == '"'))
-			limiter = str[i_ltr];
+			break;
+		if (str[i_ltr] == '$' && str[i_ltr + 1] == '$'
+			&& ast->exp_args[s->i_word] == POTENCIALLY_EXPAND)
+			ast->exp_args[s->i_word] = EXPAND;
 		i_ltr++;
+		if (str[i_ltr - 1] == limiter)
+			break;
 		char_type = type(str + i_ltr);
 	}
-	if (str[i_ltr] && str[i_ltr] == limiter && limiter != ' ')
-		i_ltr++;
-	if (*exp_args == POTENCIALLY_EXPAND)
-		*exp_args = 0;
+	if (str[i_ltr] != ' ')
+		ast->space_args[s->i_word] = NO_SPACE_AFTER;
 	return (i_ltr);
 }
 
@@ -40,13 +62,12 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 {
 	int		i_ltr;
 	char	*word;
-	int		exp_args;
+	char	quotes;
 
-	exp_args = 0;
-	if (!(*str == '\''))
-		exp_args = POTENCIALLY_EXPAND;
-	i_ltr = skip_count_word(str, ' ', &exp_args);
+	quotes = NO_QUOTES;
 	s->i_word++;
+	ast->space_args[s->i_word] = SPACE_AFTER;
+	i_ltr = skip_count_word(str, &quotes, ast, s);
 	if (str[i_ltr])
 		s->n_cmd_ltrs += extract_cmd_recursive(ast, str + i_ltr, s);
 	if (!ast->args && !allocate_ast_args(ast, s->i_word))
@@ -55,7 +76,6 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	if (!word)
 		return (0);
 	ast->args[--s->i_word] = word;
-	ast->exp_args[s->i_word] = exp_args;
 	return(i_ltr);
 }
 

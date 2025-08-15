@@ -15,8 +15,7 @@
 
 # define ERROR -1
 # define TEMP_PREFIX "temp_heredoc"
-# define POTENCIALLY_EXPAND 2
-# define EXPAND 1
+# define DEBUG 1
 
 # include <stdlib.h>
 # include <stdio.h>
@@ -31,6 +30,16 @@
 # include <stddef.h>
 # include <fcntl.h>
 # include <limits.h>
+
+enum e_expand {
+EXPAND,
+POTENCIALLY_EXPAND,
+};
+
+enum e_space {
+	NO_SPACE_AFTER,
+	SPACE_AFTER,
+};
 
 typedef enum e_type {
 	SUBSHELL,
@@ -96,10 +105,11 @@ typedef struct s_ast
     int             subtype;
     char            **args;
     int				*exp_args;
-    int             n_args;
-    char            *red_args[2];
+    int				*space_args;
     int             append;
     int             heredoc;
+    int             n_args;
+    char            *red_args[2];
     struct s_ast    *next;
     struct s_ast    *left;
     struct s_ast    *right;
@@ -154,7 +164,7 @@ int		ms_strlen(char *str);
 // parser
 t_ast	*parser(char *str, t_ast **head_list);
 // extract cmd
-int		skip_count_word(char *str, char limiter, int *exp_args);
+int	skip_count_word(char *str, char *limiter, t_ast *ast, t_s_parser *s);
 void	free_red_args(t_ast *ast, int subtype);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
 int		extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s);

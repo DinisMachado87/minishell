@@ -21,8 +21,12 @@ int	allocate_ast_args(t_ast *ast, int n_strs)
 	ast->exp_args = malloc((n_strs + 1) * sizeof(int));
 	if (!ast->exp_args)
 		return (perror("Err allocating args array"), 0);
+	ast->space_args = malloc((n_strs + 1) * sizeof(int));
+	if (!ast->space_args)
+		return (perror("Err allocating args array"), 0);
 	ms_bzero(ast->args, (n_strs + 1) * sizeof(char *));
 	ms_bzero(ast->exp_args, (n_strs + 1) * sizeof(int));
+	ms_bzero(ast->space_args, (n_strs + 1) * sizeof(int));
 	ast->n_args = n_strs;
 	return (1);
 }
