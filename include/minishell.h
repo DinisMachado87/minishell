@@ -136,6 +136,7 @@ typedef struct  s_shell
 	t_ast   *ast_head;
 	t_ast   *ast_tree;
 	t_env   *env;
+	int		exit_status;
 }			t_shell;
 
 // ast_utils
@@ -169,7 +170,7 @@ void	print_ast(t_ast *ast, char *testname);
 void	print_nd_list(t_ast *ast, char *testname);
 // prompt_loop
 void	prompt_loop(void);
-int		execute_ast(t_shell *shell, t_ast *node);
+void	execute_ast(t_shell *shell, t_ast *node);
 int		execute_pipe(t_shell *shell, t_ast *node);
 int		ft_echo(t_ast *node);
 int		ft_cd(t_shell *shell, t_ast *node);
@@ -178,8 +179,8 @@ int		ft_export(t_shell *shell, t_ast *node);
 int		ft_unset(t_shell *shell, t_ast *node);
 int		ft_env(t_shell *shell, t_ast *node);
 void	ft_exit(t_shell *shell);
-int		execute_and(t_shell *shell, t_ast *node);
-int		execute_or(t_shell *shell, t_ast *node);
+void	execute_and(t_shell *shell, t_ast *node);
+void	execute_or(t_shell *shell, t_ast *node);
 char  *get_cmd_path(char *cmd, char *env);
 t_env *gen_env_node(char *key, char *value);
 void  free_env_node(t_env **node);

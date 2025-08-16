@@ -104,7 +104,7 @@ char	*get_env_str(char *key, char *value)
 	str = malloc(sizeof(char) * total_len);
 	if (!str)
 		return (NULL);
-	bzero(str, total_len);
+	ms_bzero(str, total_len);
 	ms_strncpy(str, key, ms_strlen(key));
 	ms_strncat(str, "=", 2);
 	ms_strncat(str, value, ms_strlen(value));

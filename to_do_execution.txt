@@ -2,5 +2,14 @@
 	- How to test for memleaks when exit is in the command chain
 	- Block signals in parent when a subshell is created (on ctrl+d only the child is supposed to exit)
 	- signals (man signal-safety)
-	- Make $? part of the t_shell instead of an environment variable
 	- Have a look into wildcards
+	- Expand $? to t_shell var instade of env var
+	- Refactor
+
+
+	- the return value for a command not found is 256, it's supposed to be 127, I guess I use the execve return value.
+
+
+	- To test:
+		- cat<test.txt
+		- cat test.txt | grep 2

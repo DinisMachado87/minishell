@@ -22,7 +22,6 @@ char	*split_at_sep(char **str, char sep)
 	if (!dir)
 		return (NULL);
 	ms_strncpy(dir, start, len);
-	dir[len] = '\0';
 	return (dir);
 }
 

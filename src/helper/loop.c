@@ -115,7 +115,8 @@ void	prompt_loop(void)
 		shell.ast_tree = parser(input, &shell.ast_head);
 		print_ast(shell.ast_tree, "loop");
 		execute_ast(&shell, shell.ast_tree);
-		free_ast(&shell.ast_head);
+		printf("status = %d\n", shell.exit_status);
+		free_all(&shell.ast_head);
 		free(prompt);
 		free(input);
 		prompt = NULL;

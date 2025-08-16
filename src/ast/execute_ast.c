@@ -50,10 +50,8 @@ int	execute_built_in(t_shell *shell, t_ast *node)
 	return (0);
 }
 
-int	execute_ast(t_shell *shell, t_ast *node)
+void	execute_ast(t_shell *shell, t_ast *node)
 {
-	int		status;
-	char	*stat;
 	int		fd;
 	int		save_stdin;
 	int		save_stdout;
@@ -61,15 +59,14 @@ int	execute_ast(t_shell *shell, t_ast *node)
 	
 	save_stdin = dup(STDIN_FILENO);
 	save_stdout = dup(STDOUT_FILENO);
-	status = 0;
 	if (!shell->ast_tree || !node)
-		return (1);
+		shell->exit_status = ERROR;
 	if (node->type == OPERATOR && node->subtype == AND)
-		status = execute_and(shell, node);
+		execute_and(shell, node);
 	else if (node->type == OPERATOR && node->subtype == OR)
-		status = execute_or(shell, node);
+		execute_or(shell, node);
 	else if (node->type == PIPE)
-		status = execute_pipe(shell, node);
+		execute_pipe(shell, node);
 	else if (node->type == CMD)
 	{
 		if (node->red_args[IN] || node->red_args[OUT])
@@ -87,19 +84,19 @@ int	execute_ast(t_shell *shell, t_ast *node)
 					fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				dup2(fd, STDOUT_FILENO);
 			}
-			if (fd == -1)
+			if (fd == ERROR)
 			{
 				perror(node->red_args[OUT]);
 				dup2(save_stdin, STDIN_FILENO);
 				dup2(save_stdout, STDOUT_FILENO);
-				return (-1);
+				shell->exit_status = ERROR;
 			}
 			close(fd);
 		}
 		if (node->subtype == EXTERNAL)
-			status = execute_external(shell, node);
+			shell->exit_status = execute_external(shell, node);
 		else
-			status = execute_built_in(shell, node);
+			shell->exit_status = execute_built_in(shell, node);
 		dup2(save_stdin, STDIN_FILENO);
 		dup2(save_stdout, STDOUT_FILENO);
 	}
@@ -111,31 +108,20 @@ int	execute_ast(t_shell *shell, t_ast *node)
 		execute_ast(&subshell, subshell.ast_tree);
 		free_ast(&subshell.ast_head);
 	}
-	stat = itoa(status);
-	set_env_node(&shell->env, "?", stat);
-	return (status);
 }
 
-int	execute_and(t_shell *shell, t_ast *node)
+void	execute_and(t_shell *shell, t_ast *node)
 {
-	int	status;
-
-	status = 0;
-	status = execute_ast(shell, node->left);
-	if (status == 0)
-		status = execute_ast(shell, node->right);
-	return (status);
+	execute_ast(shell, node->left);
+	if (shell->exit_status == 0)
+		execute_ast(shell, node->right);
 }
 
-int	execute_or(t_shell *shell, t_ast *node)
+void	execute_or(t_shell *shell, t_ast *node)
 {
-	int	status;
-
-	status = 0;
-	status = execute_ast(shell, node->left);
-	if (status != 0)
-		status = execute_ast(shell, node->right);
-	return (status);
+	execute_ast(shell, node->left);
+	if (shell->exit_status != 0)
+		execute_ast(shell, node->right);
 }
 
 int	execute_pipe(t_shell *shell, t_ast *node)
@@ -143,16 +129,12 @@ int	execute_pipe(t_shell *shell, t_ast *node)
 	int			left_pid;
 	int			right_pid;
 	int			fd[2];
-	int			lstatus;
-	int			rstatus;
-	
-	lstatus = 0;
-	rstatus = 0;
+
 	if (pipe(fd) < 0)
-		return (1);
+		return (shell->exit_status = ERROR);
 	left_pid = fork();
 	if (left_pid < 0)
-		return (1);
+		return (shell->exit_status = ERROR);
 	if (left_pid == 0)
 	{
 		close(fd[0]);
@@ -163,7 +145,7 @@ int	execute_pipe(t_shell *shell, t_ast *node)
 	}
 	right_pid = fork();
 	if (right_pid < 0)
-		return (1);
+		return (shell->exit_status = ERROR);
 	if (right_pid == 0)
 	{
 		close(fd[1]);
@@ -174,11 +156,7 @@ int	execute_pipe(t_shell *shell, t_ast *node)
 	}
 	close(fd[0]);
 	close(fd[1]);
-	waitpid(left_pid, &lstatus, 0);
-	waitpid(right_pid, &rstatus, 0);
-	if (lstatus)
-		return (lstatus);
-	else if (rstatus)
-		return (rstatus);
+	waitpid(left_pid, &shell->exit_status, 0);
+	waitpid(right_pid, &shell->exit_status, 0);
 	return (0);
 }	
