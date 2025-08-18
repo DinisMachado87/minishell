@@ -13,47 +13,80 @@ CMD_DIR = $(SRC_DIR)/commands
 HELPER_DIR = $(SRC_DIR)/helper
 PARSER_DIR = $(SRC_DIR)/parser
 
-AST_SRC_FILES =		execute_ast.c
-CMD_SRC_FILES =		built_ins.c export_utils.c get_cmd_path.c
-PARSER_HELP_MAIN =	src/helper/itoa.c \
-					src/parser/main_parser.c
-HELPER_SRC_FILES =	env.c itoa.c loop.c print_err.c ms_strndup.c ms_strncat.c ms_strncpy.c ms_strchr.c
-PARSER_SRC_FILES =	ast_utils.c \
-					extract_operator.c \
-					extract_utils.c \
-					parser_utils.c \
-					structure_ast.c \
-					extract_cmd.c \
-					extract_subshell.c \
-					gen_utils.c \
-					parser.c \
-					print_ast.c \
-					heredoc.c \
-					extract_redirect.c
+AST_SRCS = $(AST_DIR)/execute_ast.c
+
+CMD_SRCS = $(CMD_DIR)/built_ins.c \
+		   $(CMD_DIR)/export_utils.c \
+		   $(CMD_DIR)/get_cmd_path.c
+
+HELPER_SRCS = $(HELPER_DIR)/env.c \
+			  $(HELPER_DIR)/itoa.c \
+			  $(HELPER_DIR)/loop.c \
+			  $(HELPER_DIR)/print_err.c \
+			  $(HELPER_DIR)/ms_strndup.c \
+			  $(HELPER_DIR)/ms_strncat.c \
+			  $(HELPER_DIR)/ms_strncpy.c \
+			  $(HELPER_DIR)/ms_strchr.c
+
+PARSER_SRCS = $(PARSER_DIR)/ast_utils.c \
+			  $(PARSER_DIR)/extract_operator.c \
+			  $(PARSER_DIR)/extract_utils.c \
+			  $(PARSER_DIR)/parser_utils.c \
+			  $(PARSER_DIR)/structure_ast.c \
+			  $(PARSER_DIR)/extract_cmd.c \
+			  $(PARSER_DIR)/extract_subshell.c \
+			  $(PARSER_DIR)/gen_utils.c \
+			  $(PARSER_DIR)/parser.c \
+			  $(PARSER_DIR)/print_ast.c \
+			  $(PARSER_DIR)/heredoc.c \
+			  $(PARSER_DIR)/extract_redirect.c
+
+PARSER_HELP_MAIN = $(HELPER_DIR)/itoa.c \
+				   $(PARSER_DIR)/main_parser.c
+
 MAIN = $(SRC_DIR)/main.c
 
-AST_SRCS = $(addprefix $(AST_DIR)/, $(AST_SRC_FILES))
-CMD_SRCS = $(addprefix $(CMD_DIR)/, $(CMD_SRC_FILES))
-HELPER_SRCS = $(addprefix $(HELPER_DIR)/, $(HELPER_SRC_FILES))
-PARSER_SRCS = $(addprefix $(PARSER_DIR)/, $(PARSER_SRC_FILES))
+AST_OBJS = $(AST_SRCS:.c=.o)
+CMD_OBJS = $(CMD_SRCS:.c=.o)
+HELPER_OBJS = $(HELPER_SRCS:.c=.o)
+PARSER_OBJS = $(PARSER_SRCS:.c=.o)
+MAIN_OBJ = $(MAIN:.c=.o)
+PARSER_HELP_OBJS = $(PARSER_HELP_MAIN:.c=.o)
+
+ALL_OBJS = $(AST_OBJS) $(CMD_OBJS) $(HELPER_OBJS) $(PARSER_OBJS) $(MAIN_OBJ)
 
 all: $(NAME)
 
-$(NAME): $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN)
-	$(CC) $(CFLAGS) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN) -lreadline -o $(NAME)
+$(NAME): $(ALL_OBJS)
+	$(CC) $(CFLAGS) $(ALL_OBJS) -lreadline -o $(NAME)
 
-parser: $(PARSER_SRCS) $(PARSER_HELP_MAIN) $(HEADER) 
-	$(CC) $(CFLAGS) $(PARSER_SRCS) $(PARSER_HELP_MAIN) $(HEADER) -lreadline -o parser
+parser: $(PARSER_OBJS) $(PARSER_HELP_OBJS) $(HEADER)
+	$(CC) $(DEBUG_FLAGS) $(PARSER_OBJS) $(PARSER_HELP_OBJS) -lreadline -o parser
 
-debug: $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN)
-	$(CC) $(DEBUG_FLAGS) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(HEADER) $(MAIN) -lreadline -o $(NAME)
+debug: $(ALL_OBJS)
+	$(CC) $(DEBUG_FLAGS) $(ALL_OBJS) -lreadline -o $(NAME)
+
+$(AST_DIR)/%.o: $(AST_DIR)/%.c $(HEADER)
+	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
+
+$(CMD_DIR)/%.o: $(CMD_DIR)/%.c $(HEADER)
+	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
+
+$(HELPER_DIR)/%.o: $(HELPER_DIR)/%.c $(HEADER)
+	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
+
+$(PARSER_DIR)/%.o: $(PARSER_DIR)/%.c $(HEADER)
+	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
+
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER)
+	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
 
 clean:
-	rm -f $(NAME)
+	rm -f $(ALL_OBJS) $(PARSER_HELP_OBJS)
 
-fclean:
-	rm -f $(NAME)
+fclean: clean
+	rm -f $(NAME) parser
 
-re: fclean $(NAME)
+re: fclean all
 
-.PHONY: all parser clean fclean re
+.PHONY: all parser debug clean fclean re
