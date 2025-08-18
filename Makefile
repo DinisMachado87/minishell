@@ -1,57 +1,38 @@
 NAME = minishell
-
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 DEBUG_FLAGS = $(CFLAGS) -g -O0
-
 HEADER_DIR = include
 HEADER = $(HEADER_DIR)/minishell.h
-
 SRC_DIR = src
 AST_DIR = $(SRC_DIR)/ast
 CMD_DIR = $(SRC_DIR)/commands
 HELPER_DIR = $(SRC_DIR)/helper
 PARSER_DIR = $(SRC_DIR)/parser
 
-AST_SRCS = $(AST_DIR)/execute_ast.c
+# Source files without directory prefixes
+AST_FILES = execute_ast.c
+CMD_FILES = built_ins.c export_utils.c get_cmd_path.c
+HELPER_FILES = env.c itoa.c loop.c print_err.c ms_strndup.c ms_strncat.c \
+			   ms_strncpy.c ms_strchr.c
+PARSER_FILES = ast_utils.c extract_operator.c extract_utils.c parser_utils.c \
+			   structure_ast.c extract_cmd.c extract_subshell.c gen_utils.c \
+			   parser.c print_ast.c heredoc.c extract_redirect.c
+MAIN_FILE = main.c
 
-CMD_SRCS = $(CMD_DIR)/built_ins.c \
-		   $(CMD_DIR)/export_utils.c \
-		   $(CMD_DIR)/get_cmd_path.c
+# Source files with directory prefixes
+AST_SRCS = $(addprefix $(AST_DIR)/, $(AST_FILES))
+CMD_SRCS = $(addprefix $(CMD_DIR)/, $(CMD_FILES))
+HELPER_SRCS = $(addprefix $(HELPER_DIR)/, $(HELPER_FILES))
+PARSER_SRCS = $(addprefix $(PARSER_DIR)/, $(PARSER_FILES))
+MAIN = $(addprefix $(SRC_DIR)/, $(MAIN_FILE))
 
-HELPER_SRCS = $(HELPER_DIR)/env.c \
-			  $(HELPER_DIR)/itoa.c \
-			  $(HELPER_DIR)/loop.c \
-			  $(HELPER_DIR)/print_err.c \
-			  $(HELPER_DIR)/ms_strndup.c \
-			  $(HELPER_DIR)/ms_strncat.c \
-			  $(HELPER_DIR)/ms_strncpy.c \
-			  $(HELPER_DIR)/ms_strchr.c
-
-PARSER_SRCS = $(PARSER_DIR)/ast_utils.c \
-			  $(PARSER_DIR)/extract_operator.c \
-			  $(PARSER_DIR)/extract_utils.c \
-			  $(PARSER_DIR)/parser_utils.c \
-			  $(PARSER_DIR)/structure_ast.c \
-			  $(PARSER_DIR)/extract_cmd.c \
-			  $(PARSER_DIR)/extract_subshell.c \
-			  $(PARSER_DIR)/gen_utils.c \
-			  $(PARSER_DIR)/parser.c \
-			  $(PARSER_DIR)/print_ast.c \
-			  $(PARSER_DIR)/heredoc.c \
-			  $(PARSER_DIR)/extract_redirect.c
-
-PARSER_HELP_MAIN = $(HELPER_DIR)/itoa.c \
-				   $(PARSER_DIR)/main_parser.c
-
-MAIN = $(SRC_DIR)/main.c
-
+# Object files
 AST_OBJS = $(AST_SRCS:.c=.o)
 CMD_OBJS = $(CMD_SRCS:.c=.o)
 HELPER_OBJS = $(HELPER_SRCS:.c=.o)
 PARSER_OBJS = $(PARSER_SRCS:.c=.o)
 MAIN_OBJ = $(MAIN:.c=.o)
-PARSER_HELP_OBJS = $(PARSER_HELP_MAIN:.c=.o)
 
 ALL_OBJS = $(AST_OBJS) $(CMD_OBJS) $(HELPER_OBJS) $(PARSER_OBJS) $(MAIN_OBJ)
 
@@ -60,12 +41,23 @@ all: $(NAME)
 $(NAME): $(ALL_OBJS)
 	$(CC) $(CFLAGS) $(ALL_OBJS) -lreadline -o $(NAME)
 
-parser: $(PARSER_HELP_MAIN) $(PARSER_SRCS) $(HEADER)
-	$(CC) $(DEBUG_FLAGS) -I$(HEADER_DIR) $(PARSER_SRCS) $(PARSER_HELP_MAIN) -lreadline -o parser
-
 debug: $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(MAIN) $(HEADER)
 	$(CC) $(DEBUG_FLAGS) -I$(HEADER_DIR) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(MAIN) -lreadline -o $(NAME)
 
+# Test targets that use separate Makefiles
+parser:
+	$(MAKE) -C tests/parser
+
+norm:
+	$(MAKE) -C tests/normalizer
+
+parser-clean:
+	$(MAKE) -C tests/parser clean
+
+norm-clean:
+	$(MAKE) -C tests/normalizer clean
+
+# Object file compilation rules
 $(AST_DIR)/%.o: $(AST_DIR)/%.c $(HEADER)
 	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
 
@@ -83,11 +75,10 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER)
 
 clean:
 	rm -f $(ALL_OBJS)
-	rm -f $(PARSER_HELP_MAIN:.c=.o)
 
-fclean: clean
-	rm -f $(NAME) parser
+fclean: clean parser-clean norm-clean
+	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all parser debug clean fclean re
+.PHONY: all parser norm parser-clean norm-clean debug clean fclean re

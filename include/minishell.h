@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/18 12:43:09 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/18 18:55:11 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,10 @@ typedef struct  s_shell
 	t_env   *env;
 }			t_shell;
 
+// normaliser
+int		normalizer(char **str);
+// parser
+t_ast	*parser(char *str, t_ast **head_list);
 // ast_utils
 t_ast	*make_node(t_ast **ast);
 t_ast	*free_ast(t_ast **ast);
@@ -174,8 +178,6 @@ void	ms_bzero(void *s, size_t n);
 int		ms_strcmp(char *ref, char *str);
 int		ms_strlen(char *str);
 int		is_alphanumeric_or_underscore(char chr);
-// parser
-t_ast	*parser(char *str, t_ast **head_list);
 // extract cmd
 int	skip_count_word(char *str, char *limiter, int *space, int *expand);
 void	free_red_args(t_ast *ast, int subtype);
