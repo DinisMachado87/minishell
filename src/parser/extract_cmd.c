@@ -6,31 +6,25 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/13 01:14:17 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/15 19:56:54 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-enum e_quotes {
-	NO_QUOTES,
-	SINGLE,
-	DOUBLE,
-};
-
-static char	set_limiter(char *str, t_ast *ast, t_s_parser *s, int *i_ltr)
+static char	set_limiter(char *str, int *i_ltr, int *expand)
 {
-	if (!(*str == '\''))
-		ast->exp_args[s->i_word] = POTENCIALLY_EXPAND;
+	if (*str == '\'')
+		*expand = DONT_EXPAND;
 	if (*str == '\'' || *str == '\"')
 	{
-		*i_ltr++;
+		(*i_ltr)++;
 		return (str[0]);
 	}
 	return (' ');
 }
 
-int	skip_count_word(char *str, char *limiter, t_ast *ast, t_s_parser *s)
+int	skip_count_word(char *str, char *limiter, int *space, int *expand)
 {
 	int		i_ltr;
 	int		char_type;
@@ -39,22 +33,21 @@ int	skip_count_word(char *str, char *limiter, t_ast *ast, t_s_parser *s)
 	char_type = type(str + i_ltr);
 	if (char_type != CMD)
 		return (i_ltr);
-	*limiter = set_limiter(str, ast, s, &i_ltr);
-	while (str[i_ltr] && char_type == CMD)
+	*limiter = set_limiter(str, &i_ltr, expand);
+	while (str[i_ltr] && char_type == CMD && str[i_ltr] != *limiter)
 	{
-		if (limiter == ' '
+		if (*limiter == ' '
 			&& (str[i_ltr] == '\'' || str[i_ltr] == '"'))
-			break;
-		if (str[i_ltr] == '$' && str[i_ltr + 1] == '$'
-			&& ast->exp_args[s->i_word] == POTENCIALLY_EXPAND)
-			ast->exp_args[s->i_word] = EXPAND;
+		{
+			*space = NO_SPACE_AFTER;
+			return (i_ltr);
+		}
+		if (str[i_ltr] == '$' && is_alphanumeric_or_underscore(str[i_ltr + 1])
+			&& *expand == POTENCIALLY_EXPAND)
+			*expand = EXPAND;
 		i_ltr++;
-		if (str[i_ltr - 1] == limiter)
-			break;
 		char_type = type(str + i_ltr);
 	}
-	if (str[i_ltr] != ' ')
-		ast->space_args[s->i_word] = NO_SPACE_AFTER;
 	return (i_ltr);
 }
 
@@ -63,11 +56,15 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	int		i_ltr;
 	char	*word;
 	char	quotes;
+	int		space_args;
+	int		expand;
 
 	quotes = NO_QUOTES;
+	space_args = SPACE_AFTER;
+	expand = POTENCIALLY_EXPAND;
 	s->i_word++;
-	ast->space_args[s->i_word] = SPACE_AFTER;
-	i_ltr = skip_count_word(str, &quotes, ast, s);
+
+	i_ltr = skip_count_word(str, &quotes, &space_args, &expand);
 	if (str[i_ltr])
 		s->n_cmd_ltrs += extract_cmd_recursive(ast, str + i_ltr, s);
 	if (!ast->args && !allocate_ast_args(ast, s->i_word))
@@ -76,6 +73,8 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	if (!word)
 		return (0);
 	ast->args[--s->i_word] = word;
+	ast->space_args[s->i_word] = space_args;
+	ast->exp_args[s->i_word] = expand;
 	return(i_ltr);
 }
 

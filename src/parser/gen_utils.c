@@ -45,3 +45,13 @@ int	ms_strlen(char *str)
 		len++;
 	return (len);
 }
+
+int	is_alphanumeric_or_underscore(char chr)
+{
+	if ((chr >= 'a' && chr <= 'z')
+		|| (chr >= 'A' && chr <= 'Z')
+		|| (chr >= 0 && chr <= 9)
+		|| (chr >= '_'))
+		return (1);
+	return (0);
+}

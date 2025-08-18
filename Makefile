@@ -60,11 +60,11 @@ all: $(NAME)
 $(NAME): $(ALL_OBJS)
 	$(CC) $(CFLAGS) $(ALL_OBJS) -lreadline -o $(NAME)
 
-parser: $(PARSER_OBJS) $(PARSER_HELP_OBJS) $(HEADER)
-	$(CC) $(DEBUG_FLAGS) $(PARSER_OBJS) $(PARSER_HELP_OBJS) -lreadline -o parser
+parser: $(PARSER_HELP_MAIN) $(PARSER_SRCS) $(HEADER)
+	$(CC) $(DEBUG_FLAGS) -I$(HEADER_DIR) $(PARSER_SRCS) $(PARSER_HELP_MAIN) -lreadline -o parser
 
-debug: $(ALL_OBJS)
-	$(CC) $(DEBUG_FLAGS) $(ALL_OBJS) -lreadline -o $(NAME)
+debug: $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(MAIN) $(HEADER)
+	$(CC) $(DEBUG_FLAGS) -I$(HEADER_DIR) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(MAIN) -lreadline -o $(NAME)
 
 $(AST_DIR)/%.o: $(AST_DIR)/%.c $(HEADER)
 	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
@@ -82,7 +82,8 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER)
 	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
 
 clean:
-	rm -f $(ALL_OBJS) $(PARSER_HELP_OBJS)
+	rm -f $(ALL_OBJS)
+	rm -f $(PARSER_HELP_MAIN:.c=.o)
 
 fclean: clean
 	rm -f $(NAME) parser
