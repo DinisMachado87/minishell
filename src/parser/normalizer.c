@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 18:10:46 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/18 23:01:59 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/19 16:57:08 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,19 @@ typedef struct	s_i_cpy {
 
 static inline int	needs_space_before(const char *str, int i)
 {
-	return (i > 0 && str[i - 1] != ' ' && str[i - 1] != str[i]);
+	return (i > 0
+		&& str[i - 1] != ' '
+		&& str[i - 1] != str[i]);
 }
 
 static inline int	needs_space_after(const char *str, int i)
 {
-	return (str[i + 1] && str[i + 1] != ' ' && str[i + 1] != str[i]);
+	return (str[i + 1]
+		&& str[i + 1] != ' '
+		&& str[i + 1] != str[i]);
 }
 
-int	count_spaced_chars(char *str)
+static int	count_spaced_chars(char *str)
 {
 	const char *spec_chr = "<>&|";
 	t_i_count	i;
@@ -45,6 +49,8 @@ int	count_spaced_chars(char *str)
 	extra_spaces = 0;
 	while (str[i.ltr])
 	{
+		while (str[i.ltr] == ' ' && str[i.ltr + 1] == ' ')
+			i.ltr++;
 		while (spec_chr[i.chr] && str[i.ltr] != spec_chr[i.chr])
 			i.chr++;
 		if (spec_chr[i.chr] && needs_space_before(str, i.ltr))
@@ -57,7 +63,7 @@ int	count_spaced_chars(char *str)
 	return (i.ltr + extra_spaces);
 }
 
-void	copy_str_with_extra_spaces(char *src, char *dest)
+static void	copy_str_with_extra_spaces(char *src, char *dest)
 {
 	const char *ref_chr = "<>&|";
 	t_i_cpy i;
@@ -67,6 +73,8 @@ void	copy_str_with_extra_spaces(char *src, char *dest)
 	i.dest = 0;
 	while (src[i.src])
 	{
+		while (src[i.src] == ' ' && src[i.src + 1] == ' ')
+			i.src++;
 		while (ref_chr[i.chr] && src[i.src] != ref_chr[i.chr])
 			i.chr++;
 		if (ref_chr[i.chr] && needs_space_before(src, i.src))

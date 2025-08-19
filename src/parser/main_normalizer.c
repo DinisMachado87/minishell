@@ -18,7 +18,7 @@ int	main()
 	char	*str;
 	int		i_test;
 	const	char	*test_strs[] = {
-		"cat<file.txt|cat&&ls -l&&export env=car&&echo hello'$env'\"$env\"&&echo hello '$env' \"$env\"||echo end",
+		"cat<file.txt|cat&&ls    -l&&export env=car&&echo hello'$env'\"$env\"&&echo hello '$env' \"$env\"||echo end",
 		0
 	};
 
