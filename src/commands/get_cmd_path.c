@@ -32,6 +32,7 @@ char	*append_cmd(char *dir, char *cmd)
 
 	total_len = ms_strlen(dir) + ms_strlen(cmd) + 1;
 	path = malloc(sizeof(char) * (total_len + 1));
+	ms_bzero((void *)path, (total_len + 1));
 	if (!path)
 		return (NULL);
 	ms_strncpy(path, dir, ms_strlen(dir));
