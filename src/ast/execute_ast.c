@@ -125,7 +125,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		subshell.env = init_env();
 		subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
 		execute_ast(&subshell, subshell.ast_tree);
-		free_ast(&subshell.ast_head);
+		free_all(&subshell.ast_head);
 	}
 }
 
