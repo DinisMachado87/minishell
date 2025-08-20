@@ -1,7 +1,5 @@
 	- Make use of volatile global variable to terminate the main loop when a signal was received (see man 7 signal-safety) to get a list of functions that are safe to use inside a signal handler
 	- How to test for memleaks when exit is in the command chain
-	- Block signals in parent when a subshell is created (on ctrl+d only the child is supposed to exit)
-	- signals (man signal-safety)
 	- Have a look into wildcards
 	- Expand $? to t_shell var instade of env var
 	- Refactor

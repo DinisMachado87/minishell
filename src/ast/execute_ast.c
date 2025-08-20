@@ -8,9 +8,11 @@ int	execute_external(t_shell *shell, t_ast *node)
 	int		status;
 
 	status = 0;
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
 		cmd = get_cmd_path(node->args[0], get_env_node(shell->env, "PATH")->value);
 		if (!cmd)
 		{
@@ -28,6 +30,7 @@ int	execute_external(t_shell *shell, t_ast *node)
 		exit(0);
 	}
 	waitpid(pid, &status, 0);
+	set_handler(0);
 	return (status);
 }
 
@@ -106,7 +109,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		subshell.env = init_env();
 		subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
 		execute_ast(&subshell, subshell.ast_tree);
-		free_all(&subshell.ast_head);
+		free_ast(&subshell.ast_head);
 	}
 }
 

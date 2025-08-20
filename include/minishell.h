@@ -201,5 +201,6 @@ char    *ms_strndup(char *str, int n);
 char    *ms_strncat(char *dst, char *src, int ssize);
 char    *ms_strncpy(char *dst, char *src, int ssize);
 char    *ms_strchr(char *s, int c);
+void    set_handler(int rdline);
 
 #endif
