@@ -117,7 +117,7 @@ typedef struct s_ast
     int             heredoc;
     int             n_args;
     char            *red_args[2];
-    int				*red_exp_args[2];
+    int				red_exp_args[2];
     struct s_ast    *next;
     struct s_ast    *left;
     struct s_ast    *right;
