@@ -13,16 +13,18 @@
 #include "../../include/minishell.h"
 
 const char *test_strs[] = {
-    "   echo Hello | cat $signal.txt   ",
-    "",
-    "   echo Hello <text.txt | cat signal.txt> text.txt   ",
-    "   echo Hello | (cat signal.txt <text.txt ) ",
-    "   (cat signal.txt <text.txt ) | echo Hello && ls -l   ",
-    "   echo Hello | cat signal.txt <text.txt  ",
-    "   cat signal.txt <text.txt  | echo Hello && ls -l   ",
-    "   ls -l || echo Hello | cat $signal.txt   ",
-    "echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ",
-    "   <<eof cat signal.txt> text.txt   ",
+    // "   echo Hello | cat $signal.txt   ",
+    // "",
+    // "   echo Hello <text.txt | cat signal.txt> text.txt   ",
+    // "   echo Hello | (cat signal.txt <text.txt ) ",
+    // "   (cat signal.txt <text.txt ) | echo Hello && ls -l   ",
+    // "   echo Hello | cat signal.txt <text.txt  ",
+    // "   cat signal.txt <text.txt  | echo Hello && ls -l   ",
+    // "   ls -l || echo Hello | cat $signal.txt   ",
+    // "echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ",
+    //"   <<eof cat signal.txt> text.txt   ",
+	"< $env cat",
+	"cat '$env'cat'$env'",
 	NULL,
 };
 
@@ -58,6 +60,7 @@ int	main(int argc, char **argv)
 	}
 	if (argc == 2)
 	{
+
 		ast_ast = parser(argv[1], &ast);
 		printf("== %s ==", argv[1]);
 		print_nd_list(ast, "Parser List");

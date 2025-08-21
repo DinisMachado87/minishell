@@ -71,7 +71,7 @@ static void print_element_w_exp_space(char *name, int exp, int space_after, char
 		printf("%s:NONE", name);
 };
 
-static void print_ast_arr(char **arr, int *intarr)
+static void print_ast_arr(char **arr, int *exarr, int *spacearr)
 {
 	int	i;
 
@@ -80,7 +80,8 @@ static void print_ast_arr(char **arr, int *intarr)
 		return ;
 	while (arr[i])
 	{
-		printf("%d", intarr[i]);
+		printf("%d:", exarr[i]);
+		printf("%d", spacearr[i]);
 		print_ast_str("", arr[i], 0, "\t");
 		i++;
 	}
@@ -116,7 +117,7 @@ static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 	}
 	print_indent(indent);
 	printf("|N_ARGS:%d\t", ast->n_args);
-	print_ast_arr(ast->args, ast->exp_args);
+	print_ast_arr(ast->args, ast->exp_args, ast->space_args);
 	printf("\n");
 	print_indent(indent);
 	print_element_w_exp_space("|RED_IN", ast->red_exp_args[IN], 0, ast->red_args[IN]);
