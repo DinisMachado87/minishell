@@ -133,18 +133,18 @@ typedef struct  s_state_parser
 	int		n_heredoc;
 }			t_s_parser;
 
-typedef struct s_state_redirect
+typedef struct s_extract_token
 {
 	int 	i_ltr;
 	char	*word;
 	char	quotes;
-	int		space_args;
+	int		space_after;
 	int		expand;
 
 	int 	spaces;
 	int		red_subtype;
 	int		heredoc;
-}	t_s_red;
+}	t_s_token;
 
 typedef struct  s_env
 {
@@ -179,7 +179,7 @@ int		ms_strcmp(char *ref, char *str);
 int		ms_strlen(char *str);
 int		is_alphanumeric_or_underscore(char chr);
 // extract cmd
-int	skip_count_word(char *str, char *limiter, int *space, int *expand);
+int	skip_count_word(char *str, t_s_token *t);
 void	free_red_args(t_ast *ast, int subtype);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
 int		extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s);
