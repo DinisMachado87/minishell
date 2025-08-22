@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:59 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/14 13:15:13 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 15:06:33 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,18 @@ int	ms_strcmp(char *ref, char *str)
 	return (0);
 }
 
+int	ms_strncmp(char *s1, char *s2, int size)
+{
+	int i;
+	
+	i = 0;
+	while (i < size && s1[i] && s2[i] && s1[i] == s2[i] )
+		i++;	
+	if (i < size)
+		return (1);
+	return (0);
+}
+
 int	ms_strlen(char *str)
 {
 	int	len;
@@ -46,7 +58,7 @@ int	ms_strlen(char *str)
 	return (len);
 }
 
-int	is_alphanumeric_or_underscore(char chr)
+int	is_alphanum_or_underscore(char chr)
 {
 	if ((chr >= 'a' && chr <= 'z')
 		|| (chr >= 'A' && chr <= 'Z')

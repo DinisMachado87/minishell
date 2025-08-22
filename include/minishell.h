@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/22 19:42:10 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 19:44:15 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 
 # include <stdlib.h>
 # include <stdio.h>
-# include <errno.h>
 # include <string.h>
 # include <unistd.h>
 # include <readline/readline.h>
@@ -73,12 +72,6 @@ typedef enum e_redirect_subtype
 	APPEND,
 	HEREDOC,
 }	t_redirect_subtype;
-
-enum e_quotes {
-	NO_QUOTES,
-	SINGLE,
-	DOUBLE,
-};
 
 typedef struct s_token
 {
@@ -140,7 +133,6 @@ typedef struct s_extract_token
 	char	quotes;
 	int		space_after;
 	int		expand;
-
 	int 	spaces;
 	int		red_subtype;
 	int		heredoc;
@@ -165,6 +157,8 @@ typedef struct  s_shell
 int		normalizer(char **str);
 // parser
 t_ast	*parser(char *str, t_ast **head_list);
+// cmd_expander
+int		cmd_expander(t_ast *ast, t_env *env_head);
 // ast_utils
 t_ast	*make_node(t_ast **ast);
 t_ast	*free_ast(t_ast **ast);
@@ -177,10 +171,11 @@ int		allocate_ast_args(t_ast *ast, int n_strs);
 // gen_utils
 void	ms_bzero(void *s, size_t n);
 int		ms_strcmp(char *ref, char *str);
+int		ms_strncmp(char *s1, char *s2, int size);
 int		ms_strlen(char *str);
-int		is_alphanumeric_or_underscore(char chr);
+int		is_alphanum_or_underscore(char chr);
 // extract cmd
-int	skip_count_word(char *str, t_s_token *t);
+int		skip_count_word(char *str, t_s_token *t, char	*limiter);
 void	free_red_args(t_ast *ast, int subtype);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
 int		extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s);

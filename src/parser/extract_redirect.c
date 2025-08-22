@@ -68,12 +68,12 @@ int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
 	r.spaces = 0;
 	r.heredoc = 0;
 	r.red_subtype = subtype(str);
-	r.quotes = NO_QUOTES;
+	r.quotes = ' ';
 	r.space_after = SPACE_AFTER;
 	r.expand = POTENCIALLY_EXPAND;
 	if (!skip_red_sign_and_spaces(str, &r))
 		return (perror("Error: No file after redirect"), 0);
-	r.i_ltr = skip_count_word((str + r.spaces), &r);
+	r.i_ltr = skip_count_word((str + r.spaces), &r, &r.quotes);
 	r.word = ms_strcpy((str + r.spaces), r.i_ltr);
 	if (!r.word)
 		return (perror("Error malloc redirection argument"), 0);
