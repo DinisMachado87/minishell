@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/22 19:37:55 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 19:42:10 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ typedef struct s_ast
     char            *red_args[2];
     int             append;
     int             heredoc;
-    int				*red_exp_args[2];
+    int				red_exp_args[2];
     struct s_ast    *next;
     struct s_ast    *left;
     struct s_ast    *right;
