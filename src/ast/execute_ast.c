@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 19:52:12 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 20:03:06 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		subshell.env = init_env();
 		subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
 		execute_ast(&subshell, subshell.ast_tree);
-		free_all(&subshell.ast_head);
+		free_ast(&subshell.ast_head);
 	}
 }
 
