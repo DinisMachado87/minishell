@@ -2,7 +2,6 @@
 	- How to test for memleaks when exit is in the command chain
 	- Block signals in parent when a subshell is created (on ctrl+d only the child is supposed to exit)
 	- signals (man signal-safety)
-	- Make $? part of the t_shell instead of an environment variable
 	- Have a look into wildcards
 	- Expand $? to t_shell var instead of env var
 	- Refactor
