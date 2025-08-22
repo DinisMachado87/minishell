@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/22 20:07:13 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 20:13:49 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 # define MINISHELL_H
 
 # define ERROR -1
+# define DEBUG 1
 # define TEMP_PREFIX "temp_heredoc"
-# define POTENCIALLY_EXPAND 2
-# define EXPAND 1
 
 # include <stdlib.h>
 # include <stdio.h>
@@ -106,10 +105,11 @@ typedef struct s_ast
     int             subtype;
     char            **args;
     int				*exp_args;
+	int				*space_args;
     int             n_args;
-    char            *red_args[2];
     int             append;
     int             heredoc;
+    char            *red_args[2];
     int				red_exp_args[2];
     struct s_ast    *next;
     struct s_ast    *left;
