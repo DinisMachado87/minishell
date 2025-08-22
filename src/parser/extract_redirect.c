@@ -75,10 +75,10 @@ int	extract_redirect(t_ast *ast, char *str, t_s_parser *s)
 		return (perror("Error: No file after redirect"), 0);
 	r.i_ltr = skip_count_word((str + r.spaces), &r.quotes, &r.space_args,
 				ast->red_exp_args[r.red_subtype]);
-	convert_append_heredoc_to_in_out(ast, &r);
 	r.word = ms_strcpy((str + r.spaces), r.i_ltr);
 	if (!r.word)
 		return (perror("Error malloc redirection argument"), 0);
+	convert_append_heredoc_to_in_out(ast, &r);
 	free_red_args(ast, r.red_subtype);
 	ast->red_args[r.red_subtype] = r.word;
 	if (r.heredoc)
