@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/22 13:07:41 by jlind            ###   ########.fr       */
+/*   Updated: 2025/08/22 19:24:47 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,17 @@
 # include <stddef.h>
 # include <fcntl.h>
 # include <limits.h>
+
+enum e_expand {
+	DONT_EXPAND,
+	EXPAND,
+	POTENCIALLY_EXPAND,
+};
+
+enum e_space {
+	NO_SPACE_AFTER,
+	SPACE_AFTER,
+};
 
 typedef enum e_type {
 	SUBSHELL,
@@ -62,6 +73,12 @@ typedef enum e_redirect_subtype
 	APPEND,
 	HEREDOC,
 }	t_redirect_subtype;
+
+enum e_quotes {
+	NO_QUOTES,
+	SINGLE,
+	DOUBLE,
+};
 
 typedef struct s_token
 {
@@ -100,6 +117,7 @@ typedef struct s_ast
     char            *red_args[2];
     int             append;
     int             heredoc;
+    int				*red_exp_args[2];
     struct s_ast    *next;
     struct s_ast    *left;
     struct s_ast    *right;
@@ -118,9 +136,13 @@ typedef struct  s_state_parser
 typedef struct s_state_redirect
 {
 	int 	i_ltr;
+	char	*word;
+	char	quotes;
+	int		space_args;
+	int		expand;
+
 	int 	spaces;
 	int		red_subtype;
-	char	*word;
 	int		heredoc;
 }	t_s_red;
 
@@ -152,10 +174,11 @@ int		allocate_ast_args(t_ast *ast, int n_strs);
 void	ms_bzero(void *s, size_t n);
 int		ms_strcmp(char *ref, char *str);
 int		ms_strlen(char *str);
+int		is_alphanumeric_or_underscore(char chr);
 // parser
 t_ast	*parser(char *str, t_ast **head_list);
 // extract cmd
-int		skip_count_word(char *str, char limiter, int *exp_args);
+int	skip_count_word(char *str, char *limiter, int *space, int *expand);
 void	free_red_args(t_ast *ast, int subtype);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
 int		extract_cmd_recursive(t_ast *ast, char *str, t_s_parser *s);
