@@ -13,11 +13,27 @@ PARSER_DIR = $(SRC_DIR)/parser
 # Source files without directory prefixes
 AST_FILES = execute_ast.c
 CMD_FILES = built_ins.c export_utils.c get_cmd_path.c
-HELPER_FILES = env.c itoa.c loop.c print_err.c ms_strndup.c ms_strncat.c \
-			   ms_strncpy.c ms_strchr.c
-PARSER_FILES = ast_utils.c extract_operator.c extract_utils.c parser_utils.c \
-			   structure_ast.c extract_cmd.c extract_subshell.c gen_utils.c \
-			   parser.c print_ast.c heredoc.c extract_redirect.c
+HELPER_FILES = env.c \
+			   itoa.c \
+			   loop.c \
+			   print_err.c \
+			   ms_strndup.c \
+			   ms_strncat.c \
+			   ms_strncpy.c \
+			   ms_strchr.c
+PARSER_FILES = ast_utils.c \
+			   extract_operator.c \
+			   extract_utils.c \
+			   parser_utils.c \
+			   structure_ast.c \
+			   extract_cmd.c \
+			   extract_subshell.c \
+			   gen_utils.c \
+			   parser.c \
+			   print_ast.c \
+			   heredoc.c \
+			   expand_cmd.c \
+			   extract_redirect.c
 MAIN_FILE = main.c
 
 # Source files with directory prefixes

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/18 18:24:23 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 14:56:24 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,22 @@ static char	set_limiter(char *str, int *i_ltr, int *expand)
 	return (' ');
 }
 
-int	skip_count_word(char *str, t_s_token *t)
+int	skip_count_word(char *str, t_s_token *t, char	*limiter)
 {
 	int		i_ltr;
 	int		char_type;
-	char	*limiter;
 
 	i_ltr = 0;
 	char_type = type(str + i_ltr);
-	limiter = &t->quotes;
 	if (char_type != CMD)
 		return (i_ltr);
 	*limiter = set_limiter(str, &i_ltr, &t->expand);
 	while (str[i_ltr] && char_type == CMD && str[i_ltr] != *limiter)
 	{
-		if (*limiter == ' ' && (str[i_ltr] == '\'' || str[i_ltr] == '\"'))
+		if (*limiter == ' '
+			&& (str[i_ltr] == '\'' || str[i_ltr] == '\"'))
 			break;
-		if (str[i_ltr] == '$'
-			&& t->expand == POTENCIALLY_EXPAND)
+		if (str[i_ltr] == '$' && t->expand == POTENCIALLY_EXPAND)
 			t->expand = EXPAND;
 		i_ltr++;
 		char_type = type(str + i_ltr);
@@ -58,12 +56,12 @@ static int	extract_word_recursive(t_ast *ast, char *str, t_s_parser *s)
 	t_s_token t;
 	int		i_ltr;
 
-	t.quotes = NO_QUOTES;
+	t.quotes = ' ';
 	t.space_after = SPACE_AFTER;
 	t.expand = POTENCIALLY_EXPAND;
 	t.word = NULL;
 	s->i_word++;
-	i_ltr = skip_count_word(str, &t);
+	i_ltr = skip_count_word(str, &t, &t.quotes);
 	if (str[i_ltr])
 		s->n_cmd_ltrs += extract_cmd_recursive(ast, str + i_ltr, s);
 	if (!ast->args && !allocate_ast_args(ast, s->i_word))
@@ -103,6 +101,7 @@ t_ast	*extract_cmd(t_ast **ast, char **str, t_s_parser *s)
 	if (!s->n_cmd_ltrs)
 		return (free_ast(ast), NULL);
 	(*ast)->type = CMD;
+	(*ast)->space_args[(*ast)->n_args - 1] = NO_SPACE_AFTER;
 	*str += s->n_cmd_ltrs;
 	return (*ast);
 }

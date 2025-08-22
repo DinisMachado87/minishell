@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:33:50 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/12 23:57:36 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 02:06:48 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ const char *test_strs[] = {
     // "echo 'the city \"is wilder\" than you think' (ls) \"(ls)\" \"'and think' better\"   ",
     //"   <<eof cat signal.txt> text.txt   ",
 	"< $env cat",
-	"cat '$env'cat'$env'",
+	"cat '$env'$cat\"$double\"'$env'",
 	NULL,
 };
 
