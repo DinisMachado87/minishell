@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/14 14:02:42 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 13:07:41 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ void	print_nd_list(t_ast *ast, char *testname);
 // prompt_loop
 void	prompt_loop(void);
 void	execute_ast(t_shell *shell, t_ast *node);
-int		execute_pipe(t_shell *shell, t_ast *node);
+void	execute_pipe(t_shell *shell, t_ast *node);
 int		ft_echo(t_ast *node);
 int		ft_cd(t_shell *shell, t_ast *node);
 int		ft_pwd(void);

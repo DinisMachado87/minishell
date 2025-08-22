@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/22 13:21:55 by jlind             #+#    #+#             */
+/*   Updated: 2025/08/22 13:23:19 by jlind            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 t_env	*gen_env_node(char *key, char *value)
@@ -27,23 +39,24 @@ void	free_env_node(t_env **node)
 
 void	free_env_node_by_key(t_env **head, char *key)
 {
-	t_env *curr = *head;
-	t_env *prev = NULL;
+	t_env	*curr;
+	t_env	*prev;
 
+	curr = *head;
+	prev = NULL;
 	while (curr)
 	{
-			if (ms_strcmp(curr->key, key) == 0)
-			{
-					if (prev)
-							prev->next = curr->next;
-					else
-							*head = curr->next;
-
-					free_env_node(&curr);
-					return;
-			}
-			prev = curr;
-			curr = curr->next;
+		if (ms_strcmp(curr->key, key) == 0)
+		{
+			if (prev)
+				prev->next = curr->next;
+			else
+				*head = curr->next;
+			free_env_node(&curr);
+			return ;
+		}
+		prev = curr;
+		curr = curr->next;
 	}
 }
 

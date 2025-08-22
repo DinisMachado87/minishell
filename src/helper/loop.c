@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/14 20:28:37 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/22 13:24:54 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,21 @@ void	set_handler(int rdline)
 		perror("sigaction");
 }
 
-char  *get_prompt(void)
+char	*get_prompt(void)
 {
-	char  *cwd;
-	char  *prompt;
+	char	*cwd;
+	char	*prompt;
 	char	*user;
 
 	cwd = getcwd(NULL, 0);
 	user = getenv("USER");
 	if (!cwd)
-	  return (NULL);
+		return (NULL);
 	prompt = malloc((ms_strlen(cwd) + ms_strlen(user) + 6));
 	if (!prompt)
 	{
-	  free(cwd);
-	  return (NULL);
+		free(cwd);
+		return (NULL);
 	}
 	prompt[0] = '\0';
 	ms_strncat(prompt, user, ms_strlen(user));
@@ -70,9 +70,9 @@ char  *get_prompt(void)
 /*
  * On EOF readline returns NULL
  */
-char  *get_input(char *prompt)
+char	*get_input(char *prompt)
 {
-	char  *input;
+	char	*input;
 
 	set_handler(1);
 	input = readline(prompt);
@@ -93,8 +93,8 @@ char  *get_input(char *prompt)
  */
 void	prompt_loop(void)
 {
-	char  *input;
-	char  *prompt;
+	char	*input;
+	char	*prompt;
 	t_shell	shell;
 
 	ms_bzero((void *)&shell, sizeof(t_shell));
@@ -113,9 +113,8 @@ void	prompt_loop(void)
 			return ;
 		}
 		shell.ast_tree = parser(input, &shell.ast_head);
-		print_ast(shell.ast_tree, "loop");
 		execute_ast(&shell, shell.ast_tree);
-		//printf("status = %d\n", shell.exit_status);
+		printf("status = %d\n", shell.exit_status);
 		free_ast(&shell.ast_head);
 		free(prompt);
 		free(input);

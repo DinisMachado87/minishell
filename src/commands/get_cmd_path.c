@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_cmd_path.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/22 13:19:50 by jlind             #+#    #+#             */
+/*   Updated: 2025/08/22 13:20:42 by jlind            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 char	*split_at_sep(char **str, char sep)
@@ -43,7 +55,7 @@ char	*append_cmd(char *dir, char *cmd)
 
 int	cmd_valid(char *path)
 {
-	struct stat statbuf;
+	struct stat	statbuf;
 
 	if (stat(path, &statbuf) == 0)
 		return (1);
@@ -52,10 +64,11 @@ int	cmd_valid(char *path)
 
 char	*get_cmd_path(char *cmd, char *env)
 {
-	char	sep = ':';
+	char	sep;
 	char	*dir;
 	char	*path;
 
+	sep = ':';
 	if (cmd_valid(cmd))
 		return (cmd);
 	while (*env)

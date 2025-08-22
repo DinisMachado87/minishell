@@ -1,11 +1,6 @@
-	- Make use of volatile global variable to terminate the main loop when a signal was received (see man 7 signal-safety) to get a list of functions that are safe to use inside a signal handler
-	- How to test for memleaks when exit is in the command chain
 	- Have a look into wildcards
-	- Expand $? to t_shell var instade of env var
+	- Expand $? to t_shell var instead of env var
 	- Refactor
-
-
-	- the return value for a command not found is 256, it's supposed to be 127, I guess I use the execve return value.
 
 
 	- To test:

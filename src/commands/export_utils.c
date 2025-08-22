@@ -1,11 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/22 13:18:14 by jlind             #+#    #+#             */
+/*   Updated: 2025/08/22 13:18:38 by jlind            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
-/*
- * int export => if 1, basic formatting, else env formatting
- */
 void	print_env(t_shell *shell, int export)
 {
-	(void)export;
 	t_env	*var;
 
 	var = shell->env;

@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_ast.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
+/*   Updated: 2025/08/22 16:58:34 by jlind            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
-int	execute_external(t_shell *shell, t_ast *node)
+void	execute_external(t_shell *shell, t_ast *node)
 {
 	char	*cmd;
 	char	**list;
@@ -13,25 +25,27 @@ int	execute_external(t_shell *shell, t_ast *node)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		cmd = get_cmd_path(node->args[0], get_env_node(shell->env, "PATH")->value);
+		cmd = get_cmd_path(node->args[0],
+				get_env_node(shell->env, "PATH")->value);
 		if (!cmd)
 		{
 			print_err(node->args[0], "command not found");
-			exit(1);
+			exit(127);
 		}
 		list = convert_env_to_list(shell->env);
 		if (execve(cmd, node->args, list) == -1)
 		{
 			perror("execve");
 			free_env_list(list);
-			exit(1);
+			_exit(1);
 		}
 		free_env_list(list);
 		exit(0);
 	}
 	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		shell->exit_status = WEXITSTATUS(status);
 	set_handler(0);
-	return (status);
 }
 
 int	execute_built_in(t_shell *shell, t_ast *node)
@@ -59,7 +73,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	int		save_stdin;
 	int		save_stdout;
 	t_shell	subshell;
-	
+
 	save_stdin = dup(STDIN_FILENO);
 	save_stdout = dup(STDOUT_FILENO);
 	if (!shell->ast_tree || !node)
@@ -82,9 +96,11 @@ void	execute_ast(t_shell *shell, t_ast *node)
 			else
 			{
 				if (node->append)
-					fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_APPEND, 0644);
+					fd = open(node->red_args[OUT],
+							O_WRONLY | O_CREAT | O_APPEND, 0644);
 				else
-					fd = open(node->red_args[OUT], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+					fd = open(node->red_args[OUT],
+							O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				dup2(fd, STDOUT_FILENO);
 			}
 			if (fd == ERROR)
@@ -97,7 +113,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 			close(fd);
 		}
 		if (node->subtype == EXTERNAL)
-			shell->exit_status = execute_external(shell, node);
+			execute_external(shell, node);
 		else
 			shell->exit_status = execute_built_in(shell, node);
 		dup2(save_stdin, STDIN_FILENO);
@@ -127,39 +143,44 @@ void	execute_or(t_shell *shell, t_ast *node)
 		execute_ast(shell, node->right);
 }
 
-int	execute_pipe(t_shell *shell, t_ast *node)
+void	execute_pipe(t_shell *shell, t_ast *node)
 {
 	int			left_pid;
 	int			right_pid;
 	int			fd[2];
+	int			lstatus;
+	int			rstatus;
 
 	if (pipe(fd) < 0)
-		return (shell->exit_status = ERROR);
+		shell->exit_status = ERROR;
 	left_pid = fork();
 	if (left_pid < 0)
-		return (shell->exit_status = ERROR);
+		shell->exit_status = ERROR;
 	if (left_pid == 0)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
 		execute_ast(shell, node->left);
-		exit(0);
+		exit(shell->exit_status);
 	}
 	right_pid = fork();
 	if (right_pid < 0)
-		return (shell->exit_status = ERROR);
+		shell->exit_status = ERROR;
 	if (right_pid == 0)
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		execute_ast(shell, node->right);
-		exit(0);
+		exit(shell->exit_status);
 	}
 	close(fd[0]);
 	close(fd[1]);
-	waitpid(left_pid, &shell->exit_status, 0);
-	waitpid(right_pid, &shell->exit_status, 0);
-	return (0);
-}	
+	waitpid(left_pid, &lstatus, 0);
+	if (WIFEXITED(lstatus))
+		shell->exit_status = WEXITSTATUS(lstatus);
+	waitpid(right_pid, &rstatus, 0);
+	if (WIFEXITED(rstatus))
+		shell->exit_status = WEXITSTATUS(rstatus);
+}
