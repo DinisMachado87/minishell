@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/22 20:12:13 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/23 21:19:58 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ void	prompt_loop(void)
 			return ;
 		}
 		shell.ast_tree = parser(input, &shell.ast_head);
+		if (DEBUG)
+			print_ast(shell.ast_tree, "loop");
 		execute_ast(&shell, shell.ast_tree);
 		if (DEBUG)
 			printf("status = %d\n", shell.exit_status);
