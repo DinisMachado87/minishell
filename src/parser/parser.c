@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/18 15:28:20 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/28 01:10:28 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	is_end_of_string(char **str)
 {
 	while (**str == ' ')
 		(*str)++;
-	if (!**str)
+	if (!**str || **str == '\n')
 		return (1);
 	return (0);
 }

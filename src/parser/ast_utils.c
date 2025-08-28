@@ -6,16 +6,34 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:24 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/22 02:30:10 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/27 18:39:00 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	free_and_null(void **ptr)
+int	free_and_null(void **ptr)
 {
-	free(*ptr);
-	*ptr = NULL;
+	if (ptr && *ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
+	return (1);
+}
+
+void free_and_null_str_arr(char	***address_str_arr)
+{
+	int		i_str;
+	char	**str_arr;
+
+	if (!address_str_arr || !*address_str_arr)
+		return ;
+	i_str = 0;
+	str_arr = *address_str_arr;
+	while (str_arr[i_str])
+		free_and_null((void **)&str_arr[i_str++]);
+	free_and_null((void **)address_str_arr);
 }
 
 t_ast	*free_ast(t_ast **ast_head)

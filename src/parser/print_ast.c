@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:44 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/20 13:18:22 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/27 21:53:08 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,15 @@ static void print_ast_str(char *name, char *element, int indent, char *new_line)
 	printf("%s", new_line);
 };
 
-static void print_element_w_exp_space(char *name, int exp, int space_after, char *element)
+static void print_arg_arr(char *name, char *arg, int *exp, char **tk_arr)
 {
-	if (element)
-		printf("%s:%d:%d:%s:", name, exp, space_after, element);
+	printf("%s:", name);
+	printf("%s\t|", arg);
+	if (tk_arr)
+		while (*tk_arr)
+			printf("%d:%s:", *(exp++), *(tk_arr++));
 	else
-		printf("%s:NONE", name);
+		printf("NONE");
 };
 
 static void print_ast_arr(char **arr, int *exarr, int *spacearr)
@@ -120,8 +123,8 @@ static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 	print_ast_arr(ast->args, ast->exp_args, ast->space_args);
 	printf("\n");
 	print_indent(indent);
-	print_element_w_exp_space("|RED_IN", ast->red_exp_args[IN], 0, ast->red_args[IN]);
-	print_element_w_exp_space("\tRED_OUT", ast->red_exp_args[OUT], 0, ast->red_args[OUT]);
+	print_arg_arr("|RED_IN", ast->red_args[IN], ast->red_exp_args[IN], ast->pre_red_args[IN]);
+	print_arg_arr("\tRED_OUT", ast->red_args[OUT], ast->red_exp_args[OUT], ast->pre_red_args[OUT]);
 	printf("\n");
 	print_node_type(ast->next, "|NEXT", indent, "");
 	print_node_type(ast->left, "LEFT", 0, "");

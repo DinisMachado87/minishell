@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:31 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:47:21 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/27 22:37:15 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,11 @@ char	*ms_strcpy(char *str, int len)
 {
 	char	*substring;
 
+	if (*str == '$')
+	{
+		str++;
+		len--;
+	}
 	if (*str == '\'' || *str == '\"')
 	{
 		str++;

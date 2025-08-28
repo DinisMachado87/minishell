@@ -30,3 +30,16 @@ int	allocate_ast_args(t_ast *ast, int n_strs)
 	ast->n_args = n_strs;
 	return (1);
 }
+
+int	allocate_red_args(t_ast *ast, int n_strs, int subtype)
+{
+	ast->pre_red_args[subtype] = malloc((n_strs + 1) * sizeof(char *));
+	if (!ast->pre_red_args[subtype])
+		return (perror("Err allocating redirect args array"), 0);
+	ast->red_exp_args[subtype] = malloc((n_strs + 1) * sizeof(int));
+	if (!ast->red_exp_args[subtype])
+		return (perror("Err allocating redirect args array"), 0);
+	ms_bzero(ast->pre_red_args[subtype], (n_strs + 1) * sizeof(char *));
+	ms_bzero(ast->red_exp_args[subtype], (n_strs + 1) * sizeof(int));
+	return (1);
+}

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:29:36 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/22 17:23:54 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/25 02:51:33 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int exp_token_rec(char *token,  int total_chr, t_exp *e)
 		return (allocate_new_word(e, total_chr));
 	while (token[i.chr] && token[i.chr] != '$')
 		i.chr++;
-	while (token[i.chr+ i.env]
+	while (token[i.chr + i.env]
 		&& is_alphanum_or_underscore(token[i.chr + i.env]))
 		i.env++;
 	if (i.env)
