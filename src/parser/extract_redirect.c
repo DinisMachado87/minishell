@@ -6,12 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:56:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/28 01:50:54 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/28 23:00:07 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <unistd.h>
 
 static void	convert_append_heredoc_to_in_out(t_ast *ast, int *r_subtype)
 {
@@ -100,7 +99,7 @@ int	extract_red_args_rec(t_s_token cur, t_s_parser *s, int r_subtype, int i_tkn)
 	else if (!free_and_null_red_args(s->ast, r_subtype)
 		|| !allocate_red_args(s->ast, i_tkn, r_subtype))
 		return (0);
-	s->ast->pre_red_args[r_subtype][i_tkn] = ms_strcpy((cur.str), i_ltr);
+	s->ast->pre_red_args[r_subtype][i_tkn] = ms_strcpy(cur.str, i_ltr);
 	if (!s->ast->pre_red_args[r_subtype][i_tkn])
 		return (perror("Error malloc redirection argument"), 0);
 	if (cur.limiter != '\'' && *cur.str == '$')
@@ -120,7 +119,8 @@ int	extract_redirect(int *i_ltr, t_s_token cur, t_s_parser *s)
 		return (perror("Error: No file after redirect"), ERROR);
 	convert_append_heredoc_to_in_out(s->ast, &r_subtype);
 	cur.str += *i_ltr;
-	s->n_cmd_ltrs += extract_red_args_rec(cur, s, r_subtype, i_tkn);
+	*i_ltr += extract_red_args_rec(cur, s, r_subtype, i_tkn);
+	s->n_cmd_ltrs += *i_ltr;
 	if (s->ast->heredoc)
 		ms_heredoc(s->ast, s);
 	return(*i_ltr);

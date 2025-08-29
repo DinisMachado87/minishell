@@ -34,6 +34,7 @@ PARSER_FILES = ast_utils.c \
 			   heredoc.c \
 			   expand_cmd.c \
 			   count_token.c \
+			   count_cmd_tokens.c \
 			   extract_redirect.c
 MAIN_FILE = main.c
 

@@ -12,6 +12,23 @@
 
 #include "../../include/minishell.h"
 
+int	count_env_tkn(char *str, t_s_token *cur, t_s_token *nxt)
+{
+	int		i_ltr;
+
+	i_ltr = 1;
+	while (str[i_ltr] && is_alphanum_or_underscore(str[i_ltr]))
+		i_ltr++;
+	if (str[i_ltr] && str[i_ltr] == cur->limiter && str[i_ltr] == '\"')
+	{
+		nxt->limiter = ' ';
+		i_ltr++;
+	}
+	if (str[i_ltr] && str[i_ltr] != ' ')
+		cur->space_after = NO_SPACE_AFTER;
+	return (i_ltr);
+}
+
 int	count_single_quote_tkn(char *str, t_s_token *cur, t_s_token *nxt)
 {
 	int		i_ltr;
@@ -37,7 +54,12 @@ int	count_double_quote_tkn(char *str, t_s_token *cur, t_s_token *nxt)
 	while (str[i_ltr] && str[i_ltr] != '\"')
 	{
 		if (str[i_ltr] == '$')
-			break;
+		{
+			if (i_ltr == 1)
+				return (count_env_tkn(str, cur, nxt));
+			else
+				break;
+		}
 		i_ltr++;
 	}
 	if (str[i_ltr] == '\"')
@@ -45,18 +67,6 @@ int	count_double_quote_tkn(char *str, t_s_token *cur, t_s_token *nxt)
 		nxt->limiter = ' ';
 		i_ltr++;
 	}
-	if (str[i_ltr] && str[i_ltr] != ' ')
-		cur->space_after = NO_SPACE_AFTER;
-	return (i_ltr);
-}
-
-int	count_env_tkn(char *str, t_s_token *cur)
-{
-	int		i_ltr;
-
-	i_ltr = 1;
-	while (str[i_ltr] && is_alphanum_or_underscore(str[i_ltr]))
-		i_ltr++;
 	if (str[i_ltr] && str[i_ltr] != ' ')
 		cur->space_after = NO_SPACE_AFTER;
 	return (i_ltr);
@@ -88,7 +98,7 @@ int	count_base_tkn(char *str, t_s_token *cur, t_s_token *nxt)
 int	count_token(char *str, t_s_token *cur, t_s_token *nxt)
 {
 	if (*str == '$')
-		return (count_env_tkn(str, cur));
+		return (count_env_tkn(str, cur, nxt));
 	if (cur->limiter == '\'')
 		return (count_single_quote_tkn(str, cur, nxt));
 	if (cur->limiter == '\"')

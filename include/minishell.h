@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/27 18:37:33 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/29 01:03:58 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,14 @@ typedef struct s_token
 	int		type;
 	int		subtype;
 }			t_token;
+
+typedef struct s_count {
+	int	n_red_tk[2];
+	int	n_cmd_tk;
+	int	ltr;
+	int	type;
+	int	subtype;
+}	t_count;
 
 static const t_token g_types[] =
 {
@@ -178,9 +186,12 @@ int		is_alphanum_or_underscore(char chr);
 char	*cat_str_arr(char **dest, char ***address_str_arr);
 // extract cmd
 int		count_token(char *str, t_s_token *cur, t_s_token *nxt);
+int		count_redirect(t_s_token cur, t_count *c);
+t_count count_cmd_tokens(char *str);
 void	free_red_args(t_ast *ast, int subtype);
 t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
-int	extract_cmd_recursive(t_s_token cur, t_s_parser *s);
+int		skip_red_sign_and_spaces(char *str, int *subtype);
+int		extract_cmd_recursive(t_s_token cur, t_s_parser *s);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
 int		extract_redirect(int *i_ltr, t_s_token cur, t_s_parser *s);

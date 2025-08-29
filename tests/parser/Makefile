@@ -6,7 +6,7 @@
 #    By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/18 21:45:56 by dimachad          #+#    #+#              #
-#    Updated: 2025/08/22 14:55:14 by dimachad         ###   ########.fr        #
+#    Updated: 2025/08/29 02:09:27 by dimachad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,9 +21,21 @@ PARSER_DIR = $(SRC_DIR)/parser
 
 # Source files without directory prefixes
 HELPER_FILES = itoa.c
-PARSER_FILES = ast_utils.c extract_operator.c extract_utils.c parser_utils.c \
-			   structure_ast.c extract_cmd.c extract_subshell.c gen_utils.c \
-			   parser.c print_ast.c heredoc.c extract_redirect.c main_parser.c
+PARSER_FILES = ast_utils.c \
+			   extract_operator.c \
+			   extract_utils.c \
+			   parser_utils.c \
+			   structure_ast.c \
+			   extract_cmd.c \
+			   extract_subshell.c \
+			   gen_utils.c \
+			   count_token.c \
+			   count_cmd_tokens.c \
+			   parser.c \
+			   print_ast.c \
+			   heredoc.c \
+			   extract_redirect.c \
+			   main_parser.c
 
 # Source files with directory prefixes
 HELPER_SRCS = $(addprefix $(HELPER_DIR)/, $(HELPER_FILES))
