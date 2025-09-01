@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/27 19:54:18 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/30 19:49:15 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,15 @@ int	create_heredoc_file(char *eof, char *temp_file)
 	exit(0);
 }
 
-int ms_heredoc(t_ast *ast, t_s_parser *s)
+int ms_heredoc(t_ast *ast, t_parser *s)
 {
+	int		status;
 	int		pid;
 	char	*temp_file_name;
-	int		status;
 	
 	status = 0;
 	free_and_null((void **)ast->red_args[IN]);
-	if (!cat_str_arr(&ast->red_args[IN], &ast->pre_red_args[IN])
+	if (!cat_str_arr(&ast->red_args[IN], &ast->pre_r_args[IN])
 		|| !unique_tmp(&temp_file_name, TEMP_PREFIX, itoa(++s->n_heredoc)))
 		return (ERROR);
 	pid = fork();

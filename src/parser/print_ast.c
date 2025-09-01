@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:44 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/27 21:53:08 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/08/30 17:42:48 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,8 +123,8 @@ static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 	print_ast_arr(ast->args, ast->exp_args, ast->space_args);
 	printf("\n");
 	print_indent(indent);
-	print_arg_arr("|RED_IN", ast->red_args[IN], ast->red_exp_args[IN], ast->pre_red_args[IN]);
-	print_arg_arr("\tRED_OUT", ast->red_args[OUT], ast->red_exp_args[OUT], ast->pre_red_args[OUT]);
+	print_arg_arr("|RED_IN", ast->red_args[IN], ast->r_exp_args[IN], ast->pre_r_args[IN]);
+	print_arg_arr("\tRED_OUT", ast->red_args[OUT], ast->r_exp_args[OUT], ast->pre_r_args[OUT]);
 	printf("\n");
 	print_node_type(ast->next, "|NEXT", indent, "");
 	print_node_type(ast->left, "LEFT", 0, "");

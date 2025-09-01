@@ -6,17 +6,20 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 13:52:37 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/28 00:57:38 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 01:02:52 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	count_env_tkn(char *str, t_s_token *cur, t_s_token *nxt)
+int	count_env_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 
-	i_ltr = 1;
+	i_ltr = 0;
+	if (*str == '\"')
+		cur->limiter = str[i_ltr++];
+	i_ltr++;
 	while (str[i_ltr] && is_alphanum_or_underscore(str[i_ltr]))
 		i_ltr++;
 	if (str[i_ltr] && str[i_ltr] == cur->limiter && str[i_ltr] == '\"')
@@ -29,11 +32,13 @@ int	count_env_tkn(char *str, t_s_token *cur, t_s_token *nxt)
 	return (i_ltr);
 }
 
-int	count_single_quote_tkn(char *str, t_s_token *cur, t_s_token *nxt)
+int	count_single_quote_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 
-	i_ltr = 1;
+	i_ltr = 0;
+	if (cur->limiter == ' ' && *str == '\'')
+		cur->limiter = str[i_ltr++];
 	while (str[i_ltr] && str[i_ltr] != '\'')
 		i_ltr++;
 	if (str[i_ltr] == '\'')
@@ -46,11 +51,13 @@ int	count_single_quote_tkn(char *str, t_s_token *cur, t_s_token *nxt)
 	return (i_ltr);
 }
 
-int	count_double_quote_tkn(char *str, t_s_token *cur, t_s_token *nxt)
+int	count_double_quote_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 
-	i_ltr = 1;
+	i_ltr = 0;
+	if (cur->limiter == ' ' && *str == '\"')
+		cur->limiter = str[i_ltr++];
 	while (str[i_ltr] && str[i_ltr] != '\"')
 	{
 		if (str[i_ltr] == '$')
@@ -72,7 +79,7 @@ int	count_double_quote_tkn(char *str, t_s_token *cur, t_s_token *nxt)
 	return (i_ltr);
 }
 
-int	count_base_tkn(char *str, t_s_token *cur, t_s_token *nxt)
+int	count_base_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 
@@ -95,13 +102,17 @@ int	count_base_tkn(char *str, t_s_token *cur, t_s_token *nxt)
 	return (i_ltr);
 }
 
-int	count_token(char *str, t_s_token *cur, t_s_token *nxt)
+int	count_token(char *str, t_token *cur, t_token *nxt)
 {
-	if (*str == '$')
+	if (*str == '$'
+		|| (str[1] && str[1] == '$'
+			&& *str == '\"'))
 		return (count_env_tkn(str, cur, nxt));
-	if (cur->limiter == '\'')
+	if (cur->limiter == '\''
+		|| (cur->limiter == ' ' && *str == '\''))
 		return (count_single_quote_tkn(str, cur, nxt));
-	if (cur->limiter == '\"')
+	if (cur->limiter == '\"'
+		|| (cur->limiter == ' ' && *str == '\"'))
 		return (count_double_quote_tkn(str, cur, nxt));
 	else
 		return (count_base_tkn(str, cur, nxt));

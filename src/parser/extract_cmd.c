@@ -6,90 +6,82 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/29 00:40:14 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 01:16:58 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	skip_spaces(t_s_token *cur, int *total_chrs)
+int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
 {
-	int i_ltr;
+	int		len;
+	t_token	nxt;
 
-	i_ltr = 0;
-	while (cur->str[i_ltr] && cur->str[i_ltr] == ' ')
-		(i_ltr)++;
-	cur->str += i_ltr;
-	*total_chrs += i_ltr;
+	nxt.limiter = cur->limiter;
+	cur->space_after = SPACE_AFTER;
+	len = count_token(cur->str, cur, &nxt);
+	nxt.str = cur->str + len;
+	ast->args[c->i_tkn] = ms_strcpy(cur->str, len);
+	if (!ast->args[c->i_tkn])
+		return (0);
+	ast->space_args[c->i_tkn] = cur->space_after;
+	if (*cur->str == '$'
+		|| (*cur->str == '\"' && cur->str[1] == '$'))
+		ast->exp_args[c->i_tkn] = EXPAND;
+	c->i_tkn++;
+	*cur = nxt;
+	return(len);
 }
 
-int extract_token(int *i_ltr, t_s_token cur, t_s_parser *s)
+int	extract_cmd_core(t_token *cur, t_cmd *c, t_parser *s)
 {
-	t_s_token	nxt;
-
-	nxt.limiter = cur.limiter;
-	cur.space_after = SPACE_AFTER;
-	s->i_word++;
-	*i_ltr = count_token(cur.str, &cur, &nxt);
-	nxt.str = cur.str + *i_ltr;
-	if (cur.str[*i_ltr])
-		s->n_cmd_ltrs += extract_cmd_recursive(nxt, s);
-	if (!s->ast->args && !allocate_ast_args(s->ast, s->i_word))
-		return (ERROR);
-	s->ast->args[--s->i_word] = ms_strcpy(cur.str, *i_ltr);
-	if (!s->ast->args[s->i_word])
-		return (ERROR);
-	s->ast->space_args[s->i_word] = cur.space_after;
-	s->ast->exp_args[s->i_word] = cur.limiter != '\'' && *cur.str == '$';
-	return(*i_ltr);
-}
-
-int	extract_cmd_recursive(t_s_token cur, t_s_parser *s)
-{
-	int		spaces;
-	int		n_ltrs;
-
-	spaces = 0;
-	n_ltrs = 0;
-	while (cur.str[spaces] && cur.str[spaces] == ' ')
-		spaces++;
-	cur.str += spaces;
-	if (*cur.str && REDIRECT == type(cur.str))
+	while(chr_after_spaces(cur))
 	{
-		if (extract_redirect(&n_ltrs, cur, s) == ERROR)
-			return (ERROR);
-		s->n_cmd_ltrs += n_ltrs;
-		cur.str += n_ltrs;
-		n_ltrs = extract_cmd_recursive(cur, s);
-		if (n_ltrs == ERROR)
-			return (ERROR);
+		while (*cur->str && *cur->str == ' ')
+			cur->str++;
+		c->type = type(cur->str);
+		if (*cur->str && REDIRECT == c->type)
+		{
+			if (!extract_redirect(cur, c, s))
+				return (0);
+		}
+		else if (cur->str && CMD == type(cur->str))
+		{
+			if (!extract_token(cur, c, s->ast))
+				return (0);
+		}
+		else
+			break;
 	}
-	else if (cur.str && CMD == type(cur.str))
-		if (!extract_token(&n_ltrs, cur, s))
-			return (ERROR);
-	s->n_cmd_ltrs += n_ltrs;
-	return (spaces);
+	return (1);
 }
 
-t_ast	*extract_cmd(t_ast **ast, char **str, t_s_parser *s)
+int	extract_cmd(char **str, t_parser *s)
 {
-	t_s_token init;
+	t_token	cur;
+	t_cmd	c;
 
-	count_cmd_tokens(*str);
-	s->i_word = 0;
-	s->n_cmd_ltrs = 0;
-	if (!make_node(ast))
-		return (NULL);
-	s->ast = *ast;
-	init.limiter = ' ';
-	init.space_after = SPACE_AFTER;
-	init.str = *str;
-	s->n_cmd_ltrs += extract_cmd_recursive(init, s);
-	if (!s->n_cmd_ltrs)
-		return (free_ast(ast), NULL);
+	bzero((void *)&c, sizeof(t_cmd));
+
+	cur.limiter = ' ';
+	cur.space_after = SPACE_AFTER;
+	cur.str = *str;
+
+	count_cmd_tokens(cur, &c);
+
+	if (!make_node(&s->ast)
+		|| !allocate_ast_args(s->ast, c.n_cmd_tk))
+		return (free_ast(&s->ast), 0);
+	
 	s->ast->type = CMD;
+	
+	if (!extract_cmd_core(&cur, &c, s))
+		return (free_ast(&s->ast), 0);
+
 	if (s->ast->n_args)
 		s->ast->space_args[s->ast->n_args - 1] = NO_SPACE_AFTER;
-	*str += s->n_cmd_ltrs;
-	return (s->ast);
+
+	*str = cur.str;
+
+	return (1);
 }

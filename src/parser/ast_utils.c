@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:24 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/27 18:39:00 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/01 23:04:56 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,16 @@ void free_and_null_str_arr(char	***address_str_arr)
 	while (str_arr[i_str])
 		free_and_null((void **)&str_arr[i_str++]);
 	free_and_null((void **)address_str_arr);
+}
+
+void	free_red_args(t_ast *ast, int r_subtype)
+{
+	if (ast->red_args[r_subtype])
+		free_and_null((void **)&ast->red_args[r_subtype]);
+	if (ast->pre_r_args[r_subtype])
+		free_and_null_str_arr(&ast->pre_r_args[r_subtype]);
+	if (ast->r_exp_args[r_subtype])
+		free_and_null((void **)&ast->r_exp_args[r_subtype]);
 }
 
 t_ast	*free_ast(t_ast **ast_head)
@@ -69,7 +79,7 @@ t_ast	*make_node(t_ast **ast)
 		return (NULL);
 	}
 	bzero(new_node, sizeof(t_ast));
-	if (!(*ast))
+	if (!*ast)
 		*ast = new_node;
 	else
 	{

@@ -6,13 +6,26 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:56:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/28 23:00:07 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/01 21:13:01 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	convert_append_heredoc_to_in_out(t_ast *ast, int *r_subtype)
+int	skip_red_sign_and_spaces(t_token *cur, int r_subtype)
+{
+	if (r_subtype == APPEND || r_subtype == HEREDOC)
+		cur->str += 2;
+	else
+		cur->str++;
+	while (*cur->str && *cur->str == ' ')
+		cur->str++;
+	if (!*cur->str || type(cur->str) != CMD)
+		return (perror("Error: No file after redirect"), 0);
+	return (1);
+}
+
+static int	convert_append_heredoc_to_in_out(t_ast *ast, int *r_subtype)
 {
 	ast->append = 0;
 	if (*r_subtype == APPEND)
@@ -29,37 +42,7 @@ static void	convert_append_heredoc_to_in_out(t_ast *ast, int *r_subtype)
 		ast->append = 0;
 	else if (*r_subtype == IN)
 		ast->heredoc = 0;
-}
-
-void	free_red_args(t_ast *ast, int subtype)
-{
-	if (subtype == IN && ast->red_args[IN]
-		&& !ms_strcmp((char *)TEMP_PREFIX, ast->red_args[IN]))
-	{
-		unlink(ast->red_args[IN]);
-		ast->red_args[IN] = NULL;
-	}
-	else if (ast->red_args[subtype])
-	{
-		free(ast->red_args[subtype]);
-		ast->red_args[subtype] = NULL;
-	}
-}
-
-int	skip_red_sign_and_spaces(char *str, int *subtype)
-{
-	int i_ltr;
-
-	i_ltr = 0;
-	if (*subtype == APPEND || *subtype == HEREDOC)
-		i_ltr += 2;
-	else
-		i_ltr++;
-	while (str[i_ltr] && str[i_ltr] == ' ')
-		i_ltr++;
-	if (!str[i_ltr] || type(str + i_ltr) != CMD)
-		return (ERROR);
-	return (i_ltr);
+	return (1);
 }
 
 int	free_and_null_red_args(t_ast *ast, int subtype)
@@ -73,55 +56,56 @@ int	free_and_null_red_args(t_ast *ast, int subtype)
 		free(ast->red_args[subtype]);
 	ast->red_args[subtype] = NULL;
 
-	while (ast->pre_red_args[subtype] && ast->pre_red_args[subtype][i])
+	while (ast->pre_r_args[subtype] && ast->pre_r_args[subtype][i])
 	{
-		free(ast->pre_red_args[subtype][i]);
-		ast->pre_red_args[subtype][i++] = NULL;
+		free(ast->pre_r_args[subtype][i]);
+		ast->pre_r_args[subtype][i++] = NULL;
 	}
-	if (ast->red_exp_args[subtype])
-		free(ast->red_exp_args[subtype]);
-	ast->red_exp_args[subtype] = NULL;
+	if (ast->r_exp_args[subtype])
+		free(ast->r_exp_args[subtype]);
+	ast->r_exp_args[subtype] = NULL;
 	return (1);
 }
 
-int	extract_red_args_rec(t_s_token cur, t_s_parser *s, int r_subtype, int i_tkn)
+static int	extract_red_args(t_token *cur, t_cmd *c,
+							char **pre_r_args, int *r_exp_args)
 {
-	t_s_token	nxt;
-	int			i_ltr;
-
-	nxt.limiter = cur.limiter;
-	cur.space_after = SPACE_AFTER;
-	i_tkn++;
-	i_ltr = count_token(cur.str, &cur, &nxt);
-	nxt.str = cur.str + i_ltr;
-	if (cur.space_after == NO_SPACE_AFTER && nxt.str)
-		s->n_cmd_ltrs += extract_red_args_rec(nxt, s, r_subtype, i_tkn);
-	else if (!free_and_null_red_args(s->ast, r_subtype)
-		|| !allocate_red_args(s->ast, i_tkn, r_subtype))
-		return (0);
-	s->ast->pre_red_args[r_subtype][i_tkn] = ms_strcpy(cur.str, i_ltr);
-	if (!s->ast->pre_red_args[r_subtype][i_tkn])
-		return (perror("Error malloc redirection argument"), 0);
-	if (cur.limiter != '\'' && *cur.str == '$')
-		s->ast->red_exp_args[r_subtype][i_tkn] = EXPAND;
-	return(i_ltr);
-}
-
-int	extract_redirect(int *i_ltr, t_s_token cur, t_s_parser *s)
-{
-	int	i_tkn;
-	int	r_subtype;
+	char	*err_str = "Error malloc redirection argument";
+	t_token	nxt;
+	int		len;
+	int		i_tkn;
 
 	i_tkn = 0;
-	r_subtype = subtype(cur.str);
-	*i_ltr = skip_red_sign_and_spaces(cur.str, &r_subtype);
-	if (*i_ltr == ERROR)
-		return (perror("Error: No file after redirect"), ERROR);
-	convert_append_heredoc_to_in_out(s->ast, &r_subtype);
-	cur.str += *i_ltr;
-	*i_ltr += extract_red_args_rec(cur, s, r_subtype, i_tkn);
-	s->n_cmd_ltrs += *i_ltr;
+	cur->space_after = NO_SPACE_AFTER;
+	while (i_tkn < c->n_red_tk[c->subtype])
+	{
+		nxt.limiter = cur->limiter;
+		cur->space_after = SPACE_AFTER;
+		len = count_token(cur->str, cur, &nxt);
+		nxt.str = cur->str + len;
+		pre_r_args[i_tkn] = ms_strcpy(cur->str, len);
+		if (!pre_r_args[i_tkn])
+			return (perror(err_str), 0);
+		if (cur->limiter != '\'' && *cur->str == '$')
+			r_exp_args[i_tkn] = EXPAND;
+		i_tkn++;
+		*cur = nxt;
+	}
+	return(len);
+}
+
+int	extract_redirect(t_token *cur, t_cmd *c, t_parser *s)
+{
+	c->subtype = subtype(cur->str);
+	if (!skip_red_sign_and_spaces(cur, c->subtype)
+		|| !free_and_null_red_args(s->ast, c->subtype)
+		|| !allocate_red_args(s->ast, c->n_red_tk[c->subtype], c->subtype)
+		|| !convert_append_heredoc_to_in_out(s->ast, &c->subtype)
+		|| !extract_red_args(cur, c,
+					   s->ast->pre_r_args[c->subtype],
+					   s->ast->r_exp_args[c->subtype]))
+		return (0);
 	if (s->ast->heredoc)
 		ms_heredoc(s->ast, s);
-	return(*i_ltr);
+	return(1);
 }

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:31 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/27 22:37:15 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 00:45:20 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,13 @@ void	*handle_error(char *err_msg, int *error)
 char	*ms_strcpy(char *str, int len)
 {
 	char	*substring;
+	int		offset;
 
-	if (*str == '$')
-	{
-		str++;
-		len--;
-	}
-	if (*str == '\'' || *str == '\"')
-	{
-		str++;
-		len -= 2;
-	}
+	offset = *str && (*str == '\'' || *str == '\"');
+	offset += str[offset] && str[offset] == '$' && *str != '\'';
+	str += offset;
+	len -= offset;
+	len -= (str[len - 1] && (str[len - 1] == '\'' || str[len - 1] == '\"'));
 	substring = malloc((len + 1) * sizeof(char));
 	if (!substring)
 		return (perror("Err extracting substring"), NULL);

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/29 01:03:58 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/01 21:07:01 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,17 +77,9 @@ typedef struct s_token
 	char	*str;
 	int		type;
 	int		subtype;
-}			t_token;
+}			t_s_token;
 
-typedef struct s_count {
-	int	n_red_tk[2];
-	int	n_cmd_tk;
-	int	ltr;
-	int	type;
-	int	subtype;
-}	t_count;
-
-static const t_token g_types[] =
+static const t_s_token g_types[] =
 {
 	{"&&", OPERATOR, AND},
 	{"||", OPERATOR, OR},
@@ -118,8 +110,8 @@ typedef struct s_ast
     int             append;
     int             heredoc;
     char            *red_args[2];
-	char			**pre_red_args[2];
-    int				*red_exp_args[2];
+	char			**pre_r_args[2];
+    int				*r_exp_args[2];
     struct s_ast    *next;
     struct s_ast    *left;
     struct s_ast    *right;
@@ -128,21 +120,24 @@ typedef struct s_ast
 typedef struct  s_state_parser
 {
 	t_ast	*ast;
-	char    *str;
-	int     needle;
-	int     i_word;
-	int     n_cmd_ltrs;
-	int     error;
 	int		n_heredoc;
-	char	limiter;
-}			t_s_parser;
+}			t_parser;
 
-typedef struct s_extract_token
+typedef struct s_state_token
 {
 	char	limiter;
 	int		space_after;
 	char	*str;
-}	t_s_token;
+}	t_token;
+
+typedef struct s_state_cmd {
+	int	n_cmd_tk;
+	int	i_tkn;
+	int	n_red_tk[2];
+	int	ltr;
+	int	type;
+	int	subtype;
+}	t_cmd;
 
 typedef struct  s_env
 {
@@ -162,7 +157,7 @@ typedef struct  s_shell
 // normaliser
 int		normalizer(char **str);
 // parser
-t_ast	*parser(char *str, t_ast **head_list);
+t_ast	*parser(char *str, t_ast **list_head);
 // cmd_expander
 int		cmd_expander(t_ast *ast, t_env *env_head);
 // ast_utils
@@ -185,17 +180,17 @@ int		ms_strlen(char *str);
 int		is_alphanum_or_underscore(char chr);
 char	*cat_str_arr(char **dest, char ***address_str_arr);
 // extract cmd
-int		count_token(char *str, t_s_token *cur, t_s_token *nxt);
-int		count_redirect(t_s_token cur, t_count *c);
-t_count count_cmd_tokens(char *str);
+int		chr_after_spaces(t_token *tk);
+int		count_token(char *str, t_token *cur, t_token *nxt);
+int		count_redirect(t_token cur, t_cmd *c);
+int		count_cmd_tokens(t_token cur, t_cmd *c);
 void	free_red_args(t_ast *ast, int subtype);
-t_ast	*extract_cmd(t_ast **ast_nd, char **str, t_s_parser *s);
-int		skip_red_sign_and_spaces(char *str, int *subtype);
-int		extract_cmd_recursive(t_s_token cur, t_s_parser *s);
+int		extract_cmd(char **str, t_parser *s);
+int		skip_red_sign_and_spaces(t_token *cur, int r_subtype);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
-int		extract_redirect(int *i_ltr, t_s_token cur, t_s_parser *s);
-int 	ms_heredoc(t_ast *ast, t_s_parser *s);
+int		extract_redirect(t_token *cur, t_cmd *c, t_parser *s);
+int 	ms_heredoc(t_ast *ast, t_parser *s);
 // structure_ast
 t_ast	*structure_ast(t_ast *cur_list);
 // print_ast
@@ -214,7 +209,7 @@ int		ft_env(t_shell *shell, t_ast *node);
 void	ft_exit(t_shell *shell);
 void	execute_and(t_shell *shell, t_ast *node);
 void	execute_or(t_shell *shell, t_ast *node);
-char  *get_cmd_path(char *cmd, char *env);
+char	*get_cmd_path(char *cmd, char *env);
 t_env *gen_env_node(char *key, char *value);
 void  free_env_node(t_env **node);
 void  free_env_node_by_key(t_env **head, char *key);
