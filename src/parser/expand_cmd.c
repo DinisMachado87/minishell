@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:29:36 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/25 02:51:33 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 01:27:32 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,6 @@ int	cmd_expander(t_ast *ast, t_env *env_head)
 			return (ERROR);
 		i++;
 	}
+	ast->subtype = subtype(ast->args[0]);
 	return (1);
 }

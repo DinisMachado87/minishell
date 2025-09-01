@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 20:07:53 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 01:33:28 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		execute_pipe(shell, node);
 	else if (node->type == CMD)
 	{
+		cmd_expander(node, shell->env);
 		if (node->red_args[IN] || node->red_args[OUT])
 		{
 			if (node->red_args[IN])
