@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 01:16:58 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 20:21:42 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	extract_cmd(char **str, t_parser *s)
 		return (free_ast(&s->ast), 0);
 
 	if (s->ast->n_args)
-		s->ast->space_args[s->ast->n_args - 1] = NO_SPACE_AFTER;
+		s->ast->space_args[s->ast->n_args - 1] = SPACE_AFTER;
 
 	*str = cur.str;
 

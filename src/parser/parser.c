@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 01:28:25 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 19:33:03 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,15 @@ int	is_end_of_string(char **str)
 	return (0);
 }
 
+void	new_line_to_null(char *str)
+{
+	int	len;
+
+	len = ms_strlen(str);
+	if (str[len - 1] == '\n')
+		str[len - 1] = '\0';
+}
+
 // @Parser extracts action nodes into ast using the next linear list pointers
 t_ast	*parser(char *str, t_ast **list_head)
 {
@@ -29,6 +38,7 @@ t_ast	*parser(char *str, t_ast **list_head)
 	if (!str || *str == '\0')
 		return (perror("ERROR: No str or empty str"), NULL);
 	ms_bzero((void *)&s, sizeof(t_parser));
+	new_line_to_null(str);
 	while (*str && *str == ' ')
 		str++;
 	while (*str)

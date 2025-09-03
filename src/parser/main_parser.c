@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:33:50 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 00:31:31 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 23:39:29 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ const char *test_strs[] = {
     //"   <<eof cat signal.txt> text.txt   ",
 	"< $env cat",
 	"cat '$env'$cat\"$double\"'$env'",
+	"export env=Machado && echo Dinis$env\'$env\'$env\'$env\'\"&env\"",
 	NULL,
 };
 

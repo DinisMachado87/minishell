@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/01 21:07:01 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/02 19:42:44 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # define ERROR -1
-# define DEBUG 1
+# define DEBUG 0
 # define TEMP_PREFIX "temp_heredoc"
 
 # include <stdlib.h>
@@ -170,6 +170,8 @@ int		type(char *str);
 int		subtype(char *str);
 char	*ms_strcpy(char *str, int len);
 // extract_utils
+void	*safe_alloc_zero(void **ptr, size_t size);
+void	*safe_malloc(void **ptr, size_t size);
 int		allocate_ast_args(t_ast *ast, int n_strs);
 int		allocate_red_args(t_ast *ast, int n_strs, int subtype);
 // gen_utils
@@ -178,7 +180,7 @@ int		ms_strcmp(char *ref, char *str);
 int		ms_strncmp(char *s1, char *s2, int size);
 int		ms_strlen(char *str);
 int		is_alphanum_or_underscore(char chr);
-char	*cat_str_arr(char **dest, char ***address_str_arr);
+char	*cat_str_arr(char **dest, char ***address_str_arr, int size);
 // extract cmd
 int		chr_after_spaces(t_token *tk);
 int		count_token(char *str, t_token *cur, t_token *nxt);
