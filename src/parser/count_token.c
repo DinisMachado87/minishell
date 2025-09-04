@@ -16,10 +16,9 @@ int	count_env_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 
-	i_ltr = 0;
-	if (*str == '\"')
-		cur->limiter = str[i_ltr++];
-	i_ltr++;
+	i_ltr = 1;
+	if (str[i_ltr] == '?')
+		return (++i_ltr);
 	while (str[i_ltr] && is_alphanum_or_underscore(str[i_ltr]))
 		i_ltr++;
 	if (str[i_ltr] && str[i_ltr] == cur->limiter && str[i_ltr] == '\"')
@@ -37,8 +36,8 @@ int	count_single_quote_tkn(char *str, t_token *cur, t_token *nxt)
 	int		i_ltr;
 
 	i_ltr = 0;
-	if (cur->limiter == ' ' && *str == '\'')
-		cur->limiter = str[i_ltr++];
+	if (*str == '\'')
+		i_ltr++;
 	while (str[i_ltr] && str[i_ltr] != '\'')
 		i_ltr++;
 	if (str[i_ltr] == '\'')
@@ -56,8 +55,8 @@ int	count_double_quote_tkn(char *str, t_token *cur, t_token *nxt)
 	int		i_ltr;
 
 	i_ltr = 0;
-	if (cur->limiter == ' ' && *str == '\"')
-		cur->limiter = str[i_ltr++];
+	if (*str == '\"')
+		i_ltr++;
 	while (str[i_ltr] && str[i_ltr] != '\"')
 	{
 		if (str[i_ltr] == '$')
@@ -87,13 +86,12 @@ int	count_base_tkn(char *str, t_token *cur, t_token *nxt)
 	while (str[i_ltr] && type(str + i_ltr) == CMD
 		&& str[i_ltr] != cur->limiter)
 	{
-		if (cur->limiter == ' '
-			&& (str[i_ltr] == '\'' || str[i_ltr] == '\"'))
+		if (str[i_ltr] == '\'' || str[i_ltr] == '\"')
 		{
 			nxt->limiter = str[i_ltr];
 			break;
 		}
-		if (cur->limiter != '\'' && str[i_ltr] == '$')
+		if (str[i_ltr] == '$')
 			break;
 		i_ltr++;
 	}
