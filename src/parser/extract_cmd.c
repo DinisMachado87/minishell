@@ -37,8 +37,6 @@ int	extract_cmd_core(t_token *cur, t_cmd *c, t_parser *s)
 {
 	while(chr_after_spaces(cur))
 	{
-		while (*cur->str && *cur->str == ' ')
-			cur->str++;
 		c->type = type(cur->str);
 		if (*cur->str && REDIRECT == c->type)
 		{

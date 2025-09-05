@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:56:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/01 21:13:01 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 02:38:42 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ int	free_and_null_red_args(t_ast *ast, int subtype)
 {
 	int i;
 
-	i = 0;
-	if (ast->heredoc)
+	if (subtype == IN && ast->heredoc)
 		unlink(ast->red_args[IN]);
 	if (ast->red_args[subtype])
 		free(ast->red_args[subtype]);
 	ast->red_args[subtype] = NULL;
-
-	while (ast->pre_r_args[subtype] && ast->pre_r_args[subtype][i])
+	i = 0;
+	while (ast->pre_r_args[subtype]
+		&& ast->pre_r_args[subtype][i])
 	{
 		free(ast->pre_r_args[subtype][i]);
 		ast->pre_r_args[subtype][i++] = NULL;
@@ -67,8 +67,7 @@ int	free_and_null_red_args(t_ast *ast, int subtype)
 	return (1);
 }
 
-static int	extract_red_args(t_token *cur, t_cmd *c,
-							char **pre_r_args, int *r_exp_args)
+static int	extract_red_args(t_token *cur, t_ast *ast, int subtype)
 {
 	char	*err_str = "Error malloc redirection argument";
 	t_token	nxt;
@@ -77,17 +76,17 @@ static int	extract_red_args(t_token *cur, t_cmd *c,
 
 	i_tkn = 0;
 	cur->space_after = NO_SPACE_AFTER;
-	while (i_tkn < c->n_red_tk[c->subtype])
+	while (i_tkn < ast->n_red_tk[subtype])
 	{
 		nxt.limiter = cur->limiter;
 		cur->space_after = SPACE_AFTER;
 		len = count_token(cur->str, cur, &nxt);
 		nxt.str = cur->str + len;
-		pre_r_args[i_tkn] = ms_strcpy(cur->str, len);
-		if (!pre_r_args[i_tkn])
+		ast->pre_r_args[subtype][i_tkn] = ms_strcpy(cur->str, len);
+		if (!ast->pre_r_args[subtype][i_tkn])
 			return (perror(err_str), 0);
 		if (cur->limiter != '\'' && *cur->str == '$')
-			r_exp_args[i_tkn] = EXPAND;
+			ast->r_exp_args[subtype][i_tkn] = EXPAND;
 		i_tkn++;
 		*cur = nxt;
 	}
@@ -97,13 +96,13 @@ static int	extract_red_args(t_token *cur, t_cmd *c,
 int	extract_redirect(t_token *cur, t_cmd *c, t_parser *s)
 {
 	c->subtype = subtype(cur->str);
-	if (!skip_red_sign_and_spaces(cur, c->subtype)
+	if (!count_redirect(*cur, c, s->ast)
+		|| !skip_red_sign_and_spaces(cur, c->subtype)
 		|| !free_and_null_red_args(s->ast, c->subtype)
-		|| !allocate_red_args(s->ast, c->n_red_tk[c->subtype], c->subtype)
+		|| !allocate_red_args(s->ast,
+				s->ast->n_red_tk[c->subtype], c->subtype)
 		|| !convert_append_heredoc_to_in_out(s->ast, &c->subtype)
-		|| !extract_red_args(cur, c,
-					   s->ast->pre_r_args[c->subtype],
-					   s->ast->r_exp_args[c->subtype]))
+		|| !extract_red_args(cur, s->ast, c->subtype))
 		return (0);
 	if (s->ast->heredoc)
 		ms_heredoc(s->ast, s);

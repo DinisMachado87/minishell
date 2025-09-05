@@ -76,30 +76,31 @@ void	*safe_malloc(void **ptr, size_t size)
 	return (*ptr);
 }
 
-char	*cat_str_arr(char **dest, char ***address_str_arr, int size)
+char	*cat_str_arr(char **dest, char **str_arr, int size)
 {
-	char	**str_arr;
 	int		total_len;
 	int		i_str;
-	int		i_ltr;
+	char	*new_str;
 
-	str_arr = *address_str_arr;
 	total_len = 0;
 	i_str = 0;
-	i_ltr = 0;
 	while (str_arr[i_str] && i_str < size)
 		total_len += ms_strlen(str_arr[i_str++]);
-	if (!safe_malloc((void **)dest, total_len + 1))
-		return (perror("Error concatenating heredoc eof: "), NULL);
+	if (!safe_malloc((void **)&new_str, total_len + 1))
+		return (perror("Error concatenating tokens to words: "), NULL);
 	total_len = 0;
 	i_str = 0;
 	while (str_arr[i_str] && i_str < size)
 	{
+		int	i_ltr;
+
 		i_ltr = 0;
 		while (str_arr[i_str][i_ltr])
-			(*dest)[total_len++] = str_arr[i_str][i_ltr++];
+			new_str[total_len++] = str_arr[i_str][i_ltr++];
 		i_str++;
 	}
-	(*dest)[total_len] = '\0';
+	new_str[total_len] = '\0';
+	free_and_null((void **)dest);
+	*dest = new_str;
 	return (*dest);
 }
