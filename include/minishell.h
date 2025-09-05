@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/05 02:22:32 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 20:49:13 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,6 @@ typedef struct s_state_cmd {
 	int	ltr;
 	int	type;
 	int	subtype;
-	// int	n_red_tk[2];
 }	t_cmd;
 
 typedef struct  s_env
