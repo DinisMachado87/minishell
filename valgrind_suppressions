@@ -1,0 +1,18 @@
+{
+	suppress_rdline
+	Memcheck:Leak
+	match-leak-kinds:reachable
+	fun:*
+	obj:/usr/lib/x86_64-linux-gnu/libreadline.so.*
+}
+{
+	suppress_libtinfo
+	Memcheck:Leak
+	match-leak-kinds:reachable
+# match any function
+	fun:*
+# match any frame in between the fun and obj
+	...
+# match the libtinfo library
+	obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.*
+}
