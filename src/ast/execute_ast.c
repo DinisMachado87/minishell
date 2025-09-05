@@ -87,6 +87,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	else if (node->type == CMD)
 	{
 		cmd_expander(node, shell->env);
+		node->subtype = subtype(node->args[0]);
 		if (node->red_args[IN] || node->red_args[OUT])
 		{
 			if (node->red_args[IN])

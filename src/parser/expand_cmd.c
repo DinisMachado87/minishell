@@ -186,7 +186,6 @@ int	cmd_expander(t_ast *ast, t_env *env_head)
 		|| !tkns_to_words(ast->args, ast->space_args, alloc_len)
 		|| !split_cmd_flags(ast->args[0], ast, alloc_len))
 		return (0);
-	ast->subtype = subtype(ast->args[0]);
 	if (ast->pre_r_args[IN])
 		expand_cat_red_tkns(IN, ast, alloc_len, env_head);
 	if (ast->pre_r_args[OUT])

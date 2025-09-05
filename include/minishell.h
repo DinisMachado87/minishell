@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/05 02:22:32 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 22:00:49 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ char	*cat_str_arr(char **dest, char **str_arr, int size);
 // extract cmd
 int		chr_after_spaces(t_token *tk);
 int		count_token(char *str, t_token *cur, t_token *nxt);
-int	count_redirect(t_token cur, t_cmd *c, t_ast *ast);
+int		count_redirect(t_token cur, t_cmd *c, t_ast *ast);
 int		count_cmd_tokens(t_token cur, t_cmd *c);
 void	free_red_args(t_ast *ast, int subtype);
 int		extract_cmd(char **str, t_parser *s);
