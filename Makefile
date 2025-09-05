@@ -1,7 +1,8 @@
 NAME = minishell
+DEBUG_NAME = debug_minishell
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
-DEBUG_FLAGS = $(CFLAGS) -g -O0
+DEBUG_FLAGS = -Wall -Wextra -Werror -g -O0 -DDEBUG=1
 HEADER_DIR = include
 HEADER = $(HEADER_DIR)/minishell.h
 SRC_DIR = src
@@ -61,8 +62,10 @@ all: $(NAME)
 $(NAME): $(ALL_OBJS)
 	$(CC) $(CFLAGS) $(ALL_OBJS) -lreadline -o $(NAME)
 
-debug: $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(MAIN) $(HEADER)
-	$(CC) $(DEBUG_FLAGS) -I$(HEADER_DIR) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(MAIN) -lreadline -o $(NAME)
+$(DEBUG_NAME): $(ALL_OBJS)
+	$(CC) $(DEBUG_FLAGS) $(ALL_OBJS) -lreadline -o $(DEBUG_NAME)
+debug: CFLAGS = $(DEBUG_FLAGS)
+debug: fclean $(NAME)
 
 # Test targets that use separate Makefiles
 parser:

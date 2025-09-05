@@ -14,7 +14,9 @@
 # define MINISHELL_H
 
 # define ERROR -1
-# define DEBUG 0
+# ifndef DEBUG
+#  define DEBUG 0
+# endif
 # define TEMP_PREFIX "temp_heredoc"
 
 # include <stdlib.h>

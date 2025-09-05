@@ -101,6 +101,7 @@ void	prompt_loop(void)
 	shell.env = init_env();
 	set_handler(0);
 	signal(SIGQUIT, SIG_IGN);
+	printf("DEBUG = %d\n", DEBUG);
 	while (1)
 	{
 		prompt = get_prompt();
