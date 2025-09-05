@@ -6,13 +6,13 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:25:19 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 13:25:20 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/05 15:30:43 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	get_digits(int num)
+static int	get_digits(int num)
 {
 	int	len;
 

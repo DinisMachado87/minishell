@@ -6,13 +6,13 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:19:50 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 13:20:42 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/05 15:23:03 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*split_at_sep(char **str, char sep)
+static char	*split_at_sep(char **str, char sep)
 {
 	int		len;
 	char	*start;
@@ -37,7 +37,7 @@ char	*split_at_sep(char **str, char sep)
 	return (dir);
 }
 
-char	*append_cmd(char *dir, char *cmd)
+static char	*append_cmd(char *dir, char *cmd)
 {
 	char	*path;
 	int		total_len;
@@ -53,7 +53,7 @@ char	*append_cmd(char *dir, char *cmd)
 	return (path);
 }
 
-int	cmd_valid(char *path)
+static int	cmd_valid(char *path)
 {
 	struct stat	statbuf;
 

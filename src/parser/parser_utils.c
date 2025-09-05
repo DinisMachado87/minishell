@@ -6,11 +6,20 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:31 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 00:45:20 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 16:22:15 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+/*
+static void	*handle_error(char *err_msg, int *error)
+{
+	*error = -1;
+	perror(err_msg);
+	return (0);
+}
+*/
 
 int	type(char *str)
 {
@@ -38,14 +47,6 @@ int	subtype(char *str)
 		i++;
 	}
 	return (CMD);
-}
-
-
-void	*handle_error(char *err_msg, int *error)
-{
-	*error = -1;
-	perror(err_msg);
-	return (0);
 }
 
 char	*ms_strcpy(char *str, int len)

@@ -6,24 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:56:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/01 21:13:01 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 16:10:31 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-int	skip_red_sign_and_spaces(t_token *cur, int r_subtype)
-{
-	if (r_subtype == APPEND || r_subtype == HEREDOC)
-		cur->str += 2;
-	else
-		cur->str++;
-	while (*cur->str && *cur->str == ' ')
-		cur->str++;
-	if (!*cur->str || type(cur->str) != CMD)
-		return (perror("Error: No file after redirect"), 0);
-	return (1);
-}
 
 static int	convert_append_heredoc_to_in_out(t_ast *ast, int *r_subtype)
 {
@@ -45,7 +32,7 @@ static int	convert_append_heredoc_to_in_out(t_ast *ast, int *r_subtype)
 	return (1);
 }
 
-int	free_and_null_red_args(t_ast *ast, int subtype)
+static int	free_and_null_red_args(t_ast *ast, int subtype)
 {
 	int i;
 
@@ -92,6 +79,19 @@ static int	extract_red_args(t_token *cur, t_cmd *c,
 		*cur = nxt;
 	}
 	return(len);
+}
+
+int	skip_red_sign_and_spaces(t_token *cur, int r_subtype)
+{
+	if (r_subtype == APPEND || r_subtype == HEREDOC)
+		cur->str += 2;
+	else
+		cur->str++;
+	while (*cur->str && *cur->str == ' ')
+		cur->str++;
+	if (!*cur->str || type(cur->str) != CMD)
+		return (perror("Error: No file after redirect"), 0);
+	return (1);
 }
 
 int	extract_redirect(t_token *cur, t_cmd *c, t_parser *s)

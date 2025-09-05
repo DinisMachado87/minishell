@@ -6,13 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 13:52:37 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 01:02:52 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 15:43:49 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	count_env_tkn(char *str, t_token *cur, t_token *nxt)
+static int	count_env_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 
@@ -31,7 +31,7 @@ int	count_env_tkn(char *str, t_token *cur, t_token *nxt)
 	return (i_ltr);
 }
 
-int	count_single_quote_tkn(char *str, t_token *cur, t_token *nxt)
+static int	count_single_quote_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 
@@ -50,7 +50,7 @@ int	count_single_quote_tkn(char *str, t_token *cur, t_token *nxt)
 	return (i_ltr);
 }
 
-int	count_double_quote_tkn(char *str, t_token *cur, t_token *nxt)
+static int	count_double_quote_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 
@@ -78,7 +78,7 @@ int	count_double_quote_tkn(char *str, t_token *cur, t_token *nxt)
 	return (i_ltr);
 }
 
-int	count_base_tkn(char *str, t_token *cur, t_token *nxt)
+static int	count_base_tkn(char *str, t_token *cur, t_token *nxt)
 {
 	int		i_ltr;
 

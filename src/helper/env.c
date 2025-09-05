@@ -6,13 +6,13 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:21:55 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 13:23:19 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/05 15:27:49 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-t_env	*gen_env_node(char *key, char *value)
+static t_env	*gen_env_node(char *key, char *value)
 {
 	t_env	*node;
 
@@ -25,7 +25,7 @@ t_env	*gen_env_node(char *key, char *value)
 	return (node);
 }
 
-void	free_env_node(t_env **node)
+static void	free_env_node(t_env **node)
 {
 	if (!node || !(*node))
 		return ;
@@ -35,6 +35,36 @@ void	free_env_node(t_env **node)
 		free((*node)->value);
 	free(*node);
 	*node = NULL;
+}
+
+static int	get_env_length(t_env *head)
+{
+	int	len;
+
+	len = 0;
+	while (head)
+	{
+		len++;
+		head = head->next;
+	}
+	return (len);
+}
+
+static char	*get_env_str(char *key, char *value)
+{
+	int		total_len;
+	char	*str;
+
+	total_len = ms_strlen(key);
+	total_len += ms_strlen(value) + 2;
+	str = malloc(sizeof(char) * total_len);
+	if (!str)
+		return (NULL);
+	ms_bzero(str, total_len);
+	ms_strncpy(str, key, ms_strlen(key));
+	ms_strncat(str, "=", 2);
+	ms_strncat(str, value, ms_strlen(value));
+	return (str);
 }
 
 void	free_env_node_by_key(t_env **head, char *key)
@@ -92,36 +122,6 @@ t_env	*get_env_node(t_env *head, char *key)
 		head = head->next;
 	}
 	return (NULL);
-}
-
-int	get_env_length(t_env *head)
-{
-	int	len;
-
-	len = 0;
-	while (head)
-	{
-		len++;
-		head = head->next;
-	}
-	return (len);
-}
-
-char	*get_env_str(char *key, char *value)
-{
-	int		total_len;
-	char	*str;
-
-	total_len = ms_strlen(key);
-	total_len += ms_strlen(value) + 2;
-	str = malloc(sizeof(char) * total_len);
-	if (!str)
-		return (NULL);
-	ms_bzero(str, total_len);
-	ms_strncpy(str, key, ms_strlen(key));
-	ms_strncat(str, "=", 2);
-	ms_strncat(str, value, ms_strlen(value));
-	return (str);
 }
 
 char	**convert_env_to_list(t_env *head)

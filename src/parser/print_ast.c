@@ -6,12 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:44 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/30 17:42:48 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 15:50:38 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <stdio.h>
 
 const char *type_str[] = {
 	"SUBSHELL",
@@ -133,22 +132,7 @@ static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 	printf("=====\n\n");
 }
 
-
-void	print_nd_list(t_ast *ast, char *testname)
-{
-	if (!ast)
-	{
-		printf("== %s == \n NO AST \n", testname);
-		return;
-	}
-	while (ast)
-	{
-		print_ast_nd(ast, testname, 0);
-		ast = ast->next;
-	}
-}
-
-void	print_ast_core(t_ast *ast, int *indent)
+static void	print_ast_core(t_ast *ast, int *indent)
 {
 	if (ast->left || ast->right)
 		(*indent)++;
@@ -163,6 +147,20 @@ void	print_ast_core(t_ast *ast, int *indent)
 		print_ast_core(ast->right, indent);
 	if (ast->left || ast->right)
 		(*indent)--;
+}
+
+void	print_nd_list(t_ast *ast, char *testname)
+{
+	if (!ast)
+	{
+		printf("== %s == \n NO AST \n", testname);
+		return;
+	}
+	while (ast)
+	{
+		print_ast_nd(ast, testname, 0);
+		ast = ast->next;
+	}
 }
 
 void	print_ast(t_ast *ast, char *testname)

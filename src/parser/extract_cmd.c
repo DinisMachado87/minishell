@@ -6,13 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 20:21:42 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 16:07:37 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
+static int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
 {
 	int		len;
 	t_token	nxt;
@@ -33,7 +33,7 @@ int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
 	return(len);
 }
 
-int	extract_cmd_core(t_token *cur, t_cmd *c, t_parser *s)
+static int	extract_cmd_core(t_token *cur, t_cmd *c, t_parser *s)
 {
 	while(chr_after_spaces(cur))
 	{

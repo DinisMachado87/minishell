@@ -6,14 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:29:36 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/03 01:48:55 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 15:57:29 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <stddef.h>
 
-char	*get_env(char **expanded_value, t_env *head, char *key)
+static char	*get_env(char **expanded_value, t_env *head, char *key)
 {
 	while (head)
 	{
@@ -27,7 +26,7 @@ char	*get_env(char **expanded_value, t_env *head, char *key)
 	return (NULL);
 }
 
-int	expand_tkn(t_ast *ast, int i, t_env *env_head)
+static int	expand_tkn(t_ast *ast, int i, t_env *env_head)
 {
 	char	*env_value;
 
@@ -39,7 +38,7 @@ int	expand_tkn(t_ast *ast, int i, t_env *env_head)
 	return (1);
 }
 
-int	free_and_reassign(char **dest, char **src) 
+static int	free_and_reassign(char **dest, char **src) 
 {
 	free_and_null((void **)dest);
 	*dest = *src;
@@ -47,7 +46,7 @@ int	free_and_reassign(char **dest, char **src)
 	return (1);
 }
 
-int	word_len(char *str)
+static int	word_len(char *str)
 {
 	int i;
 
@@ -57,8 +56,7 @@ int	word_len(char *str)
 	return (i);
 }
 
-
-int	split_len(char *str)
+static int	split_len(char *str)
 {
 	int	i_words;
 
@@ -74,7 +72,7 @@ int	split_len(char *str)
 	return (i_words);
 }
 
-int	move_arr(char **dst, char **src, int len)
+static int	move_arr(char **dst, char **src, int len)
 {
 	if (dst < src)
 		while (len--)
@@ -85,7 +83,7 @@ int	move_arr(char **dst, char **src, int len)
 	return (1);
 }
 
-int extract_skip_section(char **str, char **dst, int len)
+static int extract_skip_section(char **str, char **dst, int len)
 {
 	*dst = ms_strndup(*str, len);
 	if (!*dst)
@@ -96,7 +94,7 @@ int extract_skip_section(char **str, char **dst, int len)
 	return (1);
 }
 
-int	split_cmd_flags(char *str, t_ast *ast, int alloc_len)
+static int	split_cmd_flags(char *str, t_ast *ast, int alloc_len)
 {
 	int	total_len;
 	int	splt_len;
@@ -125,7 +123,7 @@ int	split_cmd_flags(char *str, t_ast *ast, int alloc_len)
 	return (1);
 }
 
-int	tkns_to_words(t_ast *ast, int *new_i)
+static int	tkns_to_words(t_ast *ast, int *new_i)
 {
 	int	i;
 

@@ -6,13 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 13:21:59 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 16:15:21 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*unique_tmp(char **dest, char *str1, char *str2)
+static char	*unique_tmp(char **dest, char *str1, char *str2)
 {
 	int		i;
 	int		len;
@@ -38,7 +38,7 @@ char	*unique_tmp(char **dest, char *str1, char *str2)
 	return (*dest);
 }
 
-int	create_heredoc_file(char *eof, char *temp_file)
+static int	create_heredoc_file(char *eof, char *temp_file)
 {
 	int			fd;
 	char		*line;
@@ -66,7 +66,7 @@ int	create_heredoc_file(char *eof, char *temp_file)
 	exit(0);
 }
 
-int	count_args(char **arr)
+static int	count_args(char **arr)
 {
 	int	n_args;
 

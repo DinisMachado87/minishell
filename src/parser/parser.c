@@ -6,13 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 19:33:03 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 16:16:37 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	is_end_of_string(char **str)
+static int	is_end_of_string(char **str)
 {
 	while (**str == ' ')
 		(*str)++;
@@ -21,7 +21,7 @@ int	is_end_of_string(char **str)
 	return (0);
 }
 
-void	new_line_to_null(char *str)
+static void	new_line_to_null(char *str)
 {
 	int	len;
 

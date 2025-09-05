@@ -6,23 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:24 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 02:16:00 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 15:41:37 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	free_and_null(void **ptr)
-{
-	if (ptr && *ptr)
-	{
-		free(*ptr);
-		*ptr = NULL;
-	}
-	return (1);
-}
-
-void free_and_null_str_arr(char	***address_str_arr)
+static void free_and_null_str_arr(char	***address_str_arr)
 {
 	int		i_str;
 	char	**str_arr;
@@ -34,6 +24,16 @@ void free_and_null_str_arr(char	***address_str_arr)
 	while (str_arr[i_str])
 		free_and_null((void **)&str_arr[i_str++]);
 	free_and_null((void **)address_str_arr);
+}
+
+int	free_and_null(void **ptr)
+{
+	if (ptr && *ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
+	return (1);
 }
 
 void	free_red_args(t_ast *ast, int r_subtype)

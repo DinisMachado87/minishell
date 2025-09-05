@@ -6,15 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:48 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 02:15:55 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 15:46:49 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <stdio.h>
-#include <strings.h>
 
-void	*safe_alloc_zero(void **ptr, size_t size)
+static void	*safe_alloc_zero(void **ptr, size_t size)
 {
 	*ptr = malloc(size);
 	if (!*ptr)
