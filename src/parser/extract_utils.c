@@ -38,10 +38,10 @@ int	allocate_ast_args(t_ast *ast, int n_strs)
 
 int	allocate_red_args(t_ast *ast, int n_strs, int subtype)
 {
-	safe_alloc_zero((void **)&ast->pre_r_args[subtype],
-			(n_strs + 1) * sizeof(char *));
-	safe_alloc_zero((void **)&ast->r_exp_args[subtype],
-			(n_strs + 1) * sizeof(int));
+	if (!safe_alloc_zero((void **)&ast->pre_r_args[subtype],
+			(n_strs + 1) * sizeof(char *))
+		|| !safe_alloc_zero((void **)&ast->r_exp_args[subtype],
+			(n_strs + 1) * sizeof(int)))
 		return (perror("Err allocating redirect args array"), 0);
 	return (1);
 }

@@ -86,7 +86,7 @@ int ms_heredoc(t_ast *ast, t_parser *s)
 	n_args = count_args(ast->pre_r_args[IN]);
 	status = 0;
 	free_and_null((void **)ast->red_args[IN]);
-	if (!cat_str_arr(&ast->red_args[IN], &ast->pre_r_args[IN], n_args)
+	if (!cat_str_arr(&ast->red_args[IN], ast->pre_r_args[IN], n_args)
 		|| !unique_tmp(&temp_file_name, TEMP_PREFIX, itoa(++s->n_heredoc)))
 		return (ERROR);
 	pid = fork();

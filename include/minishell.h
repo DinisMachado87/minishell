@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 19:42:44 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 02:22:32 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # define ERROR -1
-# define DEBUG 0
+# define DEBUG 1
 # define TEMP_PREFIX "temp_heredoc"
 
 # include <stdlib.h>
@@ -112,6 +112,7 @@ typedef struct s_ast
     char            *red_args[2];
 	char			**pre_r_args[2];
     int				*r_exp_args[2];
+	int				n_red_tk[2];
     struct s_ast    *next;
     struct s_ast    *left;
     struct s_ast    *right;
@@ -133,10 +134,10 @@ typedef struct s_state_token
 typedef struct s_state_cmd {
 	int	n_cmd_tk;
 	int	i_tkn;
-	int	n_red_tk[2];
 	int	ltr;
 	int	type;
 	int	subtype;
+	// int	n_red_tk[2];
 }	t_cmd;
 
 typedef struct  s_env
@@ -180,11 +181,11 @@ int		ms_strcmp(char *ref, char *str);
 int		ms_strncmp(char *s1, char *s2, int size);
 int		ms_strlen(char *str);
 int		is_alphanum_or_underscore(char chr);
-char	*cat_str_arr(char **dest, char ***address_str_arr, int size);
+char	*cat_str_arr(char **dest, char **str_arr, int size);
 // extract cmd
 int		chr_after_spaces(t_token *tk);
 int		count_token(char *str, t_token *cur, t_token *nxt);
-int		count_redirect(t_token cur, t_cmd *c);
+int	count_redirect(t_token cur, t_cmd *c, t_ast *ast);
 int		count_cmd_tokens(t_token cur, t_cmd *c);
 void	free_red_args(t_ast *ast, int subtype);
 int		extract_cmd(char **str, t_parser *s);

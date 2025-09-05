@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 23:19:15 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/01 19:20:34 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/05 02:22:43 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,31 @@ int	chr_after_spaces(t_token *tk)
 		return (1);
 }
 
+int	skip_redirect(t_token *cur, t_cmd *c)
+{
+	c->subtype = subtype(cur->str);
+	if (!skip_red_sign_and_spaces(cur, c->subtype))
+		return (0);
+	while (*cur->str && *cur->str != ' ' && CMD == type(cur->str))
+		cur->str += count_token(cur->str, cur, cur);
+	return (1);
+}
+
+int	count_redirect(t_token cur, t_cmd *c, t_ast *ast)
+{
+	c->subtype = subtype(cur.str);
+	if (!skip_red_sign_and_spaces(&cur, c->subtype))
+		return (0);
+	ast->n_red_tk[c->subtype] = 0;
+	while (chr_after_spaces(&cur)
+		&& CMD == type(cur.str))
+	{
+		cur.str += count_token(cur.str, &cur, &cur);
+		ast->n_red_tk[c->subtype]++;
+	}
+	return (1);
+}
+
 int	count_cmd_tokens(t_token cur, t_cmd *c)
 {
 	while (chr_after_spaces(&cur))
@@ -33,16 +58,7 @@ int	count_cmd_tokens(t_token cur, t_cmd *c)
 			c->n_cmd_tk++;
 		}
 		else if (cur.str && REDIRECT == c->type)
-		{
-			if (skip_red_sign_and_spaces(&cur, c->subtype) == ERROR)
-				return (0);
-			c->n_red_tk[c->subtype] = 0;
-			while (*cur.str && *cur.str != ' ' && CMD == type(cur.str))
-			{
-				cur.str += count_token(cur.str, &cur, &cur);
-				c->n_red_tk[c->subtype]++;
-			}
-		}
+			skip_redirect(&cur, c);
 		else
 			break;
 	}
