@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 02:29:36 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/05 02:00:13 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/08 12:00:44 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,10 @@ int extract_skip_section(char **str, char **dst, int len)
 
 int	split_cmd_flags(char *str, t_ast *ast, int alloc_len)
 {
-	int	total_len;
-	int	splt_len;
-	int	i;
-	char **new_arr;
+	int		total_len;
+	int		splt_len;
+	int		i;
+	char	**new_arr;
 
 	splt_len = split_len(str);
 	if (splt_len == 1)
@@ -112,7 +112,7 @@ int	split_cmd_flags(char *str, t_ast *ast, int alloc_len)
 	return (1);
 }
 
-int	tkns_to_words(char **tkn_arr, int *space_arr, int arr_len)
+int	tkns_to_words(char **tkn_arr, int *space_arr, int arr_len, t_ast *ast)
 {
 	int	i;
 	int	new_i;
@@ -129,19 +129,29 @@ int	tkns_to_words(char **tkn_arr, int *space_arr, int arr_len)
 			interval++;
 		if (++interval == 1 && i != new_i)
 			free_and_reassign(&tkn_arr[new_i], &tkn_arr[i]);
-		else if (interval > 1)
-			if (!cat_str_arr(&tkn_arr[new_i], tkn_arr + i, interval))
+		else if (interval > 1
+			&& !cat_str_arr(&tkn_arr[new_i], tkn_arr + i, interval))
 				return (0);
 		new_i++;
 		i += interval;
 	}
-	arr_len = new_i;
+	ast->n_args = new_i;
 	while (new_i < arr_len)
 		free_and_null((void **)&tkn_arr[new_i++]);
 	return (1);
 }
 
-int	expand_tkn_arr(char **tkn_arr, int *exp_arr, int n_tks, t_env *env_head)
+int	expand_exit_status(char **tkn_arr, int i, t_shell *sh)
+{
+	free_and_null((void**)&tkn_arr[i]);
+	tkn_arr[i] = itoa(sh->exit_status);
+	if (!tkn_arr[i])
+		return (0);
+	return (1);
+}
+
+
+int	expand_tkn_arr(char **tkn_arr, int *exp_arr, int n_tks, t_shell *sh)
 {
 	char	*env_value;
 	int		i;
@@ -149,47 +159,50 @@ int	expand_tkn_arr(char **tkn_arr, int *exp_arr, int n_tks, t_env *env_head)
 	i = 0;
 	while (i < n_tks)
 	{
-		if (exp_arr[i] != EXPAND)
+		if (exp_arr[i] == EXPAND)
 		{
-			i++;
-			continue;
+			if (tkn_arr[i][0] == '?' && tkn_arr[i][1] == '\0'
+				&& !expand_exit_status(tkn_arr, i, sh))
+					return (0);
+			else if (!get_env(&env_value, sh->env, tkn_arr[i])
+				|| !free_and_null((void **)&tkn_arr[i])
+				|| !safe_malloc((void **)&tkn_arr[i],
+					ms_strlen(env_value) + 1)
+				|| !ms_strncpy(tkn_arr[i], env_value,
+					ms_strlen(env_value) + 1))
+				return (0);
 		}
-		if (!get_env(&env_value, env_head, tkn_arr[i])
-			|| !free_and_null((void **)&tkn_arr[i])
-			|| !safe_malloc((void **)&tkn_arr[i], ms_strlen(env_value) + 1)
-			|| !ms_strncpy(tkn_arr[i], env_value, ms_strlen(env_value) + 1))
-			return (0);
 		i++;
 	}
 	return (1);
 }
 
 static int	expand_cat_red_tkns(
-		int subtype, t_ast *ast, int alloc_len, t_env *env_head)
+		int subtype, t_ast *ast, int alloc_len, t_shell *sh)
 {
 	if (!expand_tkn_arr(ast->pre_r_args[subtype],
 					 ast->r_exp_args[subtype],
 					 ast->n_red_tk[subtype],
-					 env_head)
-		|| !tkns_to_words(ast->pre_r_args[subtype], NULL, alloc_len))
+					 sh)
+		|| !tkns_to_words(ast->pre_r_args[subtype], NULL, alloc_len, ast))
 		return (0);
 	ast->red_args[subtype] = ast->pre_r_args[subtype][0];
 	return (1);
 }
 
-int	cmd_expander(t_ast *ast, t_env *env_head)
+int	cmd_expander(t_ast *ast, t_shell *sh)
 {
 	int	alloc_len;
 	
 	alloc_len = ast->n_args;
-	if (!expand_tkn_arr(ast->args, ast->exp_args, ast->n_args, env_head)
-		|| !tkns_to_words(ast->args, ast->space_args, alloc_len)
+	if (!expand_tkn_arr(ast->args, ast->exp_args, ast->n_args, sh)
+		|| !tkns_to_words(ast->args, ast->space_args, alloc_len, ast)
 		|| !split_cmd_flags(ast->args[0], ast, alloc_len))
 		return (0);
 	if (ast->pre_r_args[IN])
-		expand_cat_red_tkns(IN, ast, alloc_len, env_head);
+		expand_cat_red_tkns(IN, ast, alloc_len, sh);
 	if (ast->pre_r_args[OUT])
-		expand_cat_red_tkns(OUT, ast, alloc_len, env_head);
+		expand_cat_red_tkns(OUT, ast, alloc_len, sh);
 	if (DEBUG)
 		print_ast(ast, "AFTER EXPANSION");
 	return (1);

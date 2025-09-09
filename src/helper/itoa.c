@@ -17,6 +17,8 @@ int	get_digits(int num)
 	int	len;
 
 	len = 0;
+	if (num == 0)
+		return (1);
 	while (num)
 	{
 		num /= 10;
@@ -34,12 +36,10 @@ char	*itoa(int num)
 		return (NULL);
 	else if (num > INT_MAX)
 		return (NULL);
-	else if (num == 0)
-		return ("0");
 	digits = get_digits(num);
 	str = malloc(sizeof(char) * digits + 1);
 	str[digits] = '\0';
-	while (num)
+	while (digits)
 	{
 		str[--digits] = (num % 10) + '0';
 		num /= 10;

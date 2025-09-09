@@ -26,6 +26,8 @@ void	ms_bzero(void *s, size_t n)
 
 int	ms_strcmp(char *ref, char *str)
 {
+	if (!ref || !str)
+		return (1);
 	while (*ref && *str && *ref == *str)
 	{
 		ref++;

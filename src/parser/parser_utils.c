@@ -12,6 +12,16 @@
 
 #include "../../include/minishell.h"
 
+int	strict_cmp(char *ref, char *str)
+{
+	while (*ref && *str && *ref == *str)
+	{
+		ref++;
+		str++;
+	}
+	return (*ref || *str);
+}
+
 int	type(char *str)
 {
 	int	i;
@@ -33,7 +43,7 @@ int	subtype(char *str)
 	i = 0;
 	while (g_types[i].str)
 	{
-		if (!ms_strcmp(g_types[i].str, str))
+		if (!strict_cmp(g_types[i].str, str))
 			return (g_types[i].subtype);
 		i++;
 	}
@@ -54,7 +64,8 @@ char	*ms_strcpy(char *str, int len)
 	int		offset;
 
 	offset = *str && (*str == '\'' || *str == '\"');
-	offset += str[offset] && str[offset] == '$' && *str != '\'';
+	offset += str[offset] && str[offset] == '$' && *str != '\''
+		&& str[offset + 1] && str[offset + 1] != ' ';
 	str += offset;
 	len -= offset;
 	len -= (str[len - 1] && (str[len - 1] == '\'' || str[len - 1] == '\"'));

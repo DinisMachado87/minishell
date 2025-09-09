@@ -137,7 +137,6 @@ typedef struct s_state_cmd {
 	int	ltr;
 	int	type;
 	int	subtype;
-	// int	n_red_tk[2];
 }	t_cmd;
 
 typedef struct  s_env
@@ -160,11 +159,11 @@ int		normalizer(char **str);
 // parser
 t_ast	*parser(char *str, t_ast **list_head);
 // cmd_expander
-int		cmd_expander(t_ast *ast, t_env *env_head);
+int		cmd_expander(t_ast *ast, t_shell *sh);
 // ast_utils
 t_ast	*make_node(t_ast **ast);
 t_ast	*free_ast(t_ast **ast);
-void	free_and_null_str_arr(char	***address_str_arr);
+void	free_and_null_str_arr(char ***address_str_arr);
 int		free_and_null(void **ptr);
 // parser_utils
 int		type(char *str);

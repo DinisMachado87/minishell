@@ -16,6 +16,7 @@ int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
 {
 	int		len;
 	t_token	nxt;
+	int		i;
 
 	nxt.limiter = cur->limiter;
 	cur->space_after = SPACE_AFTER;
@@ -25,8 +26,8 @@ int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
 	if (!ast->args[c->i_tkn])
 		return (0);
 	ast->space_args[c->i_tkn] = cur->space_after;
-	if (*cur->str == '$'
-		|| (*cur->str == '\"' && cur->str[1] == '$'))
+	i = (*cur->str == '\"');
+	if (cur->str[i] == '$' && cur->str[i + 1] && cur->str[i + 1] != ' ')
 		ast->exp_args[c->i_tkn] = EXPAND;
 	c->i_tkn++;
 	*cur = nxt;
