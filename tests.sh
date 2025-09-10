@@ -5,3 +5,5 @@ export env=hello && echo $e
 export env=hello && echo $en
 export env=hello && echo $env
 export env2=hi && echo $e
+echo $? hello
+echo $?hello

@@ -96,12 +96,12 @@ static int	extract_red_args(t_token *cur, t_ast *ast, int subtype)
 int	extract_redirect(t_token *cur, t_cmd *c, t_parser *s)
 {
 	c->subtype = subtype(cur->str);
-	if (!count_redirect(*cur, c, s->ast)
-		|| !skip_red_sign_and_spaces(cur, c->subtype)
+	if (!skip_red_sign_and_spaces(cur, c->subtype)
+		|| !convert_append_heredoc_to_in_out(s->ast, &c->subtype)
+		|| !count_redirect(*cur, c, s->ast)
 		|| !free_and_null_red_args(s->ast, c->subtype)
 		|| !allocate_red_args(s->ast,
 				s->ast->n_red_tk[c->subtype], c->subtype)
-		|| !convert_append_heredoc_to_in_out(s->ast, &c->subtype)
 		|| !extract_red_args(cur, s->ast, c->subtype))
 		return (0);
 	if (s->ast->heredoc)

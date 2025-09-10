@@ -19,10 +19,12 @@ int	count_env_tkn(char *str, t_token *cur, t_token *nxt)
 	i_ltr = 1;
 	if (*str == '"')
 		i_ltr++;
-	if (!str[i_ltr] || str[i_ltr] == ' ' || str[i_ltr++] == '?')
-		return (i_ltr);
-	while (str[i_ltr] && is_alphanum_or_underscore(str[i_ltr]))
+	if (!str[i_ltr] || str[i_ltr] == ' ' || str[i_ltr] == '?')
 		i_ltr++;
+	else
+		while (str[i_ltr]
+			&& is_alphanum_or_underscore(str[i_ltr]))
+			i_ltr++;
 	if (str[i_ltr] && str[i_ltr] == cur->limiter && str[i_ltr] == '\"')
 	{
 		nxt->limiter = ' ';

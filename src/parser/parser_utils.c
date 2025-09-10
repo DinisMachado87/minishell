@@ -43,13 +43,26 @@ int	subtype(char *str)
 	i = 0;
 	while (g_types[i].str)
 	{
-		if (!strict_cmp(g_types[i].str, str))
+		if (!ms_strcmp(g_types[i].str, str))
 			return (g_types[i].subtype);
 		i++;
 	}
 	return (CMD);
 }
 
+int	strict_subtype(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (g_types[i].str)
+	{
+		if (!strict_cmp(g_types[i].str, str))
+			return (g_types[i].subtype);
+		i++;
+	}
+	return (CMD);
+}
 
 void	*handle_error(char *err_msg, int *error)
 {

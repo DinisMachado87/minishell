@@ -76,11 +76,24 @@ int	count_args(char **arr)
 	return (n_args);
 }
 
+int	wait_to_store_file(pid_t pid, int status, char *temp_file, t_ast *ast)
+{
+	waitpid(pid, &status, 0);
+	if (WEXITSTATUS(status) != 0)
+	{
+		free(temp_file);
+		return (ERROR);
+	}
+	free_red_args(ast, IN);
+	ast->red_args[IN] = temp_file;
+	return (0);
+}
+
 int ms_heredoc(t_ast *ast, t_parser *s)
 {
 	int		n_args;
 	int		status;
-	int		pid;
+	pid_t	pid;
 	char	*temp_file_name;
 	
 	n_args = count_args(ast->pre_r_args[IN]);
@@ -90,20 +103,13 @@ int ms_heredoc(t_ast *ast, t_parser *s)
 		|| !unique_tmp(&temp_file_name, TEMP_PREFIX, itoa(++s->n_heredoc)))
 		return (ERROR);
 	pid = fork();
-	if (pid < 0)
-		return (0);
-	if (pid == 0)
-		create_heredoc_file(ast->red_args[IN], temp_file_name);
-	else
-	{
-		waitpid(pid, &status, 0);
-		if (WEXITSTATUS(status) != 0)
-		{
-			free(temp_file_name);
-			return (ERROR);
-		}
-		free_red_args(ast, IN);
-		ast->red_args[IN] = temp_file_name;
-	}
-	return (1);
+	if (pid == 0
+		&& create_heredoc_file(ast->red_args[IN], temp_file_name) == ERROR)
+		return (ERROR);
+	else if (pid > 0
+		&& wait_to_store_file(pid, status, temp_file_name, ast) == ERROR)
+		return (ERROR);
+	else if (pid < 0)
+		return (ERROR);
+	return (0);
 }

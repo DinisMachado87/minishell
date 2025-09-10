@@ -1,5 +1,7 @@
 DINIS
 
+- handle empty cmds
+
 - check "export env='ls -l' && $env"
 - export env=justin && echo -n dinis'&&'$env"Minishell"
 - export env=hello && echo $e

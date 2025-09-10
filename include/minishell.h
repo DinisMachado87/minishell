@@ -168,6 +168,7 @@ int		free_and_null(void **ptr);
 // parser_utils
 int		type(char *str);
 int		subtype(char *str);
+int		strict_subtype(char *str);
 char	*ms_strcpy(char *str, int len);
 // extract_utils
 void	*safe_alloc_zero(void **ptr, size_t size);

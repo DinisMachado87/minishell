@@ -161,9 +161,11 @@ int	expand_tkn_arr(char **tkn_arr, int *exp_arr, int n_tks, t_shell *sh)
 	{
 		if (exp_arr[i] == EXPAND)
 		{
-			if (tkn_arr[i][0] == '?' && tkn_arr[i][1] == '\0'
-				&& !expand_exit_status(tkn_arr, i, sh))
+			if (tkn_arr[i][0] == '?' && tkn_arr[i][1] == '\0')
+			{
+				if (!expand_exit_status(tkn_arr, i, sh))
 					return (0);
+			}
 			else if (!get_env(&env_value, sh->env, tkn_arr[i])
 				|| !free_and_null((void **)&tkn_arr[i])
 				|| !safe_malloc((void **)&tkn_arr[i],
@@ -181,9 +183,9 @@ static int	expand_cat_red_tkns(
 		int subtype, t_ast *ast, int alloc_len, t_shell *sh)
 {
 	if (!expand_tkn_arr(ast->pre_r_args[subtype],
-					 ast->r_exp_args[subtype],
-					 ast->n_red_tk[subtype],
-					 sh)
+				ast->r_exp_args[subtype],
+				ast->n_red_tk[subtype],
+				sh)
 		|| !tkns_to_words(ast->pre_r_args[subtype], NULL, alloc_len, ast))
 		return (0);
 	ast->red_args[subtype] = ast->pre_r_args[subtype][0];
@@ -195,14 +197,18 @@ int	cmd_expander(t_ast *ast, t_shell *sh)
 	int	alloc_len;
 	
 	alloc_len = ast->n_args;
+	if (!ast->args || !ast->n_args)
+		return (0);
 	if (!expand_tkn_arr(ast->args, ast->exp_args, ast->n_args, sh)
 		|| !tkns_to_words(ast->args, ast->space_args, alloc_len, ast)
 		|| !split_cmd_flags(ast->args[0], ast, alloc_len))
-		return (0);
-	if (ast->pre_r_args[IN])
-		expand_cat_red_tkns(IN, ast, alloc_len, sh);
-	if (ast->pre_r_args[OUT])
-		expand_cat_red_tkns(OUT, ast, alloc_len, sh);
+		return (ERROR);
+	if (ast->pre_r_args[IN]
+		&& !expand_cat_red_tkns(IN, ast, alloc_len, sh))
+		return (ERROR);
+	if (ast->pre_r_args[OUT]
+		&& !expand_cat_red_tkns(OUT, ast, alloc_len, sh))
+		return (ERROR);
 	if (DEBUG)
 		print_ast(ast, "AFTER EXPANSION");
 	return (1);
