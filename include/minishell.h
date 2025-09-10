@@ -6,14 +6,14 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/05 22:00:49 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/10 17:13:50 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define ERROR -1
+# define ERROR 1
 # define DEBUG 1
 # define TEMP_PREFIX "temp_heredoc"
 

@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 16:11:51 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/10 18:23:36 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
 {
 	char	*pwd;
 	char	*oldpwd;
+	char	*pwd_env;
 
 	if (node->n_args > 2)
 		return (ERROR);
@@ -68,6 +69,9 @@ int	ft_cd(t_shell *shell, t_ast *node)
 	}
 	oldpwd = ms_strndup("OLDPWD", 6);
 	set_env_node(&shell->env, oldpwd, pwd);
+	pwd_env = ms_strndup ("PWD", 3);
+	pwd = getcwd(NULL, 0);
+	set_env_node(&shell->env, pwd_env, pwd);
 	free(pwd);
 	free(oldpwd);
 	return (0);
