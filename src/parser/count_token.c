@@ -63,7 +63,7 @@ int	count_double_quote_tkn(char *str, t_token *cur, t_token *nxt)
 		i_ltr++;
 	while (str[i_ltr] && str[i_ltr] != '\"')
 	{
-		if (str[i_ltr] == '$')
+		if (str[i_ltr] == '$' && str[i_ltr + 1] && str[i_ltr + 1] != ' ')
 		{
 			if (i_ltr == 1)
 				return (count_env_tkn(str, cur, nxt));

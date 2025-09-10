@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/05 22:00:49 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/10 16:20:23 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # define ERROR -1
-# define DEBUG 1
+# define DEBUG 0
 # define TEMP_PREFIX "temp_heredoc"
 
 # include <stdlib.h>

@@ -1,30 +1,13 @@
 DINIS
 
+- "cat <test.txt" (first arg of red null)
+- echo "> >> < \* ? [ ] | ; [ ] || && ( ) & # $ \ <<"
 - handle empty cmds
-
-- check "export env='ls -l' && $env"
-- export env=justin && echo -n dinis'&&'$env"Minishell"
-- export env=hello && echo $e
-  hellod
-- export env=hello && echo $en
-  hellod
-- export env=hello && echo $env
-  hellod
-- export env2=hi && echo $e
-  hiLo3d
 - request " and ( when incomplete.
-- make heredoc work.
 - signals for heredoc.
-- dollar without anything after or withouta valid char after store token as a dollar.
-- $? stores?
-- $? expands to shell->exit_status
+- unlink heredoc files after execution
 - Errors that are not system calls should not print with perror
 - check free functions;
-- echoooooo should notbe valid
-
-JUSTIN
-
-- echo prints space bettween words
 
 ==AND NODE==
 
