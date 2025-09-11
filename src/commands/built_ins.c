@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/10 18:23:36 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/11 18:47:24 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,22 @@ int	ft_export(t_shell *shell, t_ast *node)
 	else
 	{
 		equ = ms_strchr(node->args[1], '=');
-		if (!equ)
-			return (0);
-		key = ms_strndup(node->args[1],
-				(ms_strlen(node->args[1]) - ms_strlen(equ)));
-		value = ms_strndup((equ + 1), (ms_strlen(equ) - 1));
+		if (equ)
+		{
+			key = ms_strndup(node->args[1],
+					(ms_strlen(node->args[1]) - ms_strlen(equ)));
+			value = ms_strndup((equ + 1), (ms_strlen(equ) - 1));
+			if (!*key || !ms_isalpha(key))
+			{
+				print_err("export", "not a valid identifier");
+				return (ERROR);
+			}
+		}
+		else if (!ms_isalpha(node->args[1]))
+		{
+			print_err("export", "not a valid identifier");
+			return (ERROR);
+		}
 		set_env_node(&shell->env, key, value);
 		free(key);
 		free(value);
@@ -136,8 +147,11 @@ int	ft_env(t_shell *shell, t_ast *node)
 	return (0);
 }
 
-void	ft_exit(t_shell *shell)
+void	ft_exit(t_shell *shell, t_ast *node)
 {
 	free_ast(&shell->ast_head);
-	exit(0);
+	if (node->args[1])
+		exit(ERROR);//node->args[1]);
+	else
+		exit(shell->exit_status);
 }

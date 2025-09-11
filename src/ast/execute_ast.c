@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/02 01:41:37 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/10 21:23:18 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	execute_built_in(t_shell *shell, t_ast *node)
 	else if (node->subtype == ENV)
 		return (ft_env(shell, node));
 	else if (node->subtype == EXIT)
-		ft_exit(shell);
+		ft_exit(shell, node);
 	return (0);
 }
 
