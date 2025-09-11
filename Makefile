@@ -1,102 +1,86 @@
+# ==== C Settings ====
+CC := gcc
+CFLAGS = -Wall -Wextra -Werror -I$(HEADER_DIR)
+RELEASE_FLAGS = $(CFLAGS) -DDEBUG=0
+DEBUG_FLAGS = $(CFLAGS) -g -O0 -DDEBUG=1
+HEADER_DIR = include/
+HEADER = $(addprefix $(HEADER_DIR), minishell.h)
 NAME = minishell
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror
-DEBUG_FLAGS = $(CFLAGS) -g -O0
-HEADER_DIR = include
-HEADER = $(HEADER_DIR)/minishell.h
-SRC_DIR = src
-AST_DIR = $(SRC_DIR)/ast
-CMD_DIR = $(SRC_DIR)/commands
-HELPER_DIR = $(SRC_DIR)/helper
-PARSER_DIR = $(SRC_DIR)/parser
+DEBUG_NAME = debug_minishell
 
-# Source files without directory prefixes
-AST_FILES = execute_ast.c
-CMD_FILES = built_ins.c export_utils.c get_cmd_path.c
-HELPER_FILES = env.c \
-			   itoa.c \
-			   loop.c \
-			   print_err.c \
-			   ms_strndup.c \
-			   ms_strncat.c \
-			   ms_strncpy.c \
-			   ms_strchr.c
-PARSER_FILES = ast_utils.c \
-			   extract_operator.c \
-			   extract_utils.c \
-			   parser_utils.c \
-			   structure_ast.c \
-			   extract_cmd.c \
-			   extract_subshell.c \
-			   gen_utils.c \
-			   parser.c \
-			   print_ast.c \
-			   heredoc.c \
-			   expand_cmd.c \
-			   count_token.c \
-			   count_cmd_tokens.c \
-			   extract_redirect.c
-MAIN_FILE = main.c
+# ==== dir var setup ====
+SRC_DIR = src/
+OBJ_DIR = obj/
+DEBUG_OBJ_DIR = obj_debug/
 
-# Source files with directory prefixes
-AST_SRCS = $(addprefix $(AST_DIR)/, $(AST_FILES))
-CMD_SRCS = $(addprefix $(CMD_DIR)/, $(CMD_FILES))
-HELPER_SRCS = $(addprefix $(HELPER_DIR)/, $(HELPER_FILES))
-PARSER_SRCS = $(addprefix $(PARSER_DIR)/, $(PARSER_FILES))
-MAIN = $(addprefix $(SRC_DIR)/, $(MAIN_FILE))
+# Release object directories
+REL_AST_OBJ_DIR = $(OBJ_DIR)ast/
+REL_CMD_OBJ_DIR = $(OBJ_DIR)commands/
+REL_HLP_OBJ_DIR = $(OBJ_DIR)helper/
+REL_PRS_OBJ_DIR = $(OBJ_DIR)parser/
+REL_OBJ_DIRS = $(REL_AST_OBJ_DIR) $(REL_CMD_OBJ_DIR) $(REL_HLP_OBJ_DIR) $(REL_PRS_OBJ_DIR)
 
-# Object files
-AST_OBJS = $(AST_SRCS:.c=.o)
-CMD_OBJS = $(CMD_SRCS:.c=.o)
-HELPER_OBJS = $(HELPER_SRCS:.c=.o)
-PARSER_OBJS = $(PARSER_SRCS:.c=.o)
-MAIN_OBJ = $(MAIN:.c=.o)
+# Debug object directories
+DBG_AST_OBJ_DIR = $(DEBUG_OBJ_DIR)ast/
+DBG_CMD_OBJ_DIR = $(DEBUG_OBJ_DIR)commands/
+DBG_HLP_OBJ_DIR = $(DEBUG_OBJ_DIR)helper/
+DBG_PRS_OBJ_DIR = $(DEBUG_OBJ_DIR)parser/
+DBG_OBJ_DIRS = $(DBG_AST_OBJ_DIR) $(DBG_CMD_OBJ_DIR) $(DBG_HLP_OBJ_DIR) $(DBG_PRS_OBJ_DIR)
 
-ALL_OBJS = $(AST_OBJS) $(CMD_OBJS) $(HELPER_OBJS) $(PARSER_OBJS) $(MAIN_OBJ)
+# ==== files ====
+AST_FILE_NAMES = execute_ast.c
+CMD_FILE_NAMES = built_ins.c  export_utils.c  get_cmd_path.c
+HLP_FILE_NAMES = env.c  itoa.c  loop.c  ms_strchr.c  ms_strncat.c  ms_strncpy.c \
+				 ms_strndup.c  print_err.c ms_isalpha.c
+PRS_FILE_NAMES = ast_utils.c count_token.c extract_cmd.c extract_redirect.c \
+				 extract_utils.c heredoc.c parser.c print_ast.c \
+				 count_cmd_tokens.c expand_cmd.c extract_operator.c \
+				 extract_subshell.c gen_utils.c parser_utils.c structure_ast.c
 
+# ==== generate release paths ====
+REL_AST_OBJ_FILES = $(patsubst %.c, $(REL_AST_OBJ_DIR)%.o, $(AST_FILE_NAMES))
+REL_CMD_OBJ_FILES = $(patsubst %.c, $(REL_CMD_OBJ_DIR)%.o, $(CMD_FILE_NAMES))
+REL_HLP_OBJ_FILES = $(patsubst %.c, $(REL_HLP_OBJ_DIR)%.o, $(HLP_FILE_NAMES))
+REL_PRS_OBJ_FILES = $(patsubst %.c, $(REL_PRS_OBJ_DIR)%.o, $(PRS_FILE_NAMES))
+REL_MAIN_OBJ_FILE = $(OBJ_DIR)main.o
+REL_OBJS = $(REL_AST_OBJ_FILES) $(REL_CMD_OBJ_FILES) $(REL_HLP_OBJ_FILES) $(REL_PRS_OBJ_FILES) $(REL_MAIN_OBJ_FILE)
+
+# ==== generate debug paths ====
+DBG_AST_OBJ_FILES = $(patsubst %.c, $(DBG_AST_OBJ_DIR)%.o, $(AST_FILE_NAMES))
+DBG_CMD_OBJ_FILES = $(patsubst %.c, $(DBG_CMD_OBJ_DIR)%.o, $(CMD_FILE_NAMES))
+DBG_HLP_OBJ_FILES = $(patsubst %.c, $(DBG_HLP_OBJ_DIR)%.o, $(HLP_FILE_NAMES))
+DBG_PRS_OBJ_FILES = $(patsubst %.c, $(DBG_PRS_OBJ_DIR)%.o, $(PRS_FILE_NAMES))
+DBG_MAIN_OBJ_FILE = $(DEBUG_OBJ_DIR)main.o
+DBG_OBJS = $(DBG_AST_OBJ_FILES) $(DBG_CMD_OBJ_FILES) $(DBG_HLP_OBJ_FILES) $(DBG_PRS_OBJ_FILES) $(DBG_MAIN_OBJ_FILE)
+
+# ==== targets ====
 all: $(NAME)
 
-$(NAME): $(ALL_OBJS)
-	$(CC) $(CFLAGS) $(ALL_OBJS) -lreadline -o $(NAME)
+debug: $(DEBUG_NAME)
 
-debug: $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(MAIN) $(HEADER)
-	$(CC) $(DEBUG_FLAGS) -I$(HEADER_DIR) $(AST_SRCS) $(CMD_SRCS) $(HELPER_SRCS) $(PARSER_SRCS) $(MAIN) -lreadline -o $(NAME)
+$(NAME): $(REL_OBJS)
+	$(CC) $(REL_OBJS) -lreadline -o $(NAME)
 
-# Test targets that use separate Makefiles
-parser:
-	$(MAKE) -C tests/parser
+$(DEBUG_NAME): $(DBG_OBJS)
+	$(CC) $(DBG_OBJS) -lreadline -o $(DEBUG_NAME)
 
-norm:
-	$(MAKE) -C tests/normalizer
+# Release object compilation rules
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
+	@-mkdir -p $(dir $@)
+	$(CC) $(RELEASE_FLAGS) -c $< -o $@
 
-parser-clean:
-	$(MAKE) -C tests/parser clean
-
-norm-clean:
-	$(MAKE) -C tests/normalizer clean
-
-# Object file compilation rules
-$(AST_DIR)/%.o: $(AST_DIR)/%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
-
-$(CMD_DIR)/%.o: $(CMD_DIR)/%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
-
-$(HELPER_DIR)/%.o: $(HELPER_DIR)/%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
-
-$(PARSER_DIR)/%.o: $(PARSER_DIR)/%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
-
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
+# Debug object compilation rules
+$(DEBUG_OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
+	@-mkdir -p $(dir $@)
+	$(CC) $(DEBUG_FLAGS) -c $< -o $@
 
 clean:
-	rm -f $(ALL_OBJS)
+	-rm -f $(REL_OBJS) $(DBG_OBJS)
 
-fclean: clean parser-clean norm-clean
-	rm -f $(NAME)
+fclean: clean
+	-rm -f $(NAME) $(DEBUG_NAME)
 
 re: fclean all
 
-.PHONY: all parser norm parser-clean norm-clean debug clean fclean re
+# ==== misc ====
+.PHONY: all debug clean fclean re
