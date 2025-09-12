@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/10 21:23:18 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/12 11:00:57 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	execute_external(t_shell *shell, t_ast *node)
 		{
 			perror("execve");
 			free_env_list(list);
-			_exit(1);
+			exit(1);
 		}
 		free_env_list(list);
 		exit(0);
@@ -107,12 +107,12 @@ void	execute_ast(t_shell *shell, t_ast *node)
 							O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				dup2(fd, STDOUT_FILENO);
 			}
-			if (fd == ERROR)
+			if (fd == -1)
 			{
 				perror(node->red_args[OUT]);
 				dup2(save_stdin, STDIN_FILENO);
 				dup2(save_stdout, STDOUT_FILENO);
-				shell->exit_status = ERROR;
+				shell->exit_status = -1;
 			}
 			close(fd);
 		}
