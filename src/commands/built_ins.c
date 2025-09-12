@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/12 08:39:15 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/12 09:30:05 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,20 +109,20 @@ int	ft_export(t_shell *shell, t_ast *node)
 			key = ms_strndup(node->args[1],
 					(ms_strlen(node->args[1]) - ms_strlen(equ)));
 			value = ms_strndup((equ + 1), (ms_strlen(equ) - 1));
-			if (!*key || !ms_isalpha(key))
+			if (!*key || !is_valid_identifier(key))
 			{
 				print_err("export", "not a valid identifier");
 				return (ERROR);
 			}
+			set_env_node(&shell->env, key, value);
+			free(key);
+			free(value);
 		}
 		else if (!ms_isalpha(node->args[1]))
 		{
 			print_err("export", "not a valid identifier");
 			return (ERROR);
 		}
-		set_env_node(&shell->env, key, value);
-		free(key);
-		free(value);
 	}
 	return (0);
 }

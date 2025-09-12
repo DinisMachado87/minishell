@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/12 08:30:35 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/12 09:51:37 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,10 @@ char    *ms_strncpy(char *dst, char *src, int ssize);
 char    *ms_strchr(char *s, int c);
 int		ms_atoi(char *nbr);
 int		ms_isalpha(char *str);
+int		ms_char_isalpha(char c);
 int		ms_isdigit(char *str);
+int		ms_char_isdigit(char c);
+int		is_valid_identifier(char *str);
 void    set_handler(int rdline);
 
 #endif
