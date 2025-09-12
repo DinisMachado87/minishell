@@ -92,7 +92,7 @@ int	split_cmd_flags(char *str, t_ast *ast, int alloc_len)
 
 	splt_len = split_len(str);
 	if (splt_len == 1)
-		return (0);
+		return (1);
 	total_len = ast->n_args + splt_len - 1;
 	if (total_len > alloc_len
 		&& !safe_malloc((void **)&new_arr, (total_len + 1) * sizeof(char *)))
