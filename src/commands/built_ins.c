@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/11 18:47:24 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/12 08:39:15 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ int	ft_cd(t_shell *shell, t_ast *node)
 	char	*pwd_env;
 
 	if (node->n_args > 2)
+	{
+		print_err("cd", "too many arguments");
 		return (ERROR);
+	}
 	pwd = getcwd(NULL, 0);
 	if (strncmp(node->args[1], "-", 1) == 0)
 	{
@@ -149,9 +152,26 @@ int	ft_env(t_shell *shell, t_ast *node)
 
 void	ft_exit(t_shell *shell, t_ast *node)
 {
-	free_ast(&shell->ast_head);
-	if (node->args[1])
-		exit(ERROR);//node->args[1]);
+	int	exit_status;
+
+	if (node->n_args > 2)
+	{
+		print_err("exit", "too many arguments");
+		exit_status = 1;
+	}
+	else if (node->args[1])
+	{
+		if (ms_isdigit(node->args[1]))
+			exit_status = ms_atoi(node->args[1]);
+		else
+		{
+			print_err("exit", "numeric argument required");
+			exit_status = 2;
+		}
+
+	}
 	else
-		exit(shell->exit_status);
+		exit_status = shell->exit_status;
+	free_ast(&shell->ast_head);
+	exit(exit_status);
 }
