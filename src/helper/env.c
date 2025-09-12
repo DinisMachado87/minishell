@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:21:55 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 13:23:19 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/10 17:02:21 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,5 +173,6 @@ t_env	*init_env(void)
 	env = gen_env_node("PATH", getenv("PATH"));
 	set_env_node(&env, "TERM", getenv("TERM"));
 	set_env_node(&env, "USER", getenv("USER"));
+	set_env_node(&env, "PWD", getenv("PWD"));
 	return (env);
 }

@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 16:11:51 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/12 09:30:05 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,13 @@ int	ft_cd(t_shell *shell, t_ast *node)
 {
 	char	*pwd;
 	char	*oldpwd;
+	char	*pwd_env;
 
 	if (node->n_args > 2)
+	{
+		print_err("cd", "too many arguments");
 		return (ERROR);
+	}
 	pwd = getcwd(NULL, 0);
 	if (strncmp(node->args[1], "-", 1) == 0)
 	{
@@ -68,6 +72,9 @@ int	ft_cd(t_shell *shell, t_ast *node)
 	}
 	oldpwd = ms_strndup("OLDPWD", 6);
 	set_env_node(&shell->env, oldpwd, pwd);
+	pwd_env = ms_strndup ("PWD", 3);
+	pwd = getcwd(NULL, 0);
+	set_env_node(&shell->env, pwd_env, pwd);
 	free(pwd);
 	free(oldpwd);
 	return (0);
@@ -97,14 +104,25 @@ int	ft_export(t_shell *shell, t_ast *node)
 	else
 	{
 		equ = ms_strchr(node->args[1], '=');
-		if (!equ)
-			return (0);
-		key = ms_strndup(node->args[1],
-				(ms_strlen(node->args[1]) - ms_strlen(equ)));
-		value = ms_strndup((equ + 1), (ms_strlen(equ) - 1));
-		set_env_node(&shell->env, key, value);
-		free(key);
-		free(value);
+		if (equ)
+		{
+			key = ms_strndup(node->args[1],
+					(ms_strlen(node->args[1]) - ms_strlen(equ)));
+			value = ms_strndup((equ + 1), (ms_strlen(equ) - 1));
+			if (!*key || !is_valid_identifier(key))
+			{
+				print_err("export", "not a valid identifier");
+				return (ERROR);
+			}
+			set_env_node(&shell->env, key, value);
+			free(key);
+			free(value);
+		}
+		else if (!ms_isalpha(node->args[1]))
+		{
+			print_err("export", "not a valid identifier");
+			return (ERROR);
+		}
 	}
 	return (0);
 }
@@ -132,8 +150,28 @@ int	ft_env(t_shell *shell, t_ast *node)
 	return (0);
 }
 
-void	ft_exit(t_shell *shell)
+void	ft_exit(t_shell *shell, t_ast *node)
 {
+	int	exit_status;
+
+	if (node->n_args > 2)
+	{
+		print_err("exit", "too many arguments");
+		exit_status = 1;
+	}
+	else if (node->args[1])
+	{
+		if (ms_isdigit(node->args[1]))
+			exit_status = ms_atoi(node->args[1]);
+		else
+		{
+			print_err("exit", "numeric argument required");
+			exit_status = 2;
+		}
+
+	}
+	else
+		exit_status = shell->exit_status;
 	free_ast(&shell->ast_head);
-	exit(0);
+	exit(exit_status);
 }

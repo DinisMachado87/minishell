@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/10 16:20:23 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/12 14:27:01 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ int		ft_pwd(void);
 int		ft_export(t_shell *shell, t_ast *node);
 int		ft_unset(t_shell *shell, t_ast *node);
 int		ft_env(t_shell *shell, t_ast *node);
-void	ft_exit(t_shell *shell);
+void	ft_exit(t_shell *shell, t_ast *node);
 void	execute_and(t_shell *shell, t_ast *node);
 void	execute_or(t_shell *shell, t_ast *node);
 char	*get_cmd_path(char *cmd, char *env);
@@ -232,6 +232,12 @@ char    *ms_strndup(char *str, int n);
 char    *ms_strncat(char *dst, char *src, int ssize);
 char    *ms_strncpy(char *dst, char *src, int ssize);
 char    *ms_strchr(char *s, int c);
+int		ms_atoi(char *nbr);
+int		ms_isalpha(char *str);
+int		ms_char_isalpha(char c);
+int		ms_isdigit(char *str);
+int		ms_char_isdigit(char c);
+int		is_valid_identifier(char *str);
 void    set_handler(int rdline);
 
 #endif
