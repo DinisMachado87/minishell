@@ -1,38 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_atoi.c                                          :+:      :+:    :+:   */
+/*   ms_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/11 18:59:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/14 11:38:23 by jlind            ###   ########.fr       */
+/*   Created: 2025/09/14 13:47:55 by jlind             #+#    #+#             */
+/*   Updated: 2025/09/14 14:12:50 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	ms_atoi(char *nbr)
+int	ms_strncmp(char *s1, char *s2, int len)
 {
-	int	res;
-	int	sign;
+	int	pos;
 
-	if (!nbr)
-		return (0);
-	res = 0;
-	sign = 1;
-	if (*nbr == '-')
-	{
-		sign = -1;
-		nbr++;
-	}
-	while (*nbr == '+')
-		nbr++;
-	while (*nbr && (*nbr >= '0' && *nbr <= '9'))
-	{
-		res *= 10;
-		res += *nbr - '0';
-		nbr++;
-	}
-	return (res * sign);
+	pos = 0;
+	while ((pos < len) && s1 && s2 && (s1[pos] == s2[pos]) && s1[pos + 1])
+		pos++;
+	return (s1[pos] - s2[pos]);
 }

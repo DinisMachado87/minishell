@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/12 09:30:05 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/14 11:45:20 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
 	if (node->n_args > 2)
 	{
 		print_err("cd", "too many arguments");
-		return (ERROR);
+		return (1);
 	}
 	pwd = getcwd(NULL, 0);
 	if (strncmp(node->args[1], "-", 1) == 0)
@@ -62,13 +62,13 @@ int	ft_cd(t_shell *shell, t_ast *node)
 		if (chdir(get_env_node(shell->env, "OLDPWD")->value) == -1)
 		{
 			perror("chdir");
-			return (ERROR);
+			return (1);
 		}
 	}
 	else if (chdir(node->args[1]) == -1)
 	{
 		perror("chdir");
-		return (ERROR);
+		return (1);
 	}
 	oldpwd = ms_strndup("OLDPWD", 6);
 	set_env_node(&shell->env, oldpwd, pwd);
@@ -112,7 +112,7 @@ int	ft_export(t_shell *shell, t_ast *node)
 			if (!*key || !is_valid_identifier(key))
 			{
 				print_err("export", "not a valid identifier");
-				return (ERROR);
+				return (1);
 			}
 			set_env_node(&shell->env, key, value);
 			free(key);
@@ -121,7 +121,7 @@ int	ft_export(t_shell *shell, t_ast *node)
 		else if (!ms_isalpha(node->args[1]))
 		{
 			print_err("export", "not a valid identifier");
-			return (ERROR);
+			return (1);
 		}
 	}
 	return (0);

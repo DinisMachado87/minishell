@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:21:19 by jlind             #+#    #+#             */
-/*   Updated: 2025/08/22 13:21:46 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/14 11:31:33 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ms_strndup(char *str, int n)
 	int		i;
 
 	i = 0;
-	if ((int)n < 0)
+	if (n < 0)
 		n = 0;
 	len = ms_strlen(str);
 	if (n < len)

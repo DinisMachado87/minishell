@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/12 14:27:01 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/14 17:24:17 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define MINISHELL_H
 
 # define ERROR -1
-# define DEBUG 0
 # define TEMP_PREFIX "temp_heredoc"
 
 # include <stdlib.h>
@@ -29,6 +28,7 @@
 # include <stddef.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <dirent.h>
 
 enum e_expand {
 	DONT_EXPAND,
@@ -212,7 +212,7 @@ int		ft_env(t_shell *shell, t_ast *node);
 void	ft_exit(t_shell *shell, t_ast *node);
 void	execute_and(t_shell *shell, t_ast *node);
 void	execute_or(t_shell *shell, t_ast *node);
-char	*get_cmd_path(char *cmd, char *env);
+char    *get_cmd_path(t_shell *shell, char *cmd);
 t_env *gen_env_node(char *key, char *value);
 void  free_env_node(t_env **node);
 void  free_env_node_by_key(t_env **head, char *key);

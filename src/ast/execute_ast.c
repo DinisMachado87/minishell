@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/12 11:00:57 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/14 15:05:27 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,18 @@ void	execute_external(t_shell *shell, t_ast *node)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		cmd = get_cmd_path(node->args[0],
-				get_env_node(shell->env, "PATH")->value);
+		cmd = get_cmd_path(shell, node->args[0]);
 		if (!cmd)
-		{
-			print_err(node->args[0], "command not found");
-			exit(127);
-		}
+			exit(shell->exit_status);
 		list = convert_env_to_list(shell->env);
 		if (execve(cmd, node->args, list) == -1)
 		{
 			perror("execve");
+			free(cmd);
 			free_env_list(list);
 			exit(1);
 		}
+		free(cmd);
 		free_env_list(list);
 		exit(0);
 	}
@@ -113,6 +111,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 				dup2(save_stdin, STDIN_FILENO);
 				dup2(save_stdout, STDOUT_FILENO);
 				shell->exit_status = -1;
+				return ;
 			}
 			close(fd);
 		}
