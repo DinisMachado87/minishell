@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/14 15:05:27 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/14 18:01:37 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,13 @@ int	execute_built_in(t_shell *shell, t_ast *node)
 
 void	execute_ast(t_shell *shell, t_ast *node)
 {
-	int		fd;
-	int		save_stdin;
-	int		save_stdout;
-	t_shell	subshell;
+	int			fd;
+	int			save_stdin;
+	int			save_stdout;
+	t_shell		subshell;
+	struct stat	statbuf;
 
+	ms_bzero((void *)&statbuf, sizeof(struct stat));
 	save_stdin = dup(STDIN_FILENO);
 	save_stdout = dup(STDOUT_FILENO);
 	if (!shell->ast_tree || !node)
@@ -92,11 +94,25 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		{
 			if (node->red_args[IN])
 			{
+				stat(node->red_args[IN], &statbuf);
+				if (!statbuf.st_mode)
+				{
+					shell->exit_status = 1;
+					print_err(node->red_args[IN], "No such file or directory");
+					return ;
+				}
 				fd = open(node->red_args[IN], O_RDONLY);
 				dup2(fd, STDIN_FILENO);
 			}
 			else
 			{
+				stat(node->red_args[OUT], &statbuf);
+				if (!statbuf.st_mode)
+				{
+					shell->exit_status = 1;
+					print_err(node->red_args[OUT], "No such file or directory");
+					return ;
+				}
 				if (node->append)
 					fd = open(node->red_args[OUT],
 							O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -104,14 +120,6 @@ void	execute_ast(t_shell *shell, t_ast *node)
 					fd = open(node->red_args[OUT],
 							O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				dup2(fd, STDOUT_FILENO);
-			}
-			if (fd == -1)
-			{
-				perror(node->red_args[OUT]);
-				dup2(save_stdin, STDIN_FILENO);
-				dup2(save_stdout, STDOUT_FILENO);
-				shell->exit_status = -1;
-				return ;
 			}
 			close(fd);
 		}
