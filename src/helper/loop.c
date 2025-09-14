@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/23 21:19:58 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/14 19:07:51 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,14 @@ char	*get_input(char *prompt)
  * SIGINT = ctrl_c
  * SIGQUIT = ctrl_\
  */
-void	prompt_loop(void)
+void	prompt_loop(char *envp[])
 {
 	char	*input;
 	char	*prompt;
 	t_shell	shell;
 
 	ms_bzero((void *)&shell, sizeof(t_shell));
-	shell.env = init_env();
+	init_env(&shell, envp);
 	set_handler(0);
 	signal(SIGQUIT, SIG_IGN);
 	while (1)

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/14 17:24:17 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/14 19:21:06 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ t_ast	*structure_ast(t_ast *cur_list);
 void	print_ast(t_ast *ast, char *testname);
 void	print_nd_list(t_ast *ast, char *testname);
 // prompt_loop
-void	prompt_loop(void);
+void	prompt_loop(char *envp[]);
 void	execute_ast(t_shell *shell, t_ast *node);
 void	execute_pipe(t_shell *shell, t_ast *node);
 int		ft_echo(t_ast *node);
@@ -227,8 +227,8 @@ void  cleanup(t_shell **shell);
 void  free_env_list(char  **list);
 void  print_err(char *cmd_name, char *err_msg);
 char  *itoa(int num);
-t_env   *init_env(void);
 char    *ms_strndup(char *str, int n);
+void    init_env(t_shell *shell, char *envp[]);
 char    *ms_strncat(char *dst, char *src, int ssize);
 char    *ms_strncpy(char *dst, char *src, int ssize);
 char    *ms_strchr(char *s, int c);

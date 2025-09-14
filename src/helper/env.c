@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:21:55 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/10 17:02:21 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/14 19:11:33 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,13 +166,30 @@ void	free_env(t_env **head)
 	free(*head);
 }
 
-t_env	*init_env(void)
+void	split_env_var(char *var, char **key, char **val)
 {
-	t_env	*env;
+	char	*match;
 
-	env = gen_env_node("PATH", getenv("PATH"));
-	set_env_node(&env, "TERM", getenv("TERM"));
-	set_env_node(&env, "USER", getenv("USER"));
-	set_env_node(&env, "PWD", getenv("PWD"));
-	return (env);
+	if (!*var)
+		return ;
+	match = ms_strchr(var, '=');
+	if (!match)
+		return ;
+	*key = ms_strndup(var, (ms_strlen(var) - ms_strlen(match)));
+	*val = ms_strndup((match + 1), (ms_strlen(match) - 1));
+}
+
+void	init_env(t_shell *shell, char *envp[])
+{
+	char	*key;
+	char	*val;
+
+	while (*envp)
+	{
+		split_env_var(*envp, &key, &val);
+		set_env_node(&shell->env, key, val);
+		free(key);
+		free(val);
+		envp++;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/14 18:01:37 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/14 19:08:56 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,13 +106,6 @@ void	execute_ast(t_shell *shell, t_ast *node)
 			}
 			else
 			{
-				stat(node->red_args[OUT], &statbuf);
-				if (!statbuf.st_mode)
-				{
-					shell->exit_status = 1;
-					print_err(node->red_args[OUT], "No such file or directory");
-					return ;
-				}
 				if (node->append)
 					fd = open(node->red_args[OUT],
 							O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -133,7 +126,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	else if (node->type == SUBSHELL)
 	{
 		ms_bzero((void *)&subshell, sizeof(t_shell));
-		subshell.env = init_env();
+		init_env(&subshell, convert_env_to_list(shell->env));
 		subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
 		execute_ast(&subshell, subshell.ast_tree);
 		free_ast(&subshell.ast_head);
