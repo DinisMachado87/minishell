@@ -96,7 +96,7 @@ int	extend_str(char **dst, char **src)
 		catstr[i++] = *ext++;
 	catstr[i] = '\0';
 	free_and_null((void **)dst);
-	free_and_null((void **)ext);
+	free_and_null((void **)src);
 	*dst = catstr;
 	return (1);
 }
