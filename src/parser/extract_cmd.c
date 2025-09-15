@@ -22,6 +22,7 @@ int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
 	cur->space_after = SPACE_AFTER;
 	len = count_token(cur->str, cur, &nxt);
 	nxt.str = cur->str + len;
+	if (len == 2 && (*cur->str == '\'' || *cur->str == '\"') && *cur->str == cur->str[1])
 	ast->args[c->i_tkn] = ms_strcpy(cur->str, len);
 	if (!ast->args[c->i_tkn])
 		return (0);
