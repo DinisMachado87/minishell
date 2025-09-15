@@ -6,3 +6,5 @@ compile_commands.json
 *.sh
 *.json
 minishell
+obj/
+obj_debug
