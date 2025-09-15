@@ -1,1 +1,8 @@
 minishell_tester/
+compile_commands.json
+*.swap
+*.o
+.cache/
+*.sh
+*.json
+minishell
