@@ -36,7 +36,8 @@ HLP_FILE_NAMES = env.c  itoa.c  loop.c  ms_strchr.c  ms_strncat.c  ms_strncpy.c 
 PRS_FILE_NAMES = ast_utils.c count_token.c extract_cmd.c extract_redirect.c \
 				 extract_utils.c heredoc.c parser.c print_ast.c \
 				 count_cmd_tokens.c expand_cmd.c extract_operator.c \
-				 extract_subshell.c gen_utils.c parser_utils.c structure_ast.c
+				 extract_subshell.c gen_utils.c parser_utils.c \
+				 structure_ast.c validate_pairs.c
 
 # ==== generate release paths ====
 REL_AST_OBJ_FILES = $(patsubst %.c, $(REL_AST_OBJ_DIR)%.o, $(AST_FILE_NAMES))

@@ -6,11 +6,12 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/23 21:19:58 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/13 13:21:55 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <stdio.h>
 
 void	sig_c_handler(int sig)
 {
@@ -67,24 +68,74 @@ char	*get_prompt(void)
 	return (prompt);
 }
 
+int reassign_and_null(char **dst, char **src)
+{
+	*dst = *src;
+	*src = NULL;
+	return (1);
+}
+
+int	extend_str(char **dst, char **src)
+{
+	char	*str;
+	char	*ext;
+	char	*catstr;
+	int		i;
+
+	if (!dst || !src || !*dst || !*src)
+		return (0);
+	str = *dst;
+	ext = *src;
+	catstr = NULL;
+	i = 0;
+	if (!safe_malloc((void **)&catstr, ms_strlen(str) + ms_strlen(ext) + 1))
+		return (perror("Error: Malloc input:"), 0);
+	while (*str)
+		catstr[i++] = *str++;
+	while (*ext)
+		catstr[i++] = *ext++;
+	catstr[i] = '\0';
+	free_and_null((void **)dst);
+	free_and_null((void **)ext);
+	*dst = catstr;
+	return (1);
+}
+
+int store_or_cat_input(char **new_read, char **input)
+{
+	if (new_read
+		&& ((!*input && reassign_and_null(input, new_read))
+			|| (*input && extend_str(input, new_read))))
+		return (1);
+	free_and_null((void **)input);
+	free_and_null((void **)&new_read);
+	return (0);
+}
+
 /*
  * On EOF readline returns NULL
  */
-char	*get_input(char *prompt)
+int	get_input(char *prompt, char **input)
 {
-	char	*input;
+	char	*new_read;
+	int		even;
 
+	even = 0;
 	set_handler(1);
-	input = readline(prompt);
-	set_handler(0);
-	if (!input)
+	while (!even || !*input || **input == '\0')
 	{
-		free(prompt);
-		exit(1);
+		if (!*input)
+			new_read = readline(prompt);
+		else
+			new_read = readline("> ");
+		if (!store_or_cat_input(&new_read, input))
+			return (set_handler(0), ERROR);
+		even = str_pairs_even(*input);
 	}
-	if (*input)
-		add_history(input);
-	return (input);
+	set_handler(0);
+	if (even != ERROR && *input && **input != '\0')
+		add_history(*input);
+	return (even);
 }
 
 /*
@@ -97,6 +148,7 @@ void	prompt_loop(void)
 	char	*prompt;
 	t_shell	shell;
 
+	input = NULL;
 	ms_bzero((void *)&shell, sizeof(t_shell));
 	shell.env = init_env();
 	set_handler(0);
@@ -104,14 +156,8 @@ void	prompt_loop(void)
 	while (1)
 	{
 		prompt = get_prompt();
-		if (!prompt)
-			return ;
-		input = get_input(prompt);
-		if (!input)
-		{
-			free(prompt);
-			return ;
-		}
+		if (!prompt || get_input(prompt, &input) == ERROR)
+			break;
 		shell.ast_tree = parser(input, &shell.ast_head);
 		if (DEBUG)
 			print_ast(shell.ast_tree, "loop");
@@ -125,7 +171,6 @@ void	prompt_loop(void)
 		free_and_null((void **)&prompt);
 		free_and_null((void **)&input);
 	}
-	if (input)
-		free(input);
-	free(prompt);
+	free_and_null((void **)&prompt);
+	free_and_null((void **)&input);
 }

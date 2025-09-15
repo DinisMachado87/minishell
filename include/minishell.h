@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/12 14:27:01 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/15 15:08:52 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define MINISHELL_H
 
 # define ERROR -1
-# define DEBUG 0
 # define TEMP_PREFIX "temp_heredoc"
 
 # include <stdlib.h>
@@ -156,6 +155,8 @@ typedef struct  s_shell
 
 // normaliser
 int		normalizer(char **str);
+// str_pairs_even
+int		str_pairs_even(char *str);
 // parser
 t_ast	*parser(char *str, t_ast **list_head);
 // cmd_expander
