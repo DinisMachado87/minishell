@@ -122,7 +122,7 @@ int	get_input(char *prompt, char **input)
 
 	even = 0;
 	set_handler(1);
-	while (!even || !*input || **input == '\0')
+	while (!even || !*input)
 	{
 		if (!*input)
 			new_read = readline(prompt);
