@@ -34,8 +34,7 @@ int	skip_redirect(t_token *cur, t_cmd *c)
 int	count_redirect(t_token cur, t_cmd *c, t_ast *ast)
 {
 	ast->n_red_tk[c->subtype] = 0;
-	while (chr_after_spaces(&cur)
-		&& CMD == type(cur.str))
+	while (*cur.str && *cur.str != ' ' && CMD == type(cur.str))
 	{
 		cur.str += count_token(cur.str, &cur, &cur);
 		ast->n_red_tk[c->subtype] += 1;

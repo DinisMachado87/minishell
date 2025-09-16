@@ -79,14 +79,13 @@ static int	extract_red_args(t_token *cur, t_ast *ast, int subtype)
 	while (i_tkn < ast->n_red_tk[subtype])
 	{
 		nxt.limiter = cur->limiter;
-		cur->space_after = SPACE_AFTER;
+		cur->space_after = NO_SPACE_AFTER;
+		cur->expand = DONT_EXPAND;
 		len = count_token(cur->str, cur, &nxt);
 		nxt.str = cur->str + len;
 		ast->pre_r_args[subtype][i_tkn] = ms_strcpy(cur->str, len);
 		if (!ast->pre_r_args[subtype][i_tkn])
 			return (perror(err_str), 0);
-		if (cur->limiter != '\'' && *cur->str == '$')
-			ast->r_exp_args[subtype][i_tkn] = EXPAND;
 		i_tkn++;
 		*cur = nxt;
 	}

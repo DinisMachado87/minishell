@@ -126,7 +126,7 @@ int	tkns_to_words(char **tkn_arr, int *space_arr, int arr_len, t_ast *ast)
 
 		interval = 0;
 		while (i + interval + 1 < arr_len
-			&& (!space_arr || space_arr[i + interval] == NO_SPACE_AFTER))
+			&& (tkn_arr[i + interval][0] == '\0' || !space_arr || space_arr[i + interval] == NO_SPACE_AFTER))
 			interval++;
 		if (++interval == 1 && i != new_i)
 			free_and_reassign(&tkn_arr[new_i], &tkn_arr[i]);
