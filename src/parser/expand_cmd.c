@@ -206,10 +206,10 @@ int	cmd_expander(t_ast *ast, t_shell *sh)
 		|| !split_cmd_flags(ast->args[0], ast, alloc_len))
 		return (ERROR);
 	if (ast->pre_r_args[IN]
-		&& !expand_cat_red_tkns(IN, ast, alloc_len, sh))
+		&& !expand_cat_red_tkns(IN, ast, ast->n_red_tk[IN], sh))
 		return (ERROR);
 	if (ast->pre_r_args[OUT]
-		&& !expand_cat_red_tkns(OUT, ast, alloc_len, sh))
+		&& !expand_cat_red_tkns(OUT, ast, ast->n_red_tk[OUT], sh))
 		return (ERROR);
 	if (DEBUG)
 		print_ast(ast, "AFTER EXPANSION");
