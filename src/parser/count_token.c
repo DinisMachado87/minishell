@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 13:52:37 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 01:02:52 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/16 19:44:46 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ int	count_double_quote_tkn(char *str)
 	i_ltr = 0;
 	while (str[i_ltr] && str[i_ltr] != '\"')
 	{
-		if (str[i_ltr] == '$')
+		if (str[i_ltr] == '$'
+			&& !(!str[i_ltr + 1]
+				|| str[i_ltr + 1] == ' '
+				|| str[i_ltr + 1] == '\"'))
 			break;
 		i_ltr++;
 	}
@@ -84,7 +87,7 @@ int	count_token(char *str, t_token *cur, t_token *nxt)
 		else if (cur->limiter == *str)
 		{
 			cur->limiter = ' ';
-			return (i_ltr++);
+			return (++i_ltr);
 		}
 	}
 
