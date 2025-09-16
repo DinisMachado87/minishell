@@ -15,6 +15,7 @@
 
 char	*get_env(char **expanded_value, t_env *head, char *key)
 {
+	key++;
 	while (head)
 	{
 		if (ms_strncmp(head->key, key, ms_strlen(key)) == 0)
@@ -161,13 +162,14 @@ int	expand_tkn_arr(char **tkn_arr, int *exp_arr, int n_tks, t_shell *sh)
 	{
 		if (exp_arr[i] == EXPAND)
 		{
-			if (tkn_arr[i][0] == '?' && tkn_arr[i][1] == '\0')
+			if (tkn_arr[i][1] == '?' && tkn_arr[i][2] == '\0')
 			{
 				if (!expand_exit_status(tkn_arr, i, sh))
 					return (0);
 			}
-			else if (!get_env(&env_value, sh->env, tkn_arr[i])
-				|| !free_and_null((void **)&tkn_arr[i])
+			else if (!get_env(&env_value, sh->env, tkn_arr[i]))
+				bzero((void *)tkn_arr[i], ms_strlen(tkn_arr[i]));
+			else if (!free_and_null((void **)&tkn_arr[i])
 				|| !safe_malloc((void **)&tkn_arr[i],
 					ms_strlen(env_value) + 1)
 				|| !ms_strncpy(tkn_arr[i], env_value,
