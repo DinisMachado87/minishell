@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/16 13:36:41 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/16 14:05:42 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,8 @@ int	get_input(char *prompt, char **input)
 			new_read = readline(prompt);
 		else
 			new_read = readline("> ");
+		if (!new_read)
+			exit(1);
 		if (!store_or_cat_input(&new_read, input))
 			return (set_handler(0), ERROR);
 		even = str_pairs_even(*input);
