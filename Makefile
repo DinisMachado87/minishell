@@ -56,7 +56,7 @@ DBG_MAIN_OBJ_FILE = $(DEBUG_OBJ_DIR)main.o
 DBG_OBJS = $(DBG_AST_OBJ_FILES) $(DBG_CMD_OBJ_FILES) $(DBG_HLP_OBJ_FILES) $(DBG_PRS_OBJ_FILES) $(DBG_MAIN_OBJ_FILE)
 
 # ==== targets ====
-all: $(NAME)
+all: $(NAME) debug
 
 debug: $(DEBUG_NAME)
 
