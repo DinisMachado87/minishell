@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:24 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 02:16:00 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:32:43 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,16 @@ t_ast	*free_ast(t_ast **ast_head)
 	{
 		next_head = (*ast_head)->next;
 		while ((*ast_head)->args && --(*ast_head)->n_args >= 0)
-			free_and_null((void *)&(*ast_head)->args[(*ast_head)->n_args]);
+			free_and_null((void **)&(*ast_head)->args[(*ast_head)->n_args]);
 		if ((*ast_head)->args)
-			free_and_null((void *)&(*ast_head)->args);
+			free_and_null((void **)&(*ast_head)->args);
 		if ((*ast_head)->exp_args)
-			free_and_null((void *)&(*ast_head)->exp_args);
+			free_and_null((void **)&(*ast_head)->exp_args);
 		if ((*ast_head)->space_args)
-			free_and_null((void *)&(*ast_head)->space_args);
+			free_and_null((void **)&(*ast_head)->space_args);
 		free_red_args(*ast_head, IN);
 		free_red_args(*ast_head, OUT);
-		free_and_null((void *)&(*ast_head));
+		free_and_null((void **)&(*ast_head));
 		*ast_head = next_head;
 	}
 	return (NULL);
