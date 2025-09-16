@@ -1,7 +1,7 @@
 DINIS
 
-- request " and ( when incomplete.
-- $EMPTY echo hi
+> "
+> "
 
 - handle empty cmds
 - unlink heredoc files after execution

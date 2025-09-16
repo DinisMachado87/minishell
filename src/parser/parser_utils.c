@@ -74,14 +74,14 @@ void	*handle_error(char *err_msg, int *error)
 char	*ms_strcpy(char *str, int len)
 {
 	char	*substring;
-	int		offset;
 
-	offset = *str && (*str == '\'' || *str == '\"');
-	offset += str[offset] && str[offset] == '$' && *str != '\''
-		&& str[offset + 1] && str[offset + 1] != ' ';
-	str += offset;
-	len -= offset;
-	len -= (str[len - 1] && (str[len - 1] == '\'' || str[len - 1] == '\"'));
+	if (*str && (*str == '\'' || *str == '\"'))
+	{
+		str++;
+		len--;
+	}
+	if (str[len - 1] == '\'' || str[len - 1] == '\"')
+		len--;
 	substring = malloc((len + 1) * sizeof(char));
 	if (!substring)
 		return (perror("Err extracting substring"), NULL);

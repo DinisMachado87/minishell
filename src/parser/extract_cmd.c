@@ -16,19 +16,16 @@ int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
 {
 	int		len;
 	t_token	nxt;
-	int		i;
 
-	nxt.limiter = cur->limiter;
-	cur->space_after = SPACE_AFTER;
+	cur->space_after = NO_SPACE_AFTER;
+	cur->expand = DONT_EXPAND;
 	len = count_token(cur->str, cur, &nxt);
 	nxt.str = cur->str + len;
 	ast->args[c->i_tkn] = ms_strcpy(cur->str, len);
 	if (!ast->args[c->i_tkn])
 		return (0);
 	ast->space_args[c->i_tkn] = cur->space_after;
-	i = (*cur->str == '\"');
-	if (cur->str[i] == '$' && cur->str[i + 1] && cur->str[i + 1] != ' ')
-		ast->exp_args[c->i_tkn] = EXPAND;
+	ast->exp_args[c->i_tkn] = cur->expand;
 	c->i_tkn++;
 	*cur = nxt;
 	return(len);
@@ -36,7 +33,7 @@ int extract_token(t_token *cur, t_cmd *c, t_ast *ast)
 
 int	extract_cmd_core(t_token *cur, t_cmd *c, t_parser *s)
 {
-	while(chr_after_spaces(cur))
+	while(cur->limiter != ' ' || chr_after_spaces(cur))
 	{
 		c->type = type(cur->str);
 		if (*cur->str && REDIRECT == c->type)
@@ -63,7 +60,6 @@ int	extract_cmd(char **str, t_parser *s)
 	bzero((void *)&c, sizeof(t_cmd));
 
 	cur.limiter = ' ';
-	cur.space_after = SPACE_AFTER;
 	cur.str = *str;
 
 	count_cmd_tokens(cur, &c);

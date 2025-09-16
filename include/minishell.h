@@ -127,6 +127,7 @@ typedef struct s_state_token
 {
 	char	limiter;
 	int		space_after;
+	int		expand;
 	char	*str;
 }	t_token;
 
