@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:24 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/16 15:32:43 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/16 19:08:01 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,6 @@ t_ast	*free_ast(t_ast **ast_head)
 			free_and_null((void **)&(*ast_head)->exp_args);
 		if ((*ast_head)->space_args)
 			free_and_null((void **)&(*ast_head)->space_args);
-		free_red_args(*ast_head, IN);
-		free_red_args(*ast_head, OUT);
 		free_and_null((void **)&(*ast_head));
 		*ast_head = next_head;
 	}
