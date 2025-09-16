@@ -58,10 +58,12 @@ t_ast	*free_ast(t_ast **ast_head)
 			free_and_null((void *)&(*ast_head)->args[(*ast_head)->n_args]);
 		if ((*ast_head)->args)
 			free_and_null((void *)&(*ast_head)->args);
-		if ((*ast_head)->red_args[IN])
-			free_and_null((void *)&(*ast_head)->red_args[IN]);
-		if ((*ast_head)->red_args[OUT])
-			free_and_null((void *)&(*ast_head)->red_args[OUT]);
+		if ((*ast_head)->exp_args)
+			free_and_null((void *)&(*ast_head)->exp_args);
+		if ((*ast_head)->space_args)
+			free_and_null((void *)&(*ast_head)->space_args);
+		free_red_args(*ast_head, IN);
+		free_red_args(*ast_head, OUT);
 		free_and_null((void *)&(*ast_head));
 		*ast_head = next_head;
 	}
