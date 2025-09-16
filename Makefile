@@ -32,7 +32,7 @@ AST_FILE_NAMES = execute_ast.c
 CMD_FILE_NAMES = built_ins.c  export_utils.c  get_cmd_path.c
 HLP_FILE_NAMES = env.c  itoa.c  loop.c  ms_strchr.c  ms_strncat.c  ms_strncpy.c \
 				 ms_strndup.c  print_err.c ms_isalpha.c ms_atoi.c ms_isdigit.c \
-				 is_valid_identifier.c
+				 is_valid_identifier.c free_shell.c
 PRS_FILE_NAMES = ast_utils.c count_token.c extract_cmd.c extract_redirect.c \
 				 extract_utils.c heredoc.c parser.c print_ast.c \
 				 count_cmd_tokens.c expand_cmd.c extract_operator.c \

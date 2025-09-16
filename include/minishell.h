@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/16 13:29:02 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/16 19:30:02 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,5 +242,6 @@ int		ms_isdigit(char *str);
 int		ms_char_isdigit(char c);
 int		is_valid_identifier(char *str);
 void    set_handler(int rdline);
+void	free_shell(t_shell *shell);
 
 #endif

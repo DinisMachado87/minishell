@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/14 11:45:20 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/16 19:41:19 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,6 @@ void	ft_exit(t_shell *shell, t_ast *node)
 	}
 	else
 		exit_status = shell->exit_status;
-	free_ast(&shell->ast_head);
+	free_shell(shell);
 	exit(exit_status);
 }
