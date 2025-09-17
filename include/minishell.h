@@ -6,11 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/09/17 10:21:01 by jlind            ###   ########.fr       */
-=======
 /*   Updated: 2025/09/17 17:36:37 by dimachad         ###   ########.fr       */
->>>>>>> main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,8 +148,8 @@ typedef struct  s_env
 
 typedef struct  s_shell
 {
-	t_ast   *ast_head;
-	t_ast   *ast_tree;
+	t_ast   *list;
+	t_ast   *ast;
 	t_env   *env;
 	int		exit_status;
 }			t_shell;
@@ -163,7 +159,7 @@ int		normalizer(char **str);
 // str_pairs_even
 int		str_pairs_even(char *str);
 // parser
-t_ast	*parser(char *str, t_ast **list_head);
+int		parser(char *str, t_shell *sh);
 // cmd_expander
 int		cmd_expander(t_ast *ast, t_shell *sh);
 // ast_utils
