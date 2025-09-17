@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/16 19:30:02 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/17 10:21:01 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,6 +235,7 @@ void    init_env(t_shell *shell, char *envp[]);
 char    *ms_strncat(char *dst, char *src, int ssize);
 char    *ms_strncpy(char *dst, char *src, int ssize);
 char    *ms_strchr(char *s, int c);
+char	*ms_strrchr(char *s, int c);
 int		ms_atoi(char *nbr);
 int		ms_isalpha(char *str);
 int		ms_char_isalpha(char c);

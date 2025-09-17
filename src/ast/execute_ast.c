@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/17 09:25:20 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/17 15:05:25 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,13 @@ int	execute_built_in(t_shell *shell, t_ast *node)
 	return (0);
 }
 
+/*
+   I need to loop through all the redirect out files, creating them,
+   then setting up the fd redirect using dup2, that's why all the
+   files will be created but only the last one containg the output.
+   Cause all the files will be touched but the redirect will override
+   itself so only the last one will really receive the redirected data
+*/
 void	execute_ast(t_shell *shell, t_ast *node)
 {
 	int			fd;
@@ -74,6 +81,8 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	int			save_stdout;
 	t_shell		subshell;
 	struct stat	statbuf;
+	int			last_slash_pos;
+	char		*last_slash;
 
 	ms_bzero((void *)&statbuf, sizeof(struct stat));
 	save_stdin = dup(STDIN_FILENO);
@@ -112,12 +121,32 @@ void	execute_ast(t_shell *shell, t_ast *node)
 			}
 			else
 			{
-				if (node->append)
-					fd = open(node->red_args[OUT],
-							O_WRONLY | O_CREAT | O_APPEND, 0644);
-				else
-					fd = open(node->red_args[OUT],
-							O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				last_slash = ms_strrchr(node->red_args[OUT], '/');
+				if (last_slash)
+				{
+					last_slash_pos = ms_strlen(node->red_args[OUT]) - ms_strlen(last_slash);
+					node->red_args[OUT][last_slash_pos] = '\0';
+					stat(node->red_args[OUT], &statbuf);
+					node->red_args[OUT][last_slash_pos] = '/';
+					if (S_ISDIR(statbuf.st_mode))
+					{
+						if (access(node->red_args[OUT], W_OK))
+						{
+							if (node->append)
+								fd = open(node->red_args[OUT],
+										O_WRONLY | O_CREAT | O_APPEND, 0644);
+							else
+								fd = open(node->red_args[OUT],
+										O_WRONLY | O_CREAT | O_TRUNC, 0644);
+						}
+					}
+					else if (!statbuf.st_mode)
+					{
+						print_err(node->red_args[OUT], "No such file or directory");
+						shell->exit_status = 1;
+						return;
+					}
+				}
 				dup2(fd, STDOUT_FILENO);
 			}
 			close(fd);
