@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/16 19:41:19 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/17 09:01:33 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ft_echo(t_ast *node)
 			j++;
 		}
 		i++;
-		if (i < node->n_args)
+		if (node->args[i])
 			write(1, " ", 1);
 	}
 	if (newline)
