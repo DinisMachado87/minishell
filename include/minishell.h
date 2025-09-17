@@ -6,7 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/09/17 10:21:01 by jlind            ###   ########.fr       */
+=======
+/*   Updated: 2025/09/17 17:36:37 by dimachad         ###   ########.fr       */
+>>>>>>> main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,24 +103,23 @@ static const t_s_token g_types[] =
 	{0, 0, 0},
 };
 
+typedef struct s_args {
+	char	**tkns;
+	int		*exp;
+	int		*space;
+	int		*type;
+	int		n;
+}	t_args;
+
 typedef struct s_ast
 {
-    int             type;
-    int             subtype;
-    char            **args;
-    int				*exp_args;
-	int				*space_args;
-    int             n_args;
-    int             append;
-    int             heredoc;
-    char            *red_args[2];
-	char			**pre_r_args[2];
-    int				*r_exp_args[2];
-	int				n_red_tk[2];
-    struct s_ast    *next;
-    struct s_ast    *left;
-    struct s_ast    *right;
-}					t_ast;
+	int				type;
+	int				subtype;
+	t_args			args[3];
+	struct s_ast    *next;
+	struct s_ast    *left;
+	struct s_ast    *right;
+}	t_ast;
 
 typedef struct  s_state_parser
 {
