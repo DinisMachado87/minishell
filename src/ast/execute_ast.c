@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/16 14:39:19 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/17 09:25:20 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 				}
 				fd = open(node->red_args[IN], O_RDONLY);
 				dup2(fd, STDIN_FILENO);
+				unlink(node->red_args[IN]);
 			}
 			else
 			{
