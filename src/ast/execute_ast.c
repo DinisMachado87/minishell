@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/17 15:05:25 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/17 22:55:57 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,13 @@ void	execute_external(t_shell *shell, t_ast *node)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		cmd = get_cmd_path(shell, node->args[0]);
+		//cmd = get_cmd_path(shell, node->args[0]);
+		cmd = get_cmd_path(shell, *node->args[0].tkns[0]);
 		if (!cmd)
 			exit(shell->exit_status);
 		list = convert_env_to_list(shell->env);
-		if (execve(cmd, node->args, list) == -1)
+		//if (execve(cmd, node->args, list) == -1)
+		if (execve(cmd, node->args[0].tkns, list) == -1)
 		{
 			perror("execve");
 			free(cmd);
@@ -98,51 +100,70 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	else if (node->type == CMD)
 	{
 		cmd_expander(node, shell);
-		if (!node->args[0])
+		//if (!node->args[0])
+		if (!node->args[0].tkns[0])
 			node->subtype = EXTERNAL;
 		else
-			node->subtype = strict_subtype(node->args[0]);
+			//node->subtype = strict_subtype(node->args[0]);
+			node->subtype = strict_subtype(node->args[0].tkns[0]);
 		if (DEBUG)
 			print_ast(shell->ast_tree, "After cmd expander");
-		if (node->red_args[IN] || node->red_args[OUT])
+		//if (node->red_args[IN] || node->red_args[OUT])
+		if ((node->args[IN].tkns && *node->args[IN].tkns)
+				|| (node->args[OUT].tkns && *node->args[OUT].tkns))
 		{
-			if (node->red_args[IN])
+			//if (node->red_args[IN])
+			if (node->args[IN].tkns && *node->args[IN].tkns)
 			{
-				stat(node->red_args[IN], &statbuf);
+				//stat(node->red_args[IN], &statbuf);
+				stat(*node->args[IN].tkns, &statbuf);
 				if (!statbuf.st_mode)
 				{
 					shell->exit_status = 1;
-					print_err(node->red_args[IN], "No such file or directory");
+					//print_err(node->red_args[IN], "No such file or directory");
+					print_err(*node->args[IN].tkns, "No such file or directory");
 					return ;
 				}
-				fd = open(node->red_args[IN], O_RDONLY);
+				//fd = open(node->red_args[IN], O_RDONLY);
+				fd = open(*node->args[IN].tkns, O_RDONLY);
 				dup2(fd, STDIN_FILENO);
-				unlink(node->red_args[IN]);
+				//unlink(node->red_args[IN]);
+				unlink(*node->args[IN].tkns);
 			}
 			else
 			{
-				last_slash = ms_strrchr(node->red_args[OUT], '/');
+				//last_slash = ms_strrchr(node->red_args[OUT], '/');
+				last_slash = ms_strrchr(*node->args[OUT].tkns, '/');
 				if (last_slash)
 				{
-					last_slash_pos = ms_strlen(node->red_args[OUT]) - ms_strlen(last_slash);
-					node->red_args[OUT][last_slash_pos] = '\0';
-					stat(node->red_args[OUT], &statbuf);
-					node->red_args[OUT][last_slash_pos] = '/';
+					//last_slash_pos = ms_strlen(node->red_args[OUT]) - ms_strlen(last_slash);
+					last_slash_pos = ms_strlen(*node->args[OUT].tkns) - ms_strlen(last_slash);
+					//node->red_args[OUT][last_slash_pos] = '\0';
+					*node->args[OUT].tkns[last_slash_pos] = '\0';
+					//stat(node->red_args[OUT], &statbuf);
+					stat(*node->args[OUT].tkns, &statbuf);
+					//node->red_args[OUT][last_slash_pos] = '/';
+					*node->args[OUT].tkns[last_slash_pos] = '/';
 					if (S_ISDIR(statbuf.st_mode))
 					{
-						if (access(node->red_args[OUT], W_OK))
+						//if (access(node->red_args[OUT], W_OK))
+						if (access(*node->args[OUT].tkns, W_OK))
 						{
+							// replacement?
 							if (node->append)
-								fd = open(node->red_args[OUT],
+								//fd = open(node->red_args[OUT],
+								fd = open(*node->args[OUT].tkns,
 										O_WRONLY | O_CREAT | O_APPEND, 0644);
 							else
-								fd = open(node->red_args[OUT],
+								//fd = open(node->red_args[OUT],
+								fe = open(*node->red_args[OUT].tkns,
 										O_WRONLY | O_CREAT | O_TRUNC, 0644);
 						}
 					}
 					else if (!statbuf.st_mode)
 					{
-						print_err(node->red_args[OUT], "No such file or directory");
+						//print_err(node->red_args[OUT], "No such file or directory");
+						print_err(*node->red_args[OUT].tkns, "No such file or directory");
 						shell->exit_status = 1;
 						return;
 					}
@@ -151,9 +172,11 @@ void	execute_ast(t_shell *shell, t_ast *node)
 			}
 			close(fd);
 		}
-		if (node->subtype == EXTERNAL && *node->args)
+		//if (node->subtype == EXTERNAL && *node->args)
+		if (node->subtype == EXTERNAL && *node->args[0].tkns)
 			execute_external(shell, node);
-		else if (node->subtype != EXTERNAL && *node->args)
+		//else if (node->subtype != EXTERNAL && *node->args)
+		else if (node->subtype != EXTERNAL && *node->args[0].tkns)
 			shell->exit_status = execute_built_in(shell, node);
 		dup2(save_stdin, STDIN_FILENO);
 		dup2(save_stdout, STDOUT_FILENO);
@@ -162,7 +185,8 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	{
 		ms_bzero((void *)&subshell, sizeof(t_shell));
 		init_env(&subshell, convert_env_to_list(shell->env));
-		subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
+		//subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
+		subshell.ast_tree = parser(*node->args[0].tkns, &subshell.ast_head);
 		execute_ast(&subshell, subshell.ast_tree);
 		free_ast(&subshell.ast_head);
 	}
