@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/17 17:36:37 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:21:22 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef enum e_subtype {
 
 typedef enum e_redirect_subtype
 {
+	NONE,
 	IN,
 	OUT,
 	APPEND,
