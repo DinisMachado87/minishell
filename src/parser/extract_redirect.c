@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:56:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/05 02:38:42 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/18 18:05:52 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,66 +25,31 @@ int	skip_red_sign_and_spaces(t_token *cur, int r_subtype)
 	return (1);
 }
 
-static int	convert_append_heredoc_to_in_out(t_ast *ast, int *r_subtype)
+static int	find_array_subtype(t_cmd *c)
 {
-	ast->append = 0;
-	if (*r_subtype == APPEND)
-	{
-		ast->append = 1;
-		*r_subtype = OUT;
-	}
-	else if (*r_subtype == HEREDOC)
-	{
-		ast->heredoc = 1;
-		*r_subtype = IN;
-	}
-	else if (*r_subtype == OUT)
-		ast->append = 0;
-	else if (*r_subtype == IN)
-		ast->heredoc = 0;
+	if (c->subtype == APPEND)
+		c->subtype = OUT;
+	else if (c->subtype == HEREDOC)
+		c->subtype = IN;
 	return (1);
 }
 
-int	free_and_null_red_args(t_ast *ast, int subtype)
+static int	extract_red_args(t_token *cur, t_args *args, int i_tkn)
 {
-	int i;
-
-	if (subtype == IN && ast->heredoc)
-		unlink(ast->red_args[IN]);
-	if (ast->red_args[subtype])
-		free(ast->red_args[subtype]);
-	ast->red_args[subtype] = NULL;
-	i = 0;
-	while (ast->pre_r_args[subtype]
-		&& ast->pre_r_args[subtype][i])
-	{
-		free(ast->pre_r_args[subtype][i]);
-		ast->pre_r_args[subtype][i++] = NULL;
-	}
-	if (ast->r_exp_args[subtype])
-		free(ast->r_exp_args[subtype]);
-	ast->r_exp_args[subtype] = NULL;
-	return (1);
-}
-
-static int	extract_red_args(t_token *cur, t_ast *ast, int subtype)
-{
-	char	*err_str = "Error malloc redirection argument";
+	const char	*err_str = "Error malloc redirect args";
 	t_token	nxt;
 	int		len;
-	int		i_tkn;
 
-	i_tkn = 0;
 	cur->space_after = NO_SPACE_AFTER;
-	while (i_tkn < ast->n_red_tk[subtype])
+	while (i_tkn < args->n)
 	{
 		nxt.limiter = cur->limiter;
 		cur->space_after = NO_SPACE_AFTER;
 		cur->expand = DONT_EXPAND;
 		len = count_token(cur->str, cur, &nxt);
 		nxt.str = cur->str + len;
-		ast->pre_r_args[subtype][i_tkn] = ms_strcpy(cur->str, len);
-		if (!ast->pre_r_args[subtype][i_tkn])
+		args->tkns[i_tkn] = ms_strcpy(cur->str, len);
+		if (!args->tkns[i_tkn])
 			return (perror(err_str), 0);
 		i_tkn++;
 		*cur = nxt;
@@ -92,18 +57,50 @@ static int	extract_red_args(t_token *cur, t_ast *ast, int subtype)
 	return(len);
 }
 
-int	extract_redirect(t_token *cur, t_cmd *c, t_parser *s)
+int	copy_old_args(t_args *old_args, t_args *new_args)
 {
-	c->subtype = subtype(cur->str);
+	int	i;
+
+	i = 0;
+	while (i < old_args->n)
+	{
+		new_args->tkns[i] = old_args->tkns[i];
+		old_args->tkns[i] = NULL;
+		new_args->exp[i] = old_args->exp[i];
+		new_args->space[i] = old_args->space[i];
+		new_args->type[i] = old_args->type[i];
+		i++;
+	}
+	free_and_null((void **)&old_args->tkns);
+	free_and_null((void **)&old_args->exp);
+	free_and_null((void **)&old_args->space);
+	free_and_null((void **)&old_args->type);
+	return (1);
+}
+
+/* New_args and old_args are the same instance of t_args,
+ * but one passed by reference and the other literally.
+ * Therefore the nested pointers are preserved in old_args in the stack
+ * when loger arrays are realloc in new args by reference.
+ * The strings in the old array are then moved,
+ * therefore only the old array of pointers not it's strs are freed,
+ * minimizing allocations.
+ * Old_args is in the stack so no need to free;
+ */
+int	extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args)
+{
+	int		orig_subtype;
+
+	orig_subtype = c->subtype;
 	if (!skip_red_sign_and_spaces(cur, c->subtype)
-		|| !convert_append_heredoc_to_in_out(s->ast, &c->subtype)
-		|| !count_redirect(*cur, c, s->ast)
-		|| !free_and_null_red_args(s->ast, c->subtype)
-		|| !allocate_red_args(s->ast,
-				s->ast->n_red_tk[c->subtype], c->subtype)
-		|| !extract_red_args(cur, s->ast, c->subtype))
+		|| !find_array_subtype(c)
+		|| !count_redirect(*cur, c, new_args)
+		|| !allocate_ast_args(new_args, old_args.n + new_args->n)
+		|| !copy_old_args(&old_args, new_args)
+		|| !extract_red_args(cur, new_args, old_args.n))
 		return (0);
-	if (s->ast->heredoc)
-		ms_heredoc(s->ast, s);
+	new_args->type[old_args.n] = orig_subtype;
+	if (orig_subtype == HEREDOC)
+		ms_heredoc(*new_args, old_args.n);
 	return(1);
 }

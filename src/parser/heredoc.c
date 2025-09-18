@@ -6,14 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 13:21:59 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/18 18:05:28 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <signal.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 char	*unique_tmp(char **dest, char *str1, char *str2)
 {
@@ -92,55 +89,43 @@ int	create_heredoc_file(char *eof, char *temp_file)
 	exit(0);
 }
 
-int	count_args(char **arr)
-{
-	int	n_args;
-
-	n_args = 0;
-	while (arr[n_args])
-		n_args++;
-	return (n_args);
-}
-
-int	wait_to_store_file(pid_t pid, int status, char *temp_file, t_ast *ast)
+static int	wait_to_store_file(pid_t pid, char **temp_file, char **arg_tkn)
 {
 	struct sigaction	old_sigint;
 	struct sigaction	old_sigquit;
+	int		status;
 
+	status = 0;
 	set_and_save_signal(SIGINT, SIG_IGN, &old_sigint);
 	set_and_save_signal(SIGQUIT, SIG_IGN, &old_sigquit);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
 	{
-		free(temp_file);
-		return (ERROR);
+		free(*temp_file);
+		return (0);
 	}
-	free_red_args(ast, IN);
-	ast->red_args[IN] = temp_file;
+	free_and_reassign(arg_tkn, temp_file);
 	sigaction(SIGINT, &old_sigint, NULL);
 	sigaction(SIGQUIT, &old_sigquit, NULL);
-	return (0);
+	return (1);
 }
 
-int ms_heredoc(t_ast *ast, t_parser *s)
+int ms_heredoc(t_args *args, int offset)
 {
 	int		n_args;
-	int		status;
 	pid_t	pid;
-	char	*temp_file_name;
+	char	*temp_file;
 	
-	n_args = count_args(ast->pre_r_args[IN]);
-	status = 0;
-	free_and_null((void **)ast->red_args[IN]);
-	if (!cat_str_arr(&ast->red_args[IN], ast->pre_r_args[IN], n_args)
-		|| !unique_tmp(&temp_file_name, TEMP_PREFIX, itoa(++s->n_heredoc)))
+	n_args = args->n - offset;
+	if (!cat_str_arr(&args->tkns[offset],
+				args->tkns + offset, args->n - offset)
+		|| !unique_tmp(&temp_file, TEMP_PREFIX, itoa(getpid())))
 		return (ERROR);
-
 	pid = fork();
 	if ((pid == 0
-			&& create_heredoc_file(ast->red_args[IN], temp_file_name) == ERROR)
+		&& !create_heredoc_file(args->tkns[offset], temp_file))
 		|| (pid > 0
-			&& wait_to_store_file(pid, status, temp_file_name, ast) == ERROR)
+			&& !wait_to_store_file(pid, &temp_file, &args->tkns[offset]))
 		|| (pid < 0))
 		return (ERROR);
 	return (0);

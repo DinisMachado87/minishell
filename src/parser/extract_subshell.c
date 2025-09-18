@@ -6,18 +6,17 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/06 14:46:19 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/17 20:59:18 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include <stdio.h>
 
-t_ast	*extract_subshell(t_ast **ast_nd, char **str)
+t_ast	*extract_subshell(t_ast **ast, char **str)
 {
 	int		i_ltr;
 	int		paretheses;
-	char	*substr;
 
 	i_ltr = 0;
 	paretheses = 1;
@@ -28,19 +27,17 @@ t_ast	*extract_subshell(t_ast **ast_nd, char **str)
 		i_ltr++;
 	if (!(*str)[i_ltr])
 		return (perror("ERROR: Missing ')'"), NULL);
-	substr = ms_strcpy(*str, i_ltr);
-	if (!substr)
+	(*ast)->args[0].tkns[0] = ms_strcpy(*str, i_ltr);
+	if (!(*ast)->args[0].tkns[0])
 		return (NULL);
-	if (!make_node(ast_nd))
-		return (perror("ERROR allocating node "
-				 "while extracting subshell"), NULL);
-	if (!allocate_ast_args(*ast_nd, 1))
+	if (!make_node(ast)
+		|| !allocate_ast_args(&(*ast)->args[0], 1))
 		return (NULL);
-	(*ast_nd)->args[0] = substr;
-	(*ast_nd)->exp_args[0] = 0;
-	(*ast_nd)->n_args = 1;
-	(*ast_nd)->type = SUBSHELL;
+	(*ast)->args[0].exp[0] = 0;
+	(*ast)->args[0].space[0] = 0;
+	(*ast)->args[0].n = 1;
+	(*ast)->type = SUBSHELL;
 	*str += i_ltr + paretheses;
-	return (*ast_nd);
+	return (*ast);
 }
 

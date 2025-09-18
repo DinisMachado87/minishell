@@ -31,13 +31,13 @@ int	skip_redirect(t_token *cur, t_cmd *c)
 	return (1);
 }
 
-int	count_redirect(t_token cur, t_cmd *c, t_ast *ast)
+int	count_redirect(t_token cur, t_cmd *c, t_args *args)
 {
-	ast->n_red_tk[c->subtype] = 0;
+	args->n = 0;
 	while (*cur.str && *cur.str != ' ' && CMD == type(cur.str))
 	{
 		cur.str += count_token(cur.str, &cur, &cur);
-		ast->n_red_tk[c->subtype] += 1;
+		args->n += 1;
 	}
 	return (1);
 }

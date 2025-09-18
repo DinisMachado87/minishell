@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 19:33:03 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:04:04 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,32 +31,31 @@ void	new_line_to_null(char *str)
 }
 
 // @Parser extracts action nodes into ast using the next linear list pointers
-t_ast	*parser(char *str, t_ast **list_head)
+int		parser(char *str, t_shell *sh)
 {
-	t_parser	s;
+	t_ast	*cur;
 
 	if (!str || *str == '\0')
-		return (perror("ERROR: No str or empty str"), NULL);
-	ms_bzero((void *)&s, sizeof(t_parser));
+		return (perror("ERROR: No str or empty str"), ERROR);
 	new_line_to_null(str);
 	while (*str && *str == ' ')
 		str++;
 	while (*str)
 	{
 		if (type(str) > REDIRECT)
-			return (perror("Error: Input must start with command"),
-				free_ast(&s.ast));
-		if (!extract_subshell(&s.ast, &str)
-			&& !extract_cmd(&str, &s))
-				return (free_ast(&s.ast));
-		if (!*list_head)
-			*list_head = s.ast;
+			return (perror("Error: Input must start with command"), ERROR);
+		if (!extract_subshell(&cur, &str)
+			&& !extract_cmd(&str, sh))
+				return (ERROR);
+		if (!sh->ast)
+			sh->ast = cur;
 		if (is_end_of_string(&str))
 			break;
-		if (!extract_operator(&s.ast, &str, type(str)))
-			return (free_ast(&s.ast));
+		if (!extract_operator(&cur, &str, type(str)))
+			return (ERROR);
 		if (is_end_of_string(&str))
 			break;
 	}
-	return (structure_ast(*list_head));
+	structure_ast(sh->ast);
+	return (1);
 }
