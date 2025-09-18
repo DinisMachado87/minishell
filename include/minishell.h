@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/17 19:21:22 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/18 20:20:54 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,10 +162,10 @@ int		str_pairs_even(char *str);
 // parser
 int		parser(char *str, t_shell *sh);
 // cmd_expander
-int		cmd_expander(t_ast *ast, t_shell *sh);
+int		cmd_expander(t_args	*args, t_shell *sh);
 // ast_utils
 t_ast	*make_node(t_ast **ast);
-t_ast	*free_ast(t_ast **ast);
+t_ast	*free_ast(t_shell *sh);
 void	free_and_null_str_arr(char ***address_str_arr);
 int		free_and_null(void **ptr);
 // parser_utils
@@ -176,8 +176,8 @@ char	*ms_strcpy(char *str, int len);
 // extract_utils
 void	*safe_alloc_zero(void **ptr, size_t size);
 void	*safe_malloc(void **ptr, size_t size);
-int		allocate_ast_args(t_ast *ast, int n_strs);
-int		allocate_red_args(t_ast *ast, int n_strs, int subtype);
+int		allocate_ast_args(t_args *args, int n_strs);
+void	*safe_alloc_zero(void **ptr, size_t size);
 // gen_utils
 void	ms_bzero(void *s, size_t n);
 int		ms_strcmp(char *ref, char *str);
@@ -188,15 +188,21 @@ char	*cat_str_arr(char **dest, char **str_arr, int size);
 // extract cmd
 int		chr_after_spaces(t_token *tk);
 int		count_token(char *str, t_token *cur, t_token *nxt);
-int		count_redirect(t_token cur, t_cmd *c, t_ast *ast);
+int		count_redirect(t_token cur, t_cmd *c, t_args *args);
 int		count_cmd_tokens(t_token cur, t_cmd *c);
-void	free_red_args(t_ast *ast, int subtype);
-int		extract_cmd(char **str, t_parser *s);
+int		free_and_null_args(t_args *args);
+int		free_and_reassign(char **dest, char **src);
+int		extract_cmd(char **str, t_shell *s);
+int		tkns_to_words(t_args *args, int alloc_len);
 int		skip_red_sign_and_spaces(t_token *cur, int r_subtype);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
-int		extract_redirect(t_token *cur, t_cmd *c, t_parser *s);
-int 	ms_heredoc(t_ast *ast, t_parser *s);
+int		extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args);
+int		ms_heredoc(t_args *args, int offset);
+//	expand_tkn_arr
+int	expand_tkn_arr(t_args *args, t_shell *sh);
+// split_cmd_flags
+int	split_cmd_flags(char *str, t_args *args, int alloc_len);
 // structure_ast
 t_ast	*structure_ast(t_ast *cur_list);
 // print_ast

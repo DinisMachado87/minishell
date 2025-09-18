@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:48 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 02:15:55 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/17 20:50:40 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,25 +23,17 @@ void	*safe_alloc_zero(void **ptr, size_t size)
 	return (*ptr);
 }
 
-int	allocate_ast_args(t_ast *ast, int n_strs)
+int	allocate_ast_args(t_args *args, int n_strs)
 {
-	if (!safe_alloc_zero((void **)&ast->args,
+	if (!safe_alloc_zero((void **)&args->tkns,
 					  (n_strs + 1) * sizeof(char *))
-		|| !safe_alloc_zero((void **)&ast->exp_args,
+		|| !safe_alloc_zero((void **)&args->exp,
 					  (n_strs + 1) * sizeof(int))
-		|| !safe_alloc_zero((void **)&ast->space_args,
+		|| !safe_alloc_zero((void **)&args->space,
+					  (n_strs + 1) * sizeof(int))
+		|| !safe_alloc_zero((void **)&args->type,
 					  (n_strs + 1) * sizeof(int)))
 		return (perror("Err allocating args array"), 0);
-	ast->n_args = n_strs;
-	return (1);
-}
-
-int	allocate_red_args(t_ast *ast, int n_strs, int subtype)
-{
-	if (!safe_alloc_zero((void **)&ast->pre_r_args[subtype],
-			(n_strs + 1) * sizeof(char *))
-		|| !safe_alloc_zero((void **)&ast->r_exp_args[subtype],
-			(n_strs + 1) * sizeof(int)))
-		return (perror("Err allocating redirect args array"), 0);
+	args->n = n_strs;
 	return (1);
 }
