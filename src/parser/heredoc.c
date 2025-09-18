@@ -112,11 +112,9 @@ static int	wait_to_store_file(pid_t pid, char **temp_file, char **arg_tkn)
 
 int ms_heredoc(t_args *args, int offset)
 {
-	int		n_args;
 	pid_t	pid;
 	char	*temp_file;
 	
-	n_args = args->n - offset;
 	if (!cat_str_arr(&args->tkns[offset],
 				args->tkns + offset, args->n - offset)
 		|| !unique_tmp(&temp_file, TEMP_PREFIX, itoa(getpid())))

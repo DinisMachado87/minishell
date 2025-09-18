@@ -119,12 +119,12 @@ static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 		print_ast_str("SUBTYPE", (char *)subtype_str[ast->subtype], 0, "\n");
 	}
 	print_indent(indent);
-	printf("|N_ARGS:%d\t", ast->n_args);
-	print_ast_arr(ast->args, ast->exp_args, ast->space_args);
+	printf("|N_ARGS:%d\t", ast->args[0].n);
+	print_ast_arr(ast->args[0].tkns, ast->args[0].exp, ast->args[0].space);
 	printf("\n");
 	print_indent(indent);
-	print_arg_arr("|RED_IN", ast->red_args[IN], ast->r_exp_args[IN], ast->pre_r_args[IN]);
-	print_arg_arr("\tRED_OUT", ast->red_args[OUT], ast->r_exp_args[OUT], ast->pre_r_args[OUT]);
+	print_arg_arr("|RED_IN", ast->args[IN].tkns[0], ast->args[IN].exp, ast->args[IN].tkns);
+	print_arg_arr("\tRED_OUT", ast->args[OUT].tkns[0], ast->args[OUT].exp, ast->args[OUT].tkns);
 	printf("\n");
 	print_node_type(ast->next, "|NEXT", indent, "");
 	print_node_type(ast->left, "LEFT", 0, "");

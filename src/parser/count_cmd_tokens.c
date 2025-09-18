@@ -31,7 +31,7 @@ int	skip_redirect(t_token *cur, t_cmd *c)
 	return (1);
 }
 
-int	count_redirect(t_token cur, t_cmd *c, t_args *args)
+int	count_redirect(t_token cur, t_args *args)
 {
 	args->n = 0;
 	while (*cur.str && *cur.str != ' ' && CMD == type(cur.str))

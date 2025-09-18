@@ -31,7 +31,7 @@ void	new_line_to_null(char *str)
 }
 
 // @Parser extracts action nodes into ast using the next linear list pointers
-int		parser(char *str, t_shell *sh)
+int	parser(char *str, t_shell *sh)
 {
 	t_ast	*cur;
 

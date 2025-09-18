@@ -42,6 +42,8 @@ PRS_FILE_NAMES = ast_utils.c \
 				 extract_cmd.c \
 				 extract_redirect.c \
 				 extract_utils.c \
+				 expand_tkn_arr.c \
+				 str_utils.c \
 				 heredoc.c \
 				 parser.c \
 				 print_ast.c \

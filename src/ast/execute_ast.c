@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/17 22:55:57 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/18 20:27:40 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	execute_external(t_shell *shell, t_ast *node)
 	{
 		signal(SIGINT, SIG_DFL);
 		//cmd = get_cmd_path(shell, node->args[0]);
-		cmd = get_cmd_path(shell, *node->args[0].tkns[0]);
+		cmd = get_cmd_path(shell, *node->args[0].tkns);
 		if (!cmd)
 			exit(shell->exit_status);
 		list = convert_env_to_list(shell->env);
@@ -36,12 +36,12 @@ void	execute_external(t_shell *shell, t_ast *node)
 			perror("execve");
 			free(cmd);
 			free_env_list(list);
-			free_ast(&shell->ast_head);
+			free_ast(shell);
 			exit(1);
 		}
 		free(cmd);
 		free_env_list(list);
-		free_ast(&shell->ast_head);
+		free_ast(shell);
 		exit(0);
 	}
 	waitpid(pid, &status, 0);
@@ -89,7 +89,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	ms_bzero((void *)&statbuf, sizeof(struct stat));
 	save_stdin = dup(STDIN_FILENO);
 	save_stdout = dup(STDOUT_FILENO);
-	if (!shell->ast_tree || !node)
+	if (!shell->ast || !node)
 		shell->exit_status = ERROR;
 	if (node->type == OPERATOR && node->subtype == AND)
 		execute_and(shell, node);
@@ -99,15 +99,15 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		execute_pipe(shell, node);
 	else if (node->type == CMD)
 	{
-		cmd_expander(node, shell);
+		cmd_expander(node->args, shell);
 		//if (!node->args[0])
-		if (!node->args[0].tkns[0])
+		if (!node->args[0].tkns)
 			node->subtype = EXTERNAL;
 		else
 			//node->subtype = strict_subtype(node->args[0]);
 			node->subtype = strict_subtype(node->args[0].tkns[0]);
 		if (DEBUG)
-			print_ast(shell->ast_tree, "After cmd expander");
+			print_ast(shell->ast, "After cmd expander");
 		//if (node->red_args[IN] || node->red_args[OUT])
 		if ((node->args[IN].tkns && *node->args[IN].tkns)
 				|| (node->args[OUT].tkns && *node->args[OUT].tkns))
@@ -150,20 +150,21 @@ void	execute_ast(t_shell *shell, t_ast *node)
 						if (access(*node->args[OUT].tkns, W_OK))
 						{
 							// replacement?
-							if (node->append)
+						// [WARNING:] we now have more than one redirect so one needs to check the corresponding index in type to see if it is APPEND or another subtype
+							if (node->args[OUT].type[0] == APPEND)
 								//fd = open(node->red_args[OUT],
 								fd = open(*node->args[OUT].tkns,
 										O_WRONLY | O_CREAT | O_APPEND, 0644);
 							else
 								//fd = open(node->red_args[OUT],
-								fe = open(*node->red_args[OUT].tkns,
+								fd = open(*node->args[OUT].tkns,
 										O_WRONLY | O_CREAT | O_TRUNC, 0644);
 						}
 					}
 					else if (!statbuf.st_mode)
 					{
 						//print_err(node->red_args[OUT], "No such file or directory");
-						print_err(*node->red_args[OUT].tkns, "No such file or directory");
+						print_err(*node->args[OUT].tkns, "No such file or directory");
 						shell->exit_status = 1;
 						return;
 					}
@@ -186,9 +187,14 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		ms_bzero((void *)&subshell, sizeof(t_shell));
 		init_env(&subshell, convert_env_to_list(shell->env));
 		//subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
-		subshell.ast_tree = parser(*node->args[0].tkns, &subshell.ast_head);
-		execute_ast(&subshell, subshell.ast_tree);
-		free_ast(&subshell.ast_head);
+		//[WARNING:] I noticed you are not checking for errors in a lot ofsystem calls,
+		//and in the ones being checked I don't think you are exiting the function
+		//which will lead to crash.
+		//I sent you on slack a print screen
+		if (ERROR == parser(node->args[0].tkns[0], &subshell))
+			return ;
+		execute_ast(&subshell, subshell.ast);
+		free_ast(&subshell);
 	}
 }
 

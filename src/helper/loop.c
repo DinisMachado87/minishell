@@ -160,15 +160,16 @@ void	prompt_loop(char *envp[])
 		prompt = get_prompt();
 		if (!prompt || get_input(prompt, &input) == ERROR)
 			break;
-		shell.ast_tree = parser(input, &shell.ast_head);
+		if (ERROR == parser(input, &shell))
+			break;
 		if (DEBUG)
-			print_ast(shell.ast_tree, "loop");
-		if (shell.ast_tree)
+			print_ast(shell.ast, "loop");
+		if (shell.ast)
 		{
-			execute_ast(&shell, shell.ast_tree);
+			execute_ast(&shell, shell.ast);
 			if (DEBUG)
 				printf("status = %d\n", shell.exit_status);
-			free_ast(&shell.ast_head);
+			free_ast(&shell);
 		}
 		free_and_null((void **)&prompt);
 		free_and_null((void **)&input);
