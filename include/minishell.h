@@ -6,7 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/09/18 20:26:13 by dimachad         ###   ########.fr       */
+=======
+/*   Updated: 2025/09/19 11:37:26 by dimachad         ###   ########.fr       */
+>>>>>>> bdbeaa8 (Change data structure to accomodate modular args struct)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +191,11 @@ char	*cat_str_arr(char **dest, char **str_arr, int size);
 // extract cmd
 int		chr_after_spaces(t_token *tk);
 int		count_token(char *str, t_token *cur, t_token *nxt);
+<<<<<<< HEAD
 int		count_redirect(t_token cur, t_args *args);
+=======
+int		count_redirect(t_token cur, t_cmd *c, t_args *args);
+>>>>>>> bdbeaa8 (Change data structure to accomodate modular args struct)
 int		count_cmd_tokens(t_token cur, t_cmd *c);
 int		free_and_null_args(t_args *args);
 int		free_and_reassign(char **dest, char **src);
