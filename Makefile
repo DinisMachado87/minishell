@@ -42,11 +42,8 @@ PRS_FILE_NAMES = ast_utils.c \
 				 extract_cmd.c \
 				 extract_redirect.c \
 				 extract_utils.c \
-<<<<<<< HEAD
 				 expand_tkn_arr.c \
 				 str_utils.c \
-=======
->>>>>>> bdbeaa8 (Change data structure to accomodate modular args struct)
 				 heredoc.c \
 				 parser.c \
 				 print_ast.c \
