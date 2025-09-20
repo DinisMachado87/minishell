@@ -35,6 +35,7 @@ int	parser(char *str, t_shell *sh)
 {
 	t_ast	*cur;
 
+	cur = NULL;
 	if (!str || *str == '\0')
 		return (perror("ERROR: No str or empty str"), ERROR);
 	new_line_to_null(str);
@@ -45,10 +46,10 @@ int	parser(char *str, t_shell *sh)
 		if (type(str) > REDIRECT)
 			return (perror("Error: Input must start with command"), ERROR);
 		if (!extract_subshell(&cur, &str)
-			&& !extract_cmd(&str, sh))
+			&& !extract_cmd(&str, &cur))
 				return (ERROR);
-		if (!sh->ast)
-			sh->ast = cur;
+		if (!sh->list)
+			sh->list = cur;
 		if (is_end_of_string(&str))
 			break;
 		if (!extract_operator(&cur, &str, type(str)))
@@ -56,6 +57,8 @@ int	parser(char *str, t_shell *sh)
 		if (is_end_of_string(&str))
 			break;
 	}
-	structure_ast(sh->ast);
+	if (DEBUG)
+		print_nd_list(sh->list, "LIST");
+	sh->ast = structure_ast(sh->list);
 	return (1);
 }

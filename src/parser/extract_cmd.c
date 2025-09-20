@@ -53,7 +53,7 @@ int	extract_cmd_core(t_token *cur, t_cmd *c, t_ast *ast)
 	return (1);
 }
 
-int	extract_cmd(char **str, t_shell *s)
+int	extract_cmd(char **str, t_ast **lst_nd)
 {
 	t_token	cur;
 	t_cmd	c;
@@ -62,14 +62,14 @@ int	extract_cmd(char **str, t_shell *s)
 	cur.limiter = ' ';
 	cur.str = *str;
 	count_cmd_tokens(cur, &c);
-	if (!make_node(&s->ast)
-		|| !allocate_ast_args(&s->ast->args[0], c.n_cmd_tk))
+	if (!make_node(lst_nd)
+		|| !allocate_ast_args(&(*lst_nd)->args[0], c.n_cmd_tk))
 		return (0);
-	s->ast->type = CMD;
-	if (!extract_cmd_core(&cur, &c, s->ast))
+	(*lst_nd)->type = CMD;
+	if (!extract_cmd_core(&cur, &c, *lst_nd))
 		return (0);
-	if (s->ast->args[0].n)
-		s->ast->args[0].space[s->ast->args[0].n - 1] = SPACE_AFTER;
+	if ((*lst_nd)->args[0].n)
+		(*lst_nd)->args[0].space[(*lst_nd)->args[0].n - 1] = SPACE_AFTER;
 	*str = cur.str;
 	return (1);
 }

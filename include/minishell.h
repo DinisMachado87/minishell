@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/19 12:25:47 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/20 15:51:19 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ int		count_redirect(t_token cur, t_args *args);
 int		count_cmd_tokens(t_token cur, t_cmd *c);
 int		free_and_null_args(t_args *args);
 int		free_and_reassign(char **dest, char **src);
-int		extract_cmd(char **str, t_shell *s);
+int		extract_cmd(char **str, t_ast **lst_nd);
 int		tkns_to_words(t_args *args, int alloc_len);
 int		skip_red_sign_and_spaces(t_token *cur, int r_subtype);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
@@ -207,6 +207,7 @@ t_ast	*structure_ast(t_ast *cur_list);
 // print_ast
 void	print_ast(t_ast *ast, char *testname);
 void	print_nd_list(t_ast *ast, char *testname);
+void	print_args_arr(char *print_str, t_args *args, int indent);
 // prompt_loop
 void	prompt_loop(char *envp[]);
 void	execute_ast(t_shell *shell, t_ast *node);

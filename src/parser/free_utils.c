@@ -41,7 +41,7 @@ int	free_and_null_args(t_args *args)
 	int i;
 
 	i = 0;
-	while (i <= args->n)
+	while (i < args->n)
 	{
 		if (args->type[i] == HEREDOC)
 			unlink(args->tkns[i]);
@@ -63,8 +63,8 @@ t_ast	*free_ast(t_shell *sh)
 		next_head = sh->list->next;
 		free_and_null_args(&sh->ast->args[0]);
 		free_and_null_args(&sh->ast->args[OUT]);
-		free_and_null_args(&sh->ast->args[OUT]);
-		free_and_null((void **)&(*sh->list));
+		free_and_null_args(&sh->ast->args[IN]);
+		free_and_null((void **)&sh->list);
 		sh->list = next_head;
 	}
 	return (NULL);

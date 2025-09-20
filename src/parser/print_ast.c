@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:44 by dimachad          #+#    #+#             */
-/*   Updated: 2025/08/30 17:42:48 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/20 14:24:27 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,32 +63,33 @@ static void print_ast_str(char *name, char *element, int indent, char *new_line)
 	printf("%s", new_line);
 };
 
-static void print_arg_arr(char *name, char *arg, int *exp, char **tk_arr)
-{
-	printf("%s:", name);
-	printf("%s\t|", arg);
-	if (tk_arr)
-		while (*tk_arr)
-			printf("%d:%s:", *(exp++), *(tk_arr++));
-	else
-		printf("NONE");
-};
-
-static void print_ast_arr(char **arr, int *exarr, int *spacearr)
+// static void print_arg_arr(char *name, char *arg, int *exp, char **tk_arr)
+// {
+// 	printf("%s:", name);
+// 	printf("%s\t|", arg);
+// 	if (tk_arr)
+// 		while (*tk_arr)
+// 			printf("%d:%s:", *(exp++), *(tk_arr++));
+// 	else
+// 		printf("NONE");
+// };
+//
+void print_args_arr(char *print_str, t_args *args, int indent)
 {
 	int	i;
 
 	i = 0;
-	if (!arr)
-		return ;
-	while (arr[i])
+	print_indent(indent);
+	printf("|%s:%d\t", print_str, args->n);
+	while (i < args->n)
 	{
-		printf("%d:", exarr[i]);
-		printf("%d", spacearr[i]);
-		print_ast_str("", arr[i], 0, "\t");
+		printf("[%d:", args->type[i]);
+		printf("%d:", args->exp[i]);
+		printf("%d:", args->space[i]);
+		print_ast_str("]", args->tkns[i], 0, "\t");
 		i++;
 	}
-	printf("[ex:sp:arg:]");
+	printf("\n");
 };
 
 static void	print_node_type(t_ast *node, char *name, int indent, char *new_line)
@@ -103,29 +104,22 @@ static void	print_node_type(t_ast *node, char *name, int indent, char *new_line)
 
 static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 {
+	if (!ast)
+		return;
 	if (testname)
 		printf("== %s ==\n\n", testname);
 	print_indent(indent);
+
 	printf("|%d ", ast->type);
 	printf("TYPE:%s\t", type_str[ast->type]);
-	if (ast->type == REDIRECT)
-	{
-		printf("%d ", ast->subtype);
-		print_ast_str("SUBTYPE", (char *)redirect_subtype_str[ast->subtype], 0, "\n");
-	}
-	else
-	{
-		printf("%d ", ast->subtype);
-		print_ast_str("SUBTYPE", (char *)subtype_str[ast->subtype], 0, "\n");
-	}
-	print_indent(indent);
-	printf("|N_ARGS:%d\t", ast->args[0].n);
-	print_ast_arr(ast->args[0].tkns, ast->args[0].exp, ast->args[0].space);
-	printf("\n");
-	print_indent(indent);
-	print_arg_arr("|RED_IN", ast->args[IN].tkns[0], ast->args[IN].exp, ast->args[IN].tkns);
-	print_arg_arr("\tRED_OUT", ast->args[OUT].tkns[0], ast->args[OUT].exp, ast->args[OUT].tkns);
-	printf("\n");
+
+	printf("%d ", ast->subtype);
+	print_ast_str("SUBTYPE", (char *)subtype_str[ast->subtype], 0, "\n");
+
+	printf("[tp:ex:sp:arg:]\n");
+	print_args_arr("N_ARGS", &ast->args[0], indent);
+	print_args_arr("RED_IN", &ast->args[IN], indent);
+	print_args_arr("RED_OUT", &ast->args[OUT], indent);
 	print_node_type(ast->next, "|NEXT", indent, "");
 	print_node_type(ast->left, "LEFT", 0, "");
 	print_node_type(ast->right, "RIGHT", 0, "\n");
@@ -170,7 +164,7 @@ void	print_ast(t_ast *ast, char *testname)
 	int	indent;
 
 	indent = 0;
-	printf("== %s ==\n\n", testname);
+	printf("== %s ==\n", testname);
 	if (!ast)
 	{
 		printf(" NO AST \n");
