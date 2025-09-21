@@ -56,14 +56,16 @@ int	free_and_null_args(t_args *args)
 
 t_ast	*free_ast(t_shell *sh)
 {
-	while ((sh->list))
+	t_ast *next_head;
+	while (sh->list)
 	{
-		t_ast *next_head;
-
 		next_head = sh->list->next;
-		free_and_null_args(&sh->ast->args[0]);
-		free_and_null_args(&sh->ast->args[OUT]);
-		free_and_null_args(&sh->ast->args[IN]);
+		if (sh->ast->type == CMD)
+		{
+			free_and_null_args(&sh->ast->args[0]);
+			free_and_null_args(&sh->ast->args[OUT]);
+			free_and_null_args(&sh->ast->args[IN]);
+		}
 		free_and_null((void **)&sh->list);
 		sh->list = next_head;
 	}

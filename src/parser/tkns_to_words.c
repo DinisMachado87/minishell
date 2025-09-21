@@ -32,14 +32,13 @@ int	tkns_to_words(t_args *args, int alloc_len)
 		int		interval;
 
 		interval = 0;
-		while (i + interval + 1 < args->n
-			&& (args->tkns[i + interval][0] == '\0'
-				|| args->tkns[i + interval] == NO_SPACE_AFTER))
+		while (i + interval < args->n
+			&& (args->space[i + interval] == NO_SPACE_AFTER))
 			interval++;
 		if (++interval == 1 && i != new_i)
 			free_and_reassign(&args->tkns[new_i], &args->tkns[i]);
-		else if (interval > 1
-			&& !cat_str_arr(&args->tkns[new_i], args->tkns + i, interval))
+		else if (interval > 1)
+			if (!cat_str_arr(&args->tkns[new_i], args->tkns + i, interval))
 				return (0);
 		new_i++;
 		i += interval;
