@@ -2,7 +2,7 @@
 CC := gcc
 CFLAGS = -Wall -Wextra -Werror -I$(HEADER_DIR)
 RELEASE_FLAGS = $(CFLAGS) -DDEBUG=0
-DEBUG_FLAGS = $(CFLAGS) -g -O0 -DDEBUG=1
+DEBUG_FLAGS = $(CFLAGS)  -fsanitize=address -g -O0 -DDEBUG=1
 HEADER_DIR = include/
 HEADER = $(addprefix $(HEADER_DIR), minishell.h)
 NAME = minishell
@@ -82,7 +82,7 @@ $(NAME): $(REL_OBJS)
 	$(CC) $(REL_OBJS) -lreadline -o $(NAME)
 
 $(DEBUG_NAME): $(DBG_OBJS)
-	$(CC) $(DBG_OBJS) -lreadline -o $(DEBUG_NAME)
+	$(CC) $(DBG_OBJS) -lreadline -fsanitize=address -o $(DEBUG_NAME)
 
 # Release object compilation rules
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
