@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # define ERROR -1
-# define TEMP_PREFIX "temp_heredoc"
+# define TEMP_PREFIX "tmp/heredoc"
 
 # include <stdlib.h>
 # include <stdio.h>
