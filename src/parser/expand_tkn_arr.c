@@ -36,6 +36,12 @@ static char	*get_env(char **expanded_value, t_env *head, char *key)
 	return (NULL);
 }
 
+int	expand_heredoc(t_args *args)
+{
+	(void)args;
+	return (1);
+}
+
 int	expand_tkn_arr(t_args *args, t_shell *sh)
 {
 	char	*env_value;
@@ -44,7 +50,13 @@ int	expand_tkn_arr(t_args *args, t_shell *sh)
 	i = 0;
 	while (i < args->n)
 	{
-		if (args->exp[i] == EXPAND)
+		if (args->type[i] == HEREDOC)
+		{
+			if (args->exp[i] == EXPAND
+				&& !expand_heredoc(args))
+				return (0);
+		}
+		else if (args->exp[i] == EXPAND)
 		{
 			if (args->tkns[i][1] == '?' && args->tkns[i][2] == '\0')
 			{

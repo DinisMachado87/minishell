@@ -85,8 +85,8 @@ void print_args_arr(char *print_str, t_args *args, int indent)
 	{
 		printf("[%d:", args->type[i]);
 		printf("%d:", args->exp[i]);
-		printf("%d:", args->space[i]);
-		print_ast_str("]", args->tkns[i], 0, "\t");
+		printf("%d", args->space[i]);
+		print_ast_str("", args->tkns[i], 0, "]\t");
 		i++;
 	}
 	printf("\n");

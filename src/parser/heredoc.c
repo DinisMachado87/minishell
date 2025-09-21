@@ -110,15 +110,19 @@ static int	wait_to_store_file(pid_t pid, char **temp_file, char **arg_tkn)
 	return (1);
 }
 
-int ms_heredoc(t_args *args, int offset)
+int ms_heredoc(t_args *args, int offset, int expand)
 {
 	pid_t	pid;
 	char	*temp_file;
+	int		i;
 	
 	if (!cat_str_arr(&args->tkns[offset],
 				args->tkns + offset, args->n - offset)
 		|| !unique_tmp(&temp_file, TEMP_PREFIX, itoa(getpid())))
 		return (ERROR);
+	i = 0;
+	while (args->tkns[offset + ++i])
+		free_and_null((void**)&args->tkns[offset + i]);
 	pid = fork();
 	if ((pid == 0
 		&& !create_heredoc_file(args->tkns[offset], temp_file))
@@ -126,5 +130,6 @@ int ms_heredoc(t_args *args, int offset)
 			&& !wait_to_store_file(pid, &temp_file, &args->tkns[offset]))
 		|| (pid < 0))
 		return (ERROR);
+	args->exp[offset] = expand;
 	return (0);
 }

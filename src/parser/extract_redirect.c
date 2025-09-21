@@ -90,10 +90,14 @@ int	copy_old_args(t_args *old_args, t_args *new_args)
 int	extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args)
 {
 	int		orig_subtype;
+	int		exp_heredoc;
 
 	orig_subtype = c->subtype;
-	if (!skip_red_sign_and_spaces(cur, c->subtype)
-		|| !find_array_subtype(c)
+	if (!skip_red_sign_and_spaces(cur, c->subtype))
+		return (0);
+	exp_heredoc = c->subtype == HEREDOC
+		&& (*cur->str == '\'' || *cur->str == '\"');
+	if (!find_array_subtype(c)
 		|| !count_redirect(*cur, new_args)
 		|| !allocate_ast_args(new_args, old_args.n + new_args->n))
 		return (0);
@@ -103,6 +107,6 @@ int	extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args)
 		return (0);
 	new_args->type[old_args.n] = orig_subtype;
 	if (orig_subtype == HEREDOC)
-		ms_heredoc(new_args, old_args.n);
+		ms_heredoc(new_args, old_args.n, exp_heredoc);
 	return(1);
 }

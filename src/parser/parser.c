@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/19 12:20:25 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/21 17:18:45 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,6 @@ int	parser(char *str, t_shell *sh)
 		if (is_end_of_string(&str))
 			break;
 	}
-	if (DEBUG)
-		print_nd_list(sh->list, "LIST");
 	sh->ast = structure_ast(sh->list);
 	return (1);
 }

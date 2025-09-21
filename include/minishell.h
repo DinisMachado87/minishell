@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # define ERROR -1
-# define TEMP_PREFIX "tmp/heredoc"
+# define TEMP_PREFIX "heredoc"
 
 # include <stdlib.h>
 # include <stdio.h>
@@ -197,7 +197,7 @@ int		skip_red_sign_and_spaces(t_token *cur, int r_subtype);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
 int		extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args);
-int		ms_heredoc(t_args *args, int offset);
+int ms_heredoc(t_args *args, int offset, int expand);
 //	expand_tkn_arr
 int	expand_tkn_arr(t_args *args, t_shell *sh);
 // split_cmd_flags
