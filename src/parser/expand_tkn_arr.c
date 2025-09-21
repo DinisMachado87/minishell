@@ -46,9 +46,11 @@ int	expand_tkn_arr(t_args *args, t_shell *sh)
 	{
 		if (args->exp[i] == EXPAND)
 		{
-			if (args->tkns[i][1] == '?' && args->tkns[i][2] == '\0'
-				&& !expand_exit_status(&args->tkns[i], sh))
-				return (0);
+			if (args->tkns[i][1] == '?' && args->tkns[i][2] == '\0')
+			{
+				if (!expand_exit_status(&args->tkns[i], sh))
+					return (0);
+			}
 			else if (!get_env(&env_value, sh->env, args->tkns[i]))
 				bzero((void *)args->tkns[i], ms_strlen(args->tkns[i]));
 			else if (!free_and_null((void **)&args->tkns[i])
