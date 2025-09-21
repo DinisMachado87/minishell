@@ -38,8 +38,13 @@ int	extract_cmd_core(t_token *cur, t_cmd *c, t_ast *ast)
 		c->type = type(cur->str);
 		if (*cur->str && REDIRECT == c->type)
 		{
+			int	sub_i;
+
 			c->subtype = subtype(cur->str);
-			if (!extract_redirect(cur, c, &ast->args[c->subtype], ast->args[c->subtype]))
+			sub_i = c->subtype;
+			if (sub_i > OUT)
+				sub_i -= 2;
+			if (!extract_redirect(cur, c, &ast->args[sub_i], ast->args[sub_i]))
 				return (0);
 		}
 		else if (cur->str && CMD == type(cur->str))

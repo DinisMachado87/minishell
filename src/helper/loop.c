@@ -160,9 +160,9 @@ void	prompt_loop(char *envp[])
 		prompt = get_prompt();
 		if (!prompt || get_input(prompt, &input) == ERROR)
 			break;
+		free_and_null((void **)&prompt);
 		if (ERROR == parser(input, &shell))
 			break;
-		free_and_null((void **)&prompt);
 		if (DEBUG)
 			print_ast(shell.ast, "loop");
 		if (shell.ast)

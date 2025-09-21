@@ -68,8 +68,8 @@ typedef enum e_redirect_subtype
 {
 	IN = 1,
 	OUT,
-	APPEND,
 	HEREDOC,
+	APPEND,
 }	t_redirect_subtype;
 
 typedef struct s_token

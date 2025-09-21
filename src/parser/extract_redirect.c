@@ -95,9 +95,11 @@ int	extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args)
 	if (!skip_red_sign_and_spaces(cur, c->subtype)
 		|| !find_array_subtype(c)
 		|| !count_redirect(*cur, new_args)
-		|| !allocate_ast_args(new_args, old_args.n + new_args->n)
-		|| !copy_old_args(&old_args, new_args)
-		|| !extract_red_args(cur, new_args, old_args.n))
+		|| !allocate_ast_args(new_args, old_args.n + new_args->n))
+		return (0);
+	if (old_args.tkns && !copy_old_args(&old_args, new_args))
+		return (0);
+	if (!extract_red_args(cur, new_args, old_args.n))
 		return (0);
 	new_args->type[old_args.n] = orig_subtype;
 	if (orig_subtype == HEREDOC)
