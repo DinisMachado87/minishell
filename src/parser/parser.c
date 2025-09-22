@@ -36,8 +36,6 @@ int	parser(char *str, t_shell *sh)
 	t_ast	*cur;
 
 	cur = NULL;
-	if (!str || *str == '\0')
-		return (perror("ERROR: No str or empty str"), ERROR);
 	new_line_to_null(str);
 	while (*str && *str == ' ')
 		str++;
