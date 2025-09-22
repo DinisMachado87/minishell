@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/18 20:27:40 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/22 14:46:11 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,24 +69,71 @@ int	execute_built_in(t_shell *shell, t_ast *node)
 	return (0);
 }
 
-/*
-   I need to loop through all the redirect out files, creating them,
-   then setting up the fd redirect using dup2, that's why all the
-   files will be created but only the last one containg the output.
-   Cause all the files will be touched but the redirect will override
-   itself so only the last one will really receive the redirected data
-*/
+int	setup_red_in(char *file, int type)
+{
+	struct stat	statbuf;
+	int			fd;
+
+	ms_bzero((void *)&statbuf, sizeof(struct stat));
+	if (stat(file, &statbuf) == -1)
+		return (print_sys_err("stat", file, strerror(errno), ERROR));
+	if (!statbuf.st_mode)
+		return (print_err(file, "No such file or directory"), ERROR);
+	fd = open(file, O_RDONLY);
+	if (fd == ERROR)
+		return (print_sys_err("open", file, strerror(errno), ERROR));
+	if (dup2(fd, STDIN_FILENO) == ERROR)
+		return (print_sys_err("dup2", file, strerror(errno), ERROR));
+	if (type == HEREDOC)
+	{
+		if (unlink(file) == ERROR)
+			return (print_sys_err("unlink", file, strerror(errno), ERROR));
+	}
+	return (SUCCESS);
+}
+
+int	setup_red_out(char *file, int type)
+{
+	char		*dir;
+	char		*last_slash;
+	int			fd;
+	struct stat	statbuf;
+
+	ms_bzero((void *)&statbuf, sizeof(struct stat));
+	dir = ".";
+	last_slash = ms_strrchr(file, '/');
+	if (last_slash)
+		dir = ms_strndup(file, (ms_strlen(file) - ms_strlen(last_slash)));
+	if ((stat(dir, &statbuf) == ERROR) && (errno != ENOENT))
+	{
+		if (errno == ENOENT)
+			return (print_err(file, "No such file or directory"), ERROR);
+		else
+			return (perror("minishell: stat"), ERROR);
+	}
+	if ((access(file, F_OK) == 0) && (access(file, W_OK) != 0))
+		return (print_err(file, "Permission denied"), ERROR);
+	if (type == APPEND)
+		fd = open(file,	O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == ERROR )
+		return (print_err(file, "Permission denied"), ERROR);
+	if (dup2(fd, STDOUT_FILENO) == ERROR)
+		return (perror("minishell: dup2"), ERROR);
+	return (SUCCESS);
+}
+
 void	execute_ast(t_shell *shell, t_ast *node)
 {
-	int			fd;
 	int			save_stdin;
 	int			save_stdout;
 	t_shell		subshell;
-	struct stat	statbuf;
-	int			last_slash_pos;
-	char		*last_slash;
+	int			err_code;
+	int			arg_n;
 
-	ms_bzero((void *)&statbuf, sizeof(struct stat));
+
+	arg_n = 0;
 	save_stdin = dup(STDIN_FILENO);
 	save_stdout = dup(STDOUT_FILENO);
 	if (!shell->ast || !node)
@@ -100,81 +147,27 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	else if (node->type == CMD)
 	{
 		cmd_expander(node->args, shell);
-		//if (!node->args[0])
 		if (!node->args[0].tkns)
 			node->subtype = EXTERNAL;
 		else
-			//node->subtype = strict_subtype(node->args[0]);
 			node->subtype = strict_subtype(node->args[0].tkns[0]);
-		//if (node->red_args[IN] || node->red_args[OUT])
-		if ((node->args[IN].tkns && *node->args[IN].tkns)
-				|| (node->args[OUT].tkns && *node->args[OUT].tkns))
+		while (node && 
+				((node->args[IN].tkns && node->args[IN].tkns[arg_n]) || 
+				(node->args[OUT].tkns && node->args[OUT].tkns[arg_n])))
 		{
-			//if (node->red_args[IN])
-			if (node->args[IN].tkns && *node->args[IN].tkns)
+			if (node && node->args[IN].tkns && node->args[IN].tkns[arg_n])
+				err_code = setup_red_in(node->args[IN].tkns[arg_n], node->args[IN].type[arg_n]);
+			else if (node && node->args[OUT].tkns && node->args[OUT].tkns[arg_n])
+				err_code = setup_red_out(node->args[OUT].tkns[arg_n], node->args[OUT].type[arg_n]);
+			if (err_code < 0)
 			{
-				//stat(node->red_args[IN], &statbuf);
-				stat(*node->args[IN].tkns, &statbuf);
-				if (!statbuf.st_mode)
-				{
-					shell->exit_status = 1;
-					//print_err(node->red_args[IN], "No such file or directory");
-					print_err(*node->args[IN].tkns, "No such file or directory");
-					return ;
-				}
-				//fd = open(node->red_args[IN], O_RDONLY);
-				fd = open(*node->args[IN].tkns, O_RDONLY);
-				dup2(fd, STDIN_FILENO);
-				//unlink(node->red_args[IN]);
-				unlink(*node->args[IN].tkns);
+				shell->exit_status = err_code * -1;
+				return ;
 			}
-			else
-			{
-				//last_slash = ms_strrchr(node->red_args[OUT], '/');
-				last_slash = ms_strrchr(*node->args[OUT].tkns, '/');
-				if (last_slash)
-				{
-					//last_slash_pos = ms_strlen(node->red_args[OUT]) - ms_strlen(last_slash);
-					last_slash_pos = ms_strlen(*node->args[OUT].tkns) - ms_strlen(last_slash);
-					//node->red_args[OUT][last_slash_pos] = '\0';
-					*node->args[OUT].tkns[last_slash_pos] = '\0';
-					//stat(node->red_args[OUT], &statbuf);
-					stat(*node->args[OUT].tkns, &statbuf);
-					//node->red_args[OUT][last_slash_pos] = '/';
-					*node->args[OUT].tkns[last_slash_pos] = '/';
-					if (S_ISDIR(statbuf.st_mode))
-					{
-						//if (access(node->red_args[OUT], W_OK))
-						if (access(*node->args[OUT].tkns, W_OK))
-						{
-							// replacement?
-						// [WARNING:] we now have more than one redirect so one needs to check the corresponding index in type to see if it is APPEND or another subtype
-							if (node->args[OUT].type[0] == APPEND)
-								//fd = open(node->red_args[OUT],
-								fd = open(*node->args[OUT].tkns,
-										O_WRONLY | O_CREAT | O_APPEND, 0644);
-							else
-								//fd = open(node->red_args[OUT],
-								fd = open(*node->args[OUT].tkns,
-										O_WRONLY | O_CREAT | O_TRUNC, 0644);
-						}
-					}
-					else if (!statbuf.st_mode)
-					{
-						//print_err(node->red_args[OUT], "No such file or directory");
-						print_err(*node->args[OUT].tkns, "No such file or directory");
-						shell->exit_status = 1;
-						return;
-					}
-				}
-				dup2(fd, STDOUT_FILENO);
-			}
-			close(fd);
+			arg_n++;
 		}
-		//if (node->subtype == EXTERNAL && *node->args)
 		if (node->subtype == EXTERNAL && *node->args[0].tkns)
 			execute_external(shell, node);
-		//else if (node->subtype != EXTERNAL && *node->args)
 		else if (node->subtype != EXTERNAL && *node->args[0].tkns)
 			shell->exit_status = execute_built_in(shell, node);
 		dup2(save_stdin, STDIN_FILENO);
@@ -184,7 +177,6 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	{
 		ms_bzero((void *)&subshell, sizeof(t_shell));
 		init_env(&subshell, convert_env_to_list(shell->env));
-		//subshell.ast_tree = parser(node->args[0], &subshell.ast_head);
 		//[WARNING:] I noticed you are not checking for errors in a lot ofsystem calls,
 		//and in the ones being checked I don't think you are exiting the function
 		//which will lead to crash.

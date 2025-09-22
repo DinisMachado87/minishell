@@ -6,14 +6,16 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/20 15:51:19 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/22 10:01:17 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# define SUCCESS 0
 # define ERROR -1
+# define FATAL -2
 # define TEMP_PREFIX "heredoc"
 
 # include <stdlib.h>
@@ -29,6 +31,7 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <dirent.h>
+# include <errno.h>
 
 enum e_expand {
 	DONT_EXPAND,
@@ -250,5 +253,6 @@ int		ms_char_isdigit(char c);
 int		is_valid_identifier(char *str);
 void    set_handler(int rdline);
 void	free_shell(t_shell *shell);
+int		print_sys_err(char *syscall, char *component, char *err_msg, int err);
 
 #endif
