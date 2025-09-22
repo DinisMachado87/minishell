@@ -14,6 +14,8 @@
 
 int	strict_cmp(char *ref, char *str)
 {
+	if (!ref || !str)
+		return (1);
 	while (*ref && *str && *ref == *str)
 	{
 		ref++;
