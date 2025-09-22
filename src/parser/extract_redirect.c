@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:56:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/19 12:22:28 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/22 19:23:38 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ static int	extract_red_args(t_token *cur, t_args *args, int i_tkn)
 		i_tkn++;
 		*cur = nxt;
 	}
+	args->space[i_tkn - 1] = SPACE_AFTER;
 	return(len);
 }
 
