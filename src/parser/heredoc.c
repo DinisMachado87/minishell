@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/19 12:21:35 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/24 00:13:29 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	create_heredoc_file(char *eof, char *temp_file)
 	line = NULL;
 	fd = open(temp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == ERROR)
-		return (perror("ERROR: Failed to create heredoc file"), ERROR);
+		return (perror("ERROR: heredoc file :"), ERROR);
 	while (1)
 	{
 		line = readline("> ");
@@ -130,6 +130,6 @@ int ms_heredoc(t_args *args, int offset, int expand)
 			&& !wait_to_store_file(pid, &temp_file, &args->tkns[offset]))
 		|| (pid < 0))
 		return (ERROR);
-	args->exp[offset] = expand;
-	return (0);
+	args->exp[offset] = !expand;
+	return (1);
 }

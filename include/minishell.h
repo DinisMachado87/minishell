@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/22 10:01:17 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/24 00:29:24 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@
 # include <limits.h>
 # include <dirent.h>
 # include <errno.h>
+
+
+enum e_new {
+	OLD,
+	NEW,
+};
 
 enum e_expand {
 	DONT_EXPAND,
@@ -165,6 +171,7 @@ int		str_pairs_even(char *str);
 int		parser(char *str, t_shell *sh);
 // cmd_expander
 int		cmd_expander(t_args	*args, t_shell *sh);
+char	*unique_tmp(char **dest, char *str1, char *str2);
 // ast_utils
 t_ast	*make_node(t_ast **ast);
 t_ast	*free_ast(t_shell *sh);
@@ -200,6 +207,8 @@ int		skip_red_sign_and_spaces(t_token *cur, int r_subtype);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);
 t_ast	*extract_operator(t_ast **ast_nd, char **str, int operator);
 int		extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args);
+int	expand_exit_status(char **tkn, t_shell *sh);
+int	expand_heredoc(char **filename, t_shell *sh);
 int ms_heredoc(t_args *args, int offset, int expand);
 //	expand_tkn_arr
 int	expand_tkn_arr(t_args *args, t_shell *sh);
