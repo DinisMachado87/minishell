@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/22 14:46:11 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/23 10:00:06 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ void	execute_ast(t_shell *shell, t_ast *node)
 	int			err_code;
 	int			arg_n;
 
-
 	arg_n = 0;
 	save_stdin = dup(STDIN_FILENO);
 	save_stdout = dup(STDOUT_FILENO);
@@ -162,6 +161,8 @@ void	execute_ast(t_shell *shell, t_ast *node)
 			if (err_code < 0)
 			{
 				shell->exit_status = err_code * -1;
+				dup2(save_stdin, STDIN_FILENO);
+				dup2(save_stdout, STDOUT_FILENO);
 				return ;
 			}
 			arg_n++;
