@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:21:55 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/14 19:11:33 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/24 11:02:44 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,7 @@ void	free_env(t_env **head)
 		*head = next;
 	}
 	free(*head);
+	head = NULL;
 }
 
 void	split_env_var(char *var, char **key, char **val)
