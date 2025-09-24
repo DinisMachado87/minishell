@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/24 11:30:23 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/24 11:35:08 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	ft_echo(t_ast *node)
 	int	j;
 	int	newline;
 
-	//if (!ms_strcmp(node->args[1], "-n"))
 	if (!ms_strcmp(node->args[0].tkns[1], "-n"))
 	{
 		newline = 0;
@@ -29,19 +28,15 @@ int	ft_echo(t_ast *node)
 		newline = 1;
 		i = 1;
 	}
-	//while (node->args[i])
 	while (node->args[0].tkns[i])
 	{
 		j = 0;
-		//while (node->args[i][j])
 		while (node->args[0].tkns[i][j])
 		{
-			//write(1, &node->args[i][j], 1);
 			write(1, &node->args[0].tkns[i][j], 1);
 			j++;
 		}
 		i++;
-		//if (node->args[i])
 		if (node->args[0].tkns[i])
 			write(1, " ", 1);
 	}
@@ -56,14 +51,12 @@ int	ft_cd(t_shell *shell, t_ast *node)
 	char	*oldpwd;
 	char	*pwd_env;
 
-	//if (node->n_args > 2)
 	if (node->args[0].n > 2)
 	{
 		print_err("cd", "too many arguments");
 		return (1);
 	}
 	pwd = getcwd(NULL, 0);
-	//if (strncmp(node->args[1], "-", 1) == 0)
 	if (strncmp(node->args[0].tkns[1], "-", 1) == 0)
 	{
 		if (chdir(get_env_node(shell->env, "OLDPWD")->value) == -1)
@@ -72,7 +65,6 @@ int	ft_cd(t_shell *shell, t_ast *node)
 			return (1);
 		}
 	}
-	//else if (chdir(node->args[1]) == -1)
 	else if (chdir(node->args[0].tkns[1]) == -1)
 	{
 		perror("chdir");
@@ -141,13 +133,10 @@ int	ft_unset(t_shell *shell, t_ast *node)
 	int	i;
 
 	i = 1;
-	//if (!node->args[i])
 	if (!node->args[0].tkns[i])
 		return (0);
-	//while (node->args[i])
 	while (node->args[0].tkns[i])
 	{
-		//free_env_node_by_key(&shell->env, node->args[i]);
 		free_env_node_by_key(&shell->env, node->args[0].tkns[i]);
 		i++;
 	}
@@ -156,7 +145,6 @@ int	ft_unset(t_shell *shell, t_ast *node)
 
 int	ft_env(t_shell *shell, t_ast *node)
 {
-	//if (node->n_args > 1)
 	if (node->args[0].n > 1)
 		return (ERROR);
 	print_env(shell, 0);
@@ -167,25 +155,20 @@ void	ft_exit(t_shell *shell, t_ast *node)
 {
 	int	exit_status;
 
-	//if (node->n_args > 2)
 	if (node->args[0].n > 2)
 	{
 		print_err("exit", "too many arguments");
 		exit_status = 1;
 	}
-	//else if (node->args[1])
 	else if (node->args[0].tkns[1])
 	{
-		//if (ms_isdigit(node->args[1]))
 		if (ms_isdigit(node->args[0].tkns[1]))
-			//exit_status = ms_atoi(node->args[1]);
 			exit_status = ms_atoi(node->args[0].tkns[1]);
 		else
 		{
 			print_err("exit", "numeric argument required");
 			exit_status = 2;
 		}
-
 	}
 	else
 		exit_status = shell->exit_status;
