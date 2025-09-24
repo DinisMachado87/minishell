@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 00:29:24 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:53:37 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define SUCCESS 0
 # define ERROR -1
 # define FATAL -2
+# define SYNTAX -3
 # define TEMP_PREFIX "heredoc"
 
 # include <stdlib.h>
@@ -183,6 +184,7 @@ int		subtype(char *str);
 int		strict_subtype(char *str);
 char	*ms_strcpy(char *str, int len);
 // extract_utils
+int		psynterr(char *str, t_shell *sh);
 void	*safe_alloc_zero(void **ptr, size_t size);
 void	*safe_malloc(void **ptr, size_t size);
 int		allocate_ast_args(t_args *args, int n_strs);
@@ -198,10 +200,10 @@ char	*cat_str_arr(char **dest, char **str_arr, int size);
 int		chr_after_spaces(t_token *tk);
 int		count_token(char *str, t_token *cur, t_token *nxt);
 int		count_redirect(t_token cur, t_args *args);
-int		count_cmd_tokens(t_token cur, t_cmd *c);
+int	count_cmd_tokens(t_token cur, t_cmd *c, char **err_str);
 int		free_and_null_args(t_args *args);
 int		free_and_reassign(char **dest, char **src);
-int		extract_cmd(char **str, t_ast **lst_nd);
+int	extract_cmd(char **str, t_ast **lst_nd, t_shell *sh);
 int		tkns_to_words(t_args *args, int alloc_len);
 int		skip_red_sign_and_spaces(t_token *cur, int r_subtype);
 t_ast	*extract_subshell(t_ast **ast_nd, char **str);

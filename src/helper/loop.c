@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/16 19:44:33 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/24 16:16:24 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ int	get_input(char *prompt, char **input)
  */
 void	prompt_loop(char *envp[])
 {
+	int		final_exit;
 	char	*input;
 	char	*prompt;
 	t_shell	shell;
@@ -167,6 +168,7 @@ void	prompt_loop(char *envp[])
 				break;
 			if (DEBUG)
 				print_ast(shell.ast, "loop");
+			free_and_null((void **)&input);
 			if (shell.ast)
 			{
 				execute_ast(&shell, shell.ast);
@@ -175,9 +177,10 @@ void	prompt_loop(char *envp[])
 				free_ast(&shell);
 			}
 		}
-		free_and_null((void **)&input);
 	}
+	final_exit = shell.exit_status;
 	free_shell(&shell);
 	free_and_null((void **)&prompt);
 	free_and_null((void **)&input);
+	exit(final_exit);
 }

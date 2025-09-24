@@ -6,13 +6,24 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:48 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/17 20:50:40 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:39:02 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include <stdio.h>
 #include <strings.h>
+
+int	psynterr(char *str, t_shell *sh)
+{
+
+	write(STDERR_FILENO, "minishell: syntax error near unexpected token '", 48);
+	write(STDERR_FILENO, str, 1);
+	write(STDERR_FILENO, "'\n", 1);
+	sh->exit_status = 2;
+	free_ast(sh);
+	return (SYNTAX);
+}
 
 void	*safe_alloc_zero(void **ptr, size_t size)
 {

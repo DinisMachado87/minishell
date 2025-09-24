@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 23:19:15 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/19 12:23:23 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:04:49 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	count_redirect(t_token cur, t_args *args)
 	return (1);
 }
 
-int	count_cmd_tokens(t_token cur, t_cmd *c)
+int	count_cmd_tokens(t_token cur, t_cmd *c, char **err_str)
 {
 	while (chr_after_spaces(&cur))
 	{
@@ -54,7 +54,13 @@ int	count_cmd_tokens(t_token cur, t_cmd *c)
 			c->n_cmd_tk++;
 		}
 		else if (cur.str && REDIRECT == c->type)
-			skip_redirect(&cur, c);
+		{
+			if (!skip_redirect(&cur, c))
+			{
+				*err_str = cur.str;
+				return (0);
+			}
+		}
 		else
 			break;
 	}

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:35:58 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/18 17:18:32 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:47:23 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	extract_cmd_core(t_token *cur, t_cmd *c, t_ast *ast)
 	return (1);
 }
 
-int	extract_cmd(char **str, t_ast **lst_nd)
+int	extract_cmd(char **str, t_ast **lst_nd, t_shell *sh)
 {
 	t_token	cur;
 	t_cmd	c;
@@ -66,7 +66,8 @@ int	extract_cmd(char **str, t_ast **lst_nd)
 	bzero((void *)&c, sizeof(t_cmd));
 	cur.limiter = ' ';
 	cur.str = *str;
-	count_cmd_tokens(cur, &c);
+	if (!count_cmd_tokens(cur, &c, &cur.str))
+		return (psynterr(cur.str, sh), 0);
 	if (!make_node(lst_nd)
 		|| !allocate_ast_args(&(*lst_nd)->args[0], c.n_cmd_tk))
 		return (0);

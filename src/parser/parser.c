@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 00:26:54 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:15:03 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,15 @@ int	parser(char *str, t_shell *sh)
 	while (*str)
 	{
 		if (type(str) > REDIRECT)
-			return (perror("Error: Input must start with command"), ERROR);
+			return (psynterr(&str[0], sh));
 		if (!extract_subshell(&cur, &str)
-			&& !extract_cmd(&str, &cur))
+			&& !extract_cmd(&str, &cur, sh))
+		{
+			if (sh->exit_status == 2)
+				return (SYNTAX);
+			else
 				return (ERROR);
+		}
 		if (!sh->list)
 			sh->list = cur;
 		if (is_end_of_string(&str))

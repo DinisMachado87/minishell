@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:56:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/22 19:23:38 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:21:15 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	skip_red_sign_and_spaces(t_token *cur, int r_subtype)
 	while (*cur->str && *cur->str == ' ')
 		cur->str++;
 	if (!*cur->str || type(cur->str) != CMD)
-		return (perror("Error: No file after redirect"), 0);
+		return (0);
 	return (1);
 }
 

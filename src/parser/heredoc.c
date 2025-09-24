@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 00:13:29 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:55:40 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,9 @@ int	create_heredoc_file(char *eof, char *temp_file)
 		{
 			write(STDERR_FILENO, "Warning: heredoc delimited by eof: ", 36);
 			write(STDERR_FILENO, eof, ms_strlen(eof));
-			break;
+			write(STDERR_FILENO, "\n", 1);
+			close(fd);
+			exit(0);
 		}
 		if (!ms_strcmp(eof, line)
 			&& free_and_null((void **)&line))
