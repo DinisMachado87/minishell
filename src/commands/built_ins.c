@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/17 23:07:35 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/24 11:30:23 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,35 +107,31 @@ int	ft_export(t_shell *shell, t_ast *node)
 	equ = NULL;
 	key = NULL;
 	value = NULL;
-	//if (node->n_args == 1)
 	if (node->args[0].n == 1)
-		print_env(shell, 1);
-	else
+		return (print_env(shell, 1), 0);
+	equ = ms_strchr(node->args[0].tkns[1], '=');
+	if (equ)
 	{
-		//equ = ms_strchr(node->args[1], '=');
-		equ = ms_strchr(node->args[0].tkns[1], '=');
-		if (equ)
-		{
-			//key = ms_strndup(node->args[1],
-			key = ms_strndup(node->args[0].tkns[1],
-					//(ms_strlen(node->args[1]) - ms_strlen(equ)));
-					(ms_strlen(node->args[0].tkns[1]) - ms_strlen(equ)));
-			value = ms_strndup((equ + 1), (ms_strlen(equ) - 1));
-			if (!*key || !is_valid_identifier(key))
-			{
-				print_err("export", "not a valid identifier");
-				return (1);
-			}
-			set_env_node(&shell->env, key, value);
-			free(key);
-			free(value);
-		}
-		//else if (!ms_isalpha(node->args[1]))
-		else if (!ms_isalpha(node->args[0].tkns[1]))
-		{
-			print_err("export", "not a valid identifier");
+		key = ms_strndup(node->args[0].tkns[1],
+				(ms_strlen(node->args[0].tkns[1]) - ms_strlen(equ)));
+		if (!key)
 			return (1);
+		if (!is_valid_identifier(key))
+		{
+			free(key);
+			return (print_err("export", "not a valid identifier"), 1);
 		}
+		value = ms_strndup((equ + 1), (ms_strlen(equ) - 1));
+		if (!value)
+			return (free(key), 1);
+		set_env_node(&shell->env, key, value);
+		free(key);
+		free(value);
+	}
+	else if (!ms_isalpha(node->args[0].tkns[1]))
+	{
+		print_err("export", "not a valid identifier");
+		return (1);
 	}
 	return (0);
 }
