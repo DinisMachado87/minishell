@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/23 10:00:06 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/25 14:11:24 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,19 @@ void	execute_external(t_shell *shell, t_ast *node)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		//cmd = get_cmd_path(shell, node->args[0]);
 		cmd = get_cmd_path(shell, *node->args[0].tkns);
 		if (!cmd)
 			exit(shell->exit_status);
 		list = convert_env_to_list(shell->env);
-		//if (execve(cmd, node->args, list) == -1)
 		if (execve(cmd, node->args[0].tkns, list) == -1)
 		{
 			perror("execve");
 			free(cmd);
-			free_env_list(list);
-			free_ast(shell);
+			free_shell(shell);
 			exit(1);
 		}
 		free(cmd);
-		free_env_list(list);
-		free_ast(shell);
+		free_shell(shell);
 		exit(0);
 	}
 	waitpid(pid, &status, 0);
@@ -185,7 +181,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		if (ERROR == parser(node->args[0].tkns[0], &subshell))
 			return ;
 		execute_ast(&subshell, subshell.ast);
-		free_ast(&subshell);
+		free_shell(&subshell);
 	}
 }
 
@@ -205,12 +201,14 @@ void	execute_or(t_shell *shell, t_ast *node)
 
 void	execute_pipe(t_shell *shell, t_ast *node)
 {
-	int			left_pid;
-	int			right_pid;
-	int			fd[2];
-	int			lstatus;
-	int			rstatus;
+	int	left_pid;
+	int	right_pid;
+	int	fd[2];
+	int	lstatus;
+	int	rstatus;
+	int	exit_status;
 
+	exit_status = 0;
 	if (pipe(fd) < 0)
 		shell->exit_status = ERROR;
 	left_pid = fork();
@@ -222,7 +220,9 @@ void	execute_pipe(t_shell *shell, t_ast *node)
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
 		execute_ast(shell, node->left);
-		exit(shell->exit_status);
+		exit_status = shell->exit_status;
+		free_shell(shell);
+		exit(exit_status);
 	}
 	right_pid = fork();
 	if (right_pid < 0)
@@ -233,7 +233,9 @@ void	execute_pipe(t_shell *shell, t_ast *node)
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		execute_ast(shell, node->right);
-		exit(shell->exit_status);
+		exit_status = shell->exit_status;
+		free_shell(shell);
+		exit(exit_status);
 	}
 	close(fd[0]);
 	close(fd[1]);
