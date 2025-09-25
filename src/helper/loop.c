@@ -6,7 +6,11 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/09/24 16:16:24 by dimachad         ###   ########.fr       */
+=======
+/*   Updated: 2025/09/25 11:20:58 by jlind            ###   ########.fr       */
+>>>>>>> 9556de1 (MOD moved freeing input into the loop)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +180,7 @@ void	prompt_loop(char *envp[])
 					printf("status = %d\n", shell.exit_status);
 				free_ast(&shell);
 			}
+			free_and_null((void **)&input);
 		}
 	}
 	final_exit = shell.exit_status;
