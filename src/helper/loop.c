@@ -6,11 +6,8 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/09/24 16:16:24 by dimachad         ###   ########.fr       */
-=======
+/*   Updated: 2025/09/25 14:22:11 by jlind            ###   ########.fr       */
 /*   Updated: 2025/09/25 11:20:58 by jlind            ###   ########.fr       */
->>>>>>> 9556de1 (MOD moved freeing input into the loop)
 /*                                                                            */
 /* ************************************************************************** */
 
