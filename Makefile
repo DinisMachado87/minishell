@@ -1,6 +1,6 @@
 # ==== C Settings ====
 CC := gcc
-CFLAGS = -Wall -Wextra -Werror -I$(HEADER_DIR)
+CFLAGS = -Wall -Wextra -Werror -I$(HEADER_DIR) -g -O0
 RELEASE_FLAGS = $(CFLAGS) -DDEBUG=0
 DEBUG_FLAGS = $(CFLAGS) -g -O0 -DDEBUG=1
 HEADER_DIR = include/
