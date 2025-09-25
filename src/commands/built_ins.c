@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:18:51 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/24 11:35:08 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/24 22:57:53 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,33 +50,34 @@ int	ft_cd(t_shell *shell, t_ast *node)
 	char	*pwd;
 	char	*oldpwd;
 	char	*pwd_env;
+	int		err_code;
 
+	pwd = NULL;
+	err_code = 0;
 	if (node->args[0].n > 2)
-	{
-		print_err("cd", "too many arguments");
-		return (1);
-	}
+		return (print_err("cd", "too many arguments"), 1);
 	pwd = getcwd(NULL, 0);
-	if (strncmp(node->args[0].tkns[1], "-", 1) == 0)
-	{
-		if (chdir(get_env_node(shell->env, "OLDPWD")->value) == -1)
-		{
-			perror("chdir");
-			return (1);
-		}
-	}
-	else if (chdir(node->args[0].tkns[1]) == -1)
+	if (!pwd)
+		return (1);
+	if (ms_strncmp(node->args[0].tkns[1], "-", 1) == 0)
+		err_code = chdir(get_env_node(shell->env, "OLDPWD")->value);
+	else
+		err_code = chdir(node->args[0].tkns[1]);
+	if (err_code != 0)
 	{
 		perror("chdir");
+		free(pwd);
 		return (1);
 	}
 	oldpwd = ms_strndup("OLDPWD", 6);
 	set_env_node(&shell->env, oldpwd, pwd);
 	pwd_env = ms_strndup ("PWD", 3);
+	free(pwd);
 	pwd = getcwd(NULL, 0);
 	set_env_node(&shell->env, pwd_env, pwd);
 	free(pwd);
 	free(oldpwd);
+	free(pwd_env);
 	return (0);
 }
 
