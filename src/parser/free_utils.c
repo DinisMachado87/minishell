@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 20:27:18 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/18 14:36:32 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/25 14:08:40 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,11 @@ t_ast	*free_ast(t_shell *sh)
 	while (sh->list)
 	{
 		next_head = sh->list->next;
-		if (sh->ast->type == CMD)
+		if (sh->list->type == CMD)
 		{
-			free_and_null_args(&sh->ast->args[0]);
-			free_and_null_args(&sh->ast->args[OUT]);
-			free_and_null_args(&sh->ast->args[IN]);
+			free_and_null_args(&sh->list->args[0]);
+			free_and_null_args(&sh->list->args[OUT]);
+			free_and_null_args(&sh->list->args[IN]);
 		}
 		free_and_null((void **)&sh->list);
 		sh->list = next_head;
