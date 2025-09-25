@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/25 14:11:24 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/25 14:44:51 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,19 +88,11 @@ int	setup_red_in(char *file, int type)
 	return (SUCCESS);
 }
 
-int	setup_red_out(char *file, int type)
+int	setup_red_out(char *dir, struct stat *statbuf, char *file, int type)
 {
-	char		*dir;
-	char		*last_slash;
-	int			fd;
-	struct stat	statbuf;
+	int	fd;
 
-	ms_bzero((void *)&statbuf, sizeof(struct stat));
-	dir = ".";
-	last_slash = ms_strrchr(file, '/');
-	if (last_slash)
-		dir = ms_strndup(file, (ms_strlen(file) - ms_strlen(last_slash)));
-	if ((stat(dir, &statbuf) == ERROR) && (errno != ENOENT))
+	if ((stat(dir, statbuf) == ERROR) && (errno != ENOENT))
 	{
 		if (errno == ENOENT)
 			return (print_err(file, "No such file or directory"), ERROR);
@@ -118,6 +110,23 @@ int	setup_red_out(char *file, int type)
 	if (dup2(fd, STDOUT_FILENO) == ERROR)
 		return (perror("minishell: dup2"), ERROR);
 	return (SUCCESS);
+}
+
+int	setup_red_out_wrapper(char *file, int type)
+{
+	char		*dir;
+	char		*last_slash;
+	struct stat	statbuf;
+	int			exit_status;
+
+	ms_bzero((void *)&statbuf, sizeof(struct stat));
+	dir = ".";
+	last_slash = ms_strrchr(file, '/');
+	if (last_slash)
+		dir = ms_strndup(file, (ms_strlen(file) - ms_strlen(last_slash)));
+	exit_status = setup_red_out(dir, &statbuf, file, type);
+	free(dir);
+	return (exit_status);
 }
 
 void	execute_ast(t_shell *shell, t_ast *node)
@@ -153,7 +162,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 			if (node && node->args[IN].tkns && node->args[IN].tkns[arg_n])
 				err_code = setup_red_in(node->args[IN].tkns[arg_n], node->args[IN].type[arg_n]);
 			else if (node && node->args[OUT].tkns && node->args[OUT].tkns[arg_n])
-				err_code = setup_red_out(node->args[OUT].tkns[arg_n], node->args[OUT].type[arg_n]);
+				err_code = setup_red_out_wrapper(node->args[OUT].tkns[arg_n], node->args[OUT].type[arg_n]);
 			if (err_code < 0)
 			{
 				shell->exit_status = err_code * -1;
