@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/25 14:22:11 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/25 14:30:03 by jlind            ###   ########.fr       */
 /*   Updated: 2025/09/25 11:20:58 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -128,7 +128,7 @@ int	get_input(char *prompt, char **input)
 		if (!*input)
 			new_read = readline(prompt);
 		else
-			new_read = readline("> ");
+			new_read = readline("");
 		if (!new_read)
 			return (ERROR);
 		if (!store_or_cat_input(&new_read, input))
