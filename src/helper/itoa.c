@@ -6,7 +6,11 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:25:19 by jlind             #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/09/24 11:50:52 by dimachad         ###   ########.fr       */
+=======
+/*   Updated: 2025/09/24 22:20:55 by jlind            ###   ########.fr       */
+>>>>>>> 91141d7 (MOD fixed itoa leak)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +43,9 @@ char	*itoa(int num)
 
 	if (!num)
 	{
-		arg = (char *)malloc(2);
+		arg = ms_strndup("0", 2);
 		if (!arg)
 			return (NULL);
-		arg = ms_strndup("0", 2);
 		return (arg);
 	}
 	digits = get_digits(num);
