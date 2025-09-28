@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/25 14:44:51 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/28 09:52:38 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ void	execute_external(t_shell *shell, t_ast *node)
 		signal(SIGINT, SIG_DFL);
 		cmd = get_cmd_path(shell, *node->args[0].tkns);
 		if (!cmd)
+		{
+			free_shell(shell);
 			exit(shell->exit_status);
+		}
 		list = convert_env_to_list(shell->env);
 		if (execve(cmd, node->args[0].tkns, list) == -1)
 		{
@@ -187,7 +190,7 @@ void	execute_ast(t_shell *shell, t_ast *node)
 		//and in the ones being checked I don't think you are exiting the function
 		//which will lead to crash.
 		//I sent you on slack a print screen
-		if (ERROR == parser(node->args[0].tkns[0], &subshell))
+		if (parser(node->args[0].tkns[0], &subshell) < 0)
 			return ;
 		execute_ast(&subshell, subshell.ast);
 		free_shell(&subshell);
