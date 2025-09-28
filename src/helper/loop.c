@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/25 14:30:03 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/28 09:23:30 by jlind            ###   ########.fr       */
 /*   Updated: 2025/09/25 11:20:58 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -165,7 +165,7 @@ void	prompt_loop(char *envp[])
 		free_and_null((void **)&prompt);
 		if (input && *input)
 		{
-			if (ERROR == parser(input, &shell))
+			if (parser(input, &shell) < 0)
 				break;
 			if (DEBUG)
 				print_ast(shell.ast, "loop");
