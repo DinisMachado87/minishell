@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/28 09:52:38 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/28 15:04:40 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,8 @@ int	setup_red_out_wrapper(char *file, int type)
 	if (last_slash)
 		dir = ms_strndup(file, (ms_strlen(file) - ms_strlen(last_slash)));
 	exit_status = setup_red_out(dir, &statbuf, file, type);
-	free(dir);
+	if (last_slash)
+		free(dir);
 	return (exit_status);
 }
 
