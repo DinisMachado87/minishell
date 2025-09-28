@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:19:50 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/14 17:11:47 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/28 14:52:30 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ char	*global_cmd_valid(t_shell *shell, char *cmd)
 {
 	char	*path;
 	char	*cmd_path;
+	char	*dir;
 
 	path = get_env_node(shell->env, "PATH")->value;
 	if (!path)
@@ -77,7 +78,9 @@ char	*global_cmd_valid(t_shell *shell, char *cmd)
 	while (path && *path)
 	{
 		shell->exit_status = 0;
-		cmd_path = append_cmd(split_at_sep(&path, ':'), cmd);
+		dir = split_at_sep(&path, ':');
+		cmd_path = append_cmd(dir, cmd);
+		free(dir);
 		if (access(cmd_path, X_OK) != 0)
 			shell->exit_status = 126;
 		if (access(cmd_path, F_OK) != 0)
