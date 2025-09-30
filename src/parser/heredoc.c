@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 14:55:40 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:50:33 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,17 +119,18 @@ int ms_heredoc(t_args *args, int offset, int expand)
 	int		i;
 	
 	if (!cat_str_arr(&args->tkns[offset],
-				args->tkns + offset, args->n - offset)
-		|| !unique_tmp(&temp_file, TEMP_PREFIX, itoa(getpid())))
+				  args->tkns + offset, args->n - offset))
 		return (ERROR);
 	i = 0;
 	while (args->tkns[offset + ++i])
 		free_and_null((void**)&args->tkns[offset + i]);
 	pid = fork();
 	if ((pid == 0
-		&& !create_heredoc_file(args->tkns[offset], temp_file))
+		&& (!unique_tmp(&temp_file, TEMP_PREFIX, itoa(getpid()))
+			|| !create_heredoc_file(args->tkns[offset], temp_file)))
 		|| (pid > 0
-			&& !wait_to_store_file(pid, &temp_file, &args->tkns[offset]))
+			&& (!unique_tmp(&temp_file, TEMP_PREFIX, itoa(pid))
+				|| !wait_to_store_file(pid, &temp_file, &args->tkns[offset])))
 		|| (pid < 0))
 		return (ERROR);
 	args->exp[offset] = !expand;
