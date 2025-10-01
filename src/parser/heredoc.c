@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/30 11:50:33 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:17:57 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,11 @@ int	create_heredoc_file(char *eof, char *temp_file)
 			write(STDERR_FILENO, eof, ms_strlen(eof));
 			write(STDERR_FILENO, "\n", 1);
 			close(fd);
-			exit(0);
+			unlink(temp_file);
+			free_and_null((void **)&temp_file);
+			exit(1);
 		}
-		if (!ms_strcmp(eof, line)
-			&& free_and_null((void **)&line))
+		if (!ms_strcmp(eof, line) && free_and_null((void **)&line))
 			break;
 		else
 		{
@@ -88,6 +89,7 @@ int	create_heredoc_file(char *eof, char *temp_file)
 		}
 	}
 	close(fd);
+	free_and_null((void **)&temp_file);
 	exit(0);
 }
 
@@ -104,6 +106,8 @@ static int	wait_to_store_file(pid_t pid, char **temp_file, char **arg_tkn)
 	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
 	{
 		free(*temp_file);
+		sigaction(SIGINT, &old_sigint, NULL);
+		sigaction(SIGQUIT, &old_sigquit, NULL);
 		return (0);
 	}
 	free_and_reassign(arg_tkn, temp_file);
@@ -119,19 +123,21 @@ int ms_heredoc(t_args *args, int offset, int expand)
 	int		i;
 	
 	if (!cat_str_arr(&args->tkns[offset],
-				  args->tkns + offset, args->n - offset))
+			args->tkns + offset, args->n - offset))
 		return (ERROR);
 	i = 0;
 	while (args->tkns[offset + ++i])
 		free_and_null((void**)&args->tkns[offset + i]);
 	pid = fork();
-	if ((pid == 0
+	if (pid == 0
 		&& (!unique_tmp(&temp_file, TEMP_PREFIX, itoa(getpid()))
 			|| !create_heredoc_file(args->tkns[offset], temp_file)))
-		|| (pid > 0
-			&& (!unique_tmp(&temp_file, TEMP_PREFIX, itoa(pid))
-				|| !wait_to_store_file(pid, &temp_file, &args->tkns[offset])))
-		|| (pid < 0))
+		return (ERROR);
+	else if (pid > 0
+		&& (!unique_tmp(&temp_file, TEMP_PREFIX, itoa(pid))
+			|| !wait_to_store_file(pid, &temp_file, &args->tkns[offset])))
+		return (ERROR);
+	else if (pid < 0)
 		return (ERROR);
 	args->exp[offset] = !expand;
 	return (1);

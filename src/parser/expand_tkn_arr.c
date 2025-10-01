@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 14:30:09 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 00:06:52 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/01 12:15:40 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	expand_tkn_arr(t_args *args, t_shell *sh)
 				return (0);
 		}
 		else if (!get_env(&env_value, sh->env, args->tkns[i]))
-			bzero((void *)args->tkns[i], ms_strlen(args->tkns[i]));
+			ms_bzero((void *)args->tkns[i], ms_strlen(args->tkns[i]));
 		else if (!free_and_null((void **)&args->tkns[i])
 			|| !safe_malloc((void **)&args->tkns[i], ms_strlen(env_value) + 1)
 			|| !ms_strncpy(args->tkns[i], env_value, ms_strlen(env_value) + 1))
