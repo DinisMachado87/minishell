@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 09:23:14 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/12 09:52:04 by jlind            ###   ########.fr       */
+/*   Updated: 2025/09/30 09:07:24 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ int	is_valid_identifier(char *str)
 		return (0);
 	if (ms_char_isalpha(*str) || *str == '_')
 		str++;
-	else 
+	else
 		return (0);
-	while (*str && (ms_char_isalpha(*str) || ms_char_isdigit(*str) || (*str == '_')))
+	while (*str && (ms_char_isalpha(*str)
+			|| ms_char_isdigit(*str) || (*str == '_')))
 		str++;
 	if (!*str)
 		return (1);

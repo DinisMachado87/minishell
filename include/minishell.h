@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 15:53:37 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/01 10:40:34 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,19 +223,21 @@ void	print_ast(t_ast *ast, char *testname);
 void	print_nd_list(t_ast *ast, char *testname);
 void	print_args_arr(char *print_str, t_args *args, int indent);
 // prompt_loop
-void	prompt_loop(char *envp[]);
+int	prompt_loop_wrapper(char *envp[]);
 void	execute_ast(t_shell *shell, t_ast *node);
 void	execute_pipe(t_shell *shell, t_ast *node);
-int		ft_echo(t_ast *node);
-int		ft_cd(t_shell *shell, t_ast *node);
-int		ft_pwd(void);
-int		ft_export(t_shell *shell, t_ast *node);
-int		ft_unset(t_shell *shell, t_ast *node);
-int		ft_env(t_shell *shell, t_ast *node);
-void	ft_exit(t_shell *shell, t_ast *node);
+int		ms_echo(t_ast *node);
+int		ms_cd(t_shell *shell, t_ast *node);
+int		ms_pwd(void);
+int		ms_export(t_shell *shell, t_ast *node);
+int		ms_unset(t_shell *shell, t_ast *node);
+int		ms_env(t_shell *shell, t_ast *node);
+void	ms_exit(t_shell *shell, t_ast *node);
 void	execute_and(t_shell *shell, t_ast *node);
 void	execute_or(t_shell *shell, t_ast *node);
 char    *get_cmd_path(t_shell *shell, char *cmd);
+char    *global_cmd_valid(t_shell *shell, char *cmd);
+char    *local_cmd_valid(t_shell *shell, char *cmd);
 t_env *gen_env_node(char *key, char *value);
 void  free_env_node(t_env **node);
 void  free_env_node_by_key(t_env **head, char *key);
@@ -246,9 +248,10 @@ char  *gen_env_str(char *key, char *value);
 char  **convert_env_to_list(t_env *head);
 void  free_env(t_env **head);
 void  print_env(t_shell *shell, int export);
+void    update_env_node(t_env *env, char *key, char *value);
 void  cleanup(t_shell **shell);
 void  free_env_list(char  **list);
-void  print_err(char *cmd_name, char *err_msg);
+int	  print_err(char *cmd_name, char *err_msg, int err);
 char  *itoa(int num);
 char    *ms_strndup(char *str, int n);
 void    init_env(t_shell *shell, char *envp[]);
@@ -265,5 +268,11 @@ int		is_valid_identifier(char *str);
 void    set_handler(int rdline);
 void	free_shell(t_shell *shell);
 int		print_sys_err(char *syscall, char *component, char *err_msg, int err);
+int get_input(char *prompt, char **input);
+void    execute_external(t_shell *shell, t_ast *node);
+void    execute_cmd(t_shell *shell, t_ast *node);
+int setup_red_in(char *file, int type);
+int setup_red_out_wrapper(char *file, int type);
+int execute_built_in(t_shell *shell, t_ast *node);
 
 #endif

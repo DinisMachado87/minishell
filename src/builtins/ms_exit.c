@@ -1,20 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ms_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/22 13:09:54 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/30 09:43:57 by jlind            ###   ########.fr       */
+/*   Created: 2025/10/01 09:31:33 by jlind             #+#    #+#             */
+/*   Updated: 2025/10/01 09:31:39 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	main(int argc, char *argv[], char *envp[])
+void	ms_exit(t_shell *shell, t_ast *node)
 {
-	(void)argc;
-	(void)argv;
-	return (prompt_loop_wrapper(envp));
+	int	exit_status;
+
+	if (node->args[0].n > 2)
+		exit_status = print_err("exit", "too many arguments", 1);
+	else if (node->args[0].tkns[1])
+	{
+		if (ms_isdigit(node->args[0].tkns[1]))
+			exit_status = ms_atoi(node->args[0].tkns[1]);
+		else
+			exit_status = print_err("exit", "numeric argument required", 2);
+	}
+	else
+		exit_status = shell->exit_status;
+	free_shell(shell);
+	exit(exit_status);
 }

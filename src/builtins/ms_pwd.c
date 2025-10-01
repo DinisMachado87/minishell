@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_cmd_path.c                                     :+:      :+:    :+:   */
+/*   ms_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/22 13:19:50 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/30 10:13:10 by jlind            ###   ########.fr       */
+/*   Created: 2025/10/01 09:30:14 by jlind             #+#    #+#             */
+/*   Updated: 2025/10/01 09:30:23 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../include/minishell.h"
 
-char	*get_cmd_path(t_shell *shell, char *cmd)
+int	ms_pwd(void)
 {
-	if (ms_strncmp(cmd, "/", 1) == 0 || ms_strncmp(cmd, "./", 2) == 0)
-		return (local_cmd_valid(shell, cmd));
-	else
-		return (global_cmd_valid(shell, cmd));
+	char		*path;
+
+	path = getcwd(NULL, 0);
+	printf("%s\n", path);
+	free(path);
+	return (0);
 }

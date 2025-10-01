@@ -1,21 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_cmd_path.c                                     :+:      :+:    :+:   */
+/*   ms_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/22 13:19:50 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/30 10:13:10 by jlind            ###   ########.fr       */
+/*   Created: 2025/10/01 09:30:57 by jlind             #+#    #+#             */
+/*   Updated: 2025/10/01 09:31:04 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../include/minishell.h"
 
-char	*get_cmd_path(t_shell *shell, char *cmd)
+int	ms_unset(t_shell *shell, t_ast *node)
 {
-	if (ms_strncmp(cmd, "/", 1) == 0 || ms_strncmp(cmd, "./", 2) == 0)
-		return (local_cmd_valid(shell, cmd));
-	else
-		return (global_cmd_valid(shell, cmd));
+	int	i;
+
+	i = 1;
+	if (!node->args[0].tkns[i])
+		return (0);
+	while (node->args[0].tkns[i])
+	{
+		free_env_node_by_key(&shell->env, node->args[0].tkns[i]);
+		i++;
+	}
+	return (0);
 }

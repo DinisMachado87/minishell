@@ -18,23 +18,29 @@ REL_AST_OBJ_DIR = $(OBJ_DIR)ast/
 REL_CMD_OBJ_DIR = $(OBJ_DIR)commands/
 REL_HLP_OBJ_DIR = $(OBJ_DIR)helper/
 REL_PRS_OBJ_DIR = $(OBJ_DIR)parser/
-REL_OBJ_DIRS = $(REL_AST_OBJ_DIR) $(REL_CMD_OBJ_DIR) $(REL_HLP_OBJ_DIR) $(REL_PRS_OBJ_DIR)
+REL_BLT_OBJ_DIR = $(OBJ_DIR)builtins/
+REL_OBJ_DIRS = $(REL_AST_OBJ_DIR) $(REL_CMD_OBJ_DIR) $(REL_HLP_OBJ_DIR) $(REL_PRS_OBJ_DIR) $(REL_BLT_OBJ_DIR)
 
 # Debug object directories
 DBG_AST_OBJ_DIR = $(DEBUG_OBJ_DIR)ast/
 DBG_CMD_OBJ_DIR = $(DEBUG_OBJ_DIR)commands/
 DBG_HLP_OBJ_DIR = $(DEBUG_OBJ_DIR)helper/
 DBG_PRS_OBJ_DIR = $(DEBUG_OBJ_DIR)parser/
-DBG_OBJ_DIRS = $(DBG_AST_OBJ_DIR) $(DBG_CMD_OBJ_DIR) $(DBG_HLP_OBJ_DIR) $(DBG_PRS_OBJ_DIR)
+DBG_BLT_OBJ_DIR = $(DEBUG_OBJ_DIR)builtins/
+DBG_OBJ_DIRS = $(DBG_AST_OBJ_DIR) $(DBG_CMD_OBJ_DIR) $(DBG_HLP_OBJ_DIR) $(DBG_PRS_OBJ_DIR) $(DBG_BLT_OBJ_DIR)
 
 # ==== files ====
-AST_FILE_NAMES = execute_ast.c
-CMD_FILE_NAMES = built_ins.c  export_utils.c  get_cmd_path.c
-HLP_FILE_NAMES = env.c  itoa.c  loop.c \
-				 ms_strchr.c  ms_strncat.c  ms_strncpy.c \
-				 ms_strndup.c  print_err.c \
+AST_FILE_NAMES = execute_ast.c execute_external.c \
+				 execute_cmd.c execute_pipe.c 
+CMD_FILE_NAMES = export_utils.c cmd_valid.c \
+				 get_cmd_path.c 
+HLP_FILE_NAMES = itoa.c  loop.c ms_strchr.c \
+				 ms_strncat.c ms_strncpy.c \
+				 ms_strndup.c print_err.c \
 				 ms_isalpha.c ms_atoi.c ms_isdigit.c \
-				 is_valid_identifier.c free_shell.c
+				 is_valid_identifier.c free_shell.c \
+				 signal_handler.c get_input.c free_env.c \
+				 get_env.c init_env.c update_env.c
 PRS_FILE_NAMES = ast_utils.c \
 				 free_utils.c \
 				 split_cmd_flags.c \
@@ -57,22 +63,26 @@ PRS_FILE_NAMES = ast_utils.c \
 				 parser_utils.c \
 				 structure_ast.c \
 				 validate_pairs.c
+BLT_FILE_NAMES = ms_cd.c ms_echo.c ms_env.c ms_exit.c \
+				 ms_export.c ms_pwd.c ms_unset.c
 
 # ==== generate release paths ====
 REL_AST_OBJ_FILES = $(patsubst %.c, $(REL_AST_OBJ_DIR)%.o, $(AST_FILE_NAMES))
 REL_CMD_OBJ_FILES = $(patsubst %.c, $(REL_CMD_OBJ_DIR)%.o, $(CMD_FILE_NAMES))
 REL_HLP_OBJ_FILES = $(patsubst %.c, $(REL_HLP_OBJ_DIR)%.o, $(HLP_FILE_NAMES))
 REL_PRS_OBJ_FILES = $(patsubst %.c, $(REL_PRS_OBJ_DIR)%.o, $(PRS_FILE_NAMES))
+REL_BLT_OBJ_FILES = $(patsubst %.c, $(REL_BLT_OBJ_DIR)%.o, $(BLT_FILE_NAMES))
 REL_MAIN_OBJ_FILE = $(OBJ_DIR)main.o
-REL_OBJS = $(REL_AST_OBJ_FILES) $(REL_CMD_OBJ_FILES) $(REL_HLP_OBJ_FILES) $(REL_PRS_OBJ_FILES) $(REL_MAIN_OBJ_FILE)
+REL_OBJS = $(REL_AST_OBJ_FILES) $(REL_CMD_OBJ_FILES) $(REL_HLP_OBJ_FILES) $(REL_PRS_OBJ_FILES) $(REL_BLT_OBJ_FILES) $(REL_MAIN_OBJ_FILE)
 
 # ==== generate debug paths ====
 DBG_AST_OBJ_FILES = $(patsubst %.c, $(DBG_AST_OBJ_DIR)%.o, $(AST_FILE_NAMES))
 DBG_CMD_OBJ_FILES = $(patsubst %.c, $(DBG_CMD_OBJ_DIR)%.o, $(CMD_FILE_NAMES))
 DBG_HLP_OBJ_FILES = $(patsubst %.c, $(DBG_HLP_OBJ_DIR)%.o, $(HLP_FILE_NAMES))
 DBG_PRS_OBJ_FILES = $(patsubst %.c, $(DBG_PRS_OBJ_DIR)%.o, $(PRS_FILE_NAMES))
+DBG_BLT_OBJ_FILES = $(patsubst %.c, $(DBG_BLT_OBJ_DIR)%.o, $(BLT_FILE_NAMES))
 DBG_MAIN_OBJ_FILE = $(DEBUG_OBJ_DIR)main.o
-DBG_OBJS = $(DBG_AST_OBJ_FILES) $(DBG_CMD_OBJ_FILES) $(DBG_HLP_OBJ_FILES) $(DBG_PRS_OBJ_FILES) $(DBG_MAIN_OBJ_FILE)
+DBG_OBJS = $(DBG_AST_OBJ_FILES) $(DBG_CMD_OBJ_FILES) $(DBG_HLP_OBJ_FILES) $(DBG_PRS_OBJ_FILES) $(DBG_BLT_OBJ_FILES) $(DBG_MAIN_OBJ_FILE)
 
 # ==== targets ====
 all: $(NAME) debug

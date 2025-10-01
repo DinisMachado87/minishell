@@ -14,7 +14,7 @@
 
 int	get_digits(int num)
 {
-	int digits;
+	int	digits;
 
 	digits = 0;
 	if (num == 0)
@@ -37,19 +37,16 @@ char	*itoa(int num)
 	char	*arg;
 	int		digits;
 
-	if (!num)
-	{
-		arg = ms_strndup("0", 2);
-		if (!arg)
-			return (NULL);
-		return (arg);
-	}
 	digits = get_digits(num);
-	arg = (char *)malloc(digits + 1);
+	if (!num)
+		arg = ms_strndup("0", 2);
+	else
+		arg = (char *)malloc(digits + 1);
 	if (!arg)
 		return (NULL);
-	arg[digits] = '\0';
-	digits--;
+	if (!num)
+		return (arg);
+	arg[digits--] = '\0';
 	if (num < 0)
 	{
 		arg[0] = '-';
