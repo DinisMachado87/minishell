@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 13:52:37 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/16 19:44:46 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:34:36 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,23 @@
 
 int	count_env_tkn(char *str, t_token *cur)
 {
-	int		i_ltr;
+	int	i_ltr;
 
 	i_ltr = 1;
-	if (!str[i_ltr] || str[i_ltr] == ' '
-		|| str[i_ltr] == '\"' || str[i_ltr] == '\'')
+	if (!str[i_ltr] || str[i_ltr] == ' ' || str[i_ltr] == '\"'
+		|| str[i_ltr] == '\'')
 		return (i_ltr);
 	cur->expand = EXPAND;
 	if (str[i_ltr] == '?')
 		return (++i_ltr);
-
-	while (str[i_ltr]
-		&& is_alphanum_or_underscore(str[i_ltr]))
+	while (str[i_ltr] && is_alphanum_or_underscore(str[i_ltr]))
 		i_ltr++;
-	
 	return (i_ltr);
 }
 
 int	count_single_quote_tkn(char *str)
 {
-	int		i_ltr;
+	int	i_ltr;
 
 	i_ltr = 0;
 	while (str[i_ltr] && str[i_ltr] != '\'')
@@ -43,16 +40,14 @@ int	count_single_quote_tkn(char *str)
 
 int	count_double_quote_tkn(char *str)
 {
-	int		i_ltr;
+	int	i_ltr;
 
 	i_ltr = 0;
 	while (str[i_ltr] && str[i_ltr] != '\"')
 	{
-		if (str[i_ltr] == '$'
-			&& !(!str[i_ltr + 1]
-				|| str[i_ltr + 1] == ' '
+		if (str[i_ltr] == '$' && !(!str[i_ltr + 1] || str[i_ltr + 1] == ' '
 				|| str[i_ltr + 1] == '\"'))
-			break;
+			break ;
 		i_ltr++;
 	}
 	return (i_ltr);
@@ -60,16 +55,13 @@ int	count_double_quote_tkn(char *str)
 
 int	count_base_tkn(char *str)
 {
-	int		i_ltr;
+	int	i_ltr;
 
 	i_ltr = 0;
-	while (str[i_ltr] && type(str + i_ltr) == CMD
-		&& str[i_ltr] != ' ')
+	while (str[i_ltr] && type(str + i_ltr) == CMD && str[i_ltr] != ' ')
 	{
-		if (str[i_ltr] == '\''
-			|| str[i_ltr] == '\"'
-			|| str[i_ltr] == '$')
-			break;
+		if (str[i_ltr] == '\'' || str[i_ltr] == '\"' || str[i_ltr] == '$')
+			break ;
 		i_ltr++;
 	}
 	return (i_ltr);
@@ -82,7 +74,7 @@ int	count_token(char *str, t_token *cur, t_token *nxt)
 	i_ltr = 0;
 	if (*str == '\'' || *str == '\"')
 	{
-		if(cur->limiter == ' ')
+		if (cur->limiter == ' ')
 			cur->limiter = str[i_ltr++];
 		else if (cur->limiter == *str)
 		{
@@ -90,7 +82,6 @@ int	count_token(char *str, t_token *cur, t_token *nxt)
 			return (++i_ltr);
 		}
 	}
-
 	if (cur->limiter == '\'')
 		i_ltr += count_single_quote_tkn(str + i_ltr);
 	else if (str[i_ltr] == '$' && cur->limiter != '\'')
@@ -99,7 +90,6 @@ int	count_token(char *str, t_token *cur, t_token *nxt)
 		i_ltr += count_double_quote_tkn(str + i_ltr);
 	else
 		i_ltr += count_base_tkn(str + i_ltr);
-
 	if (str[i_ltr] == cur->limiter)
 	{
 		if (cur->limiter != ' ')
@@ -108,10 +98,8 @@ int	count_token(char *str, t_token *cur, t_token *nxt)
 	}
 	else
 		nxt->limiter = cur->limiter;
-
-	if (str[i_ltr] && str[i_ltr] == ' '
-		&& (cur->limiter == ' ' || nxt->limiter == ' '))
+	if (str[i_ltr] && str[i_ltr] == ' ' && (cur->limiter == ' '
+			|| nxt->limiter == ' '))
 		cur->space_after = SPACE_AFTER;
-
 	return (i_ltr);
 }

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 14:30:09 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/01 12:15:40 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/01 19:54:43 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	expand_exit_status(char **tkn, t_shell *sh)
 {
-	free_and_null((void**)tkn);
+	free_and_null((void **)tkn);
 	*tkn = itoa(sh->exit_status);
 	if (!*tkn)
 		return (0);
@@ -47,7 +47,7 @@ int	expand_tkn_arr(t_args *args, t_shell *sh)
 		if (args->exp[i] != EXPAND)
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		else if (args->type[i] == HEREDOC)
 		{

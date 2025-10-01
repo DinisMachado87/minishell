@@ -6,13 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 23:45:30 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 01:36:49 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/01 20:00:54 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char *get_n_env(char **expanded_value, t_env *head, char *key_str, int n)
+static char	*get_n_env(char **expanded_value, t_env *head, char *key_str, int n)
 {
 	while (head)
 	{
@@ -46,9 +46,9 @@ int	expand_here_tkn(char *b, char **value, t_shell *sh)
 	return (i);
 }
 
-int expand_and_write(char **b, int new_fd, t_shell *sh)
+int	expand_and_write(char **b, int new_fd, t_shell *sh)
 {
-	int	i;
+	int		i;
 	char	*value;
 
 	i = 0;
@@ -64,7 +64,7 @@ int expand_and_write(char **b, int new_fd, t_shell *sh)
 			if (i == ERROR)
 				return (0);
 			if (i == 0)
-				continue;
+				continue ;
 			if (value)
 				write(new_fd, value, ms_strlen(value));
 			if ((*b)[0] == '?' && value)
@@ -92,22 +92,11 @@ int	open_fds(int *old_fd, int *new_fd, char *filename, char *exp_file)
 	return (1);
 }
 
-int	expand_heredoc(char **filename, t_shell *sh)
+int	expand_into_new_file(int *fd, char *b, t_shell *sh)
 {
-	char	buf[1000 + 1] = "";
 	int		read_char;
-	int		fd[2];
-	char	*file[2];
-	int		err;
-	char	*b;
 
 	read_char = 1;
-	file[OLD] = *filename;
-	err = 0;
-	b = buf;
-	if (!unique_tmp(&file[NEW], *filename, "_exp")
-		|| !open_fds(&fd[OLD], &fd[NEW], *filename, file[NEW]))
-		return (0);
 	while (read_char)
 	{
 		read_char = read(fd[OLD], b, 1000);
@@ -115,8 +104,24 @@ int	expand_heredoc(char **filename, t_shell *sh)
 			b[read_char] = '\0';
 		if (read_char < 0
 			|| !expand_and_write(&b, fd[NEW], sh))
-			err = 1;
+			return (1);
 	}
+	return (0);
+}
+
+int	expand_heredoc(char **filename, t_shell *sh)
+{
+	char	buf[1000 + 1];
+	int		fd[2];
+	char	*file[2];
+	int		err;
+
+	buf[0] = '\0';
+	file[OLD] = *filename;
+	if (!unique_tmp(&file[NEW], *filename, "_exp")
+		|| !open_fds(&fd[OLD], &fd[NEW], *filename, file[NEW]))
+		return (0);
+	err = expand_into_new_file(fd, buf, sh);
 	close(fd[NEW]);
 	close(fd[OLD]);
 	unlink(file[OLD]);

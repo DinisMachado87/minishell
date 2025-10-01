@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 23:19:15 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 15:04:49 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:34:10 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 int	chr_after_spaces(t_token *tk)
 {
-		while (*tk->str && *tk->str == ' ')
-			tk->str++;
-		if (!*tk->str)
-			return (0);
-		return (1);
+	while (*tk->str && *tk->str == ' ')
+		tk->str++;
+	if (!*tk->str)
+		return (0);
+	return (1);
 }
 
 int	skip_redirect(t_token *cur, t_cmd *c)
@@ -62,7 +62,7 @@ int	count_cmd_tokens(t_token cur, t_cmd *c, char **err_str)
 			}
 		}
 		else
-			break;
+			break ;
 	}
-	return(1);
+	return (1);
 }
