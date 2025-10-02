@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/02 10:27:02 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 20:59:47 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ int						normalizer(char **str);
 // str_pairs_even
 int						str_pairs_even(char *str);
 // parser
-int						parser(char *str, t_shell *sh);
+int						parser(char *str, t_shell *sh, t_ast *cur);
 // cmd_expander
 int						cmd_expander(t_args *args, t_shell *sh);
 char					*unique_tmp(char **dest, char *str1, char *str2);
@@ -206,6 +206,10 @@ int						chr_after_spaces(t_token *tk);
 int						count_token(char *str, t_token *cur, t_token *nxt);
 int						count_redirect(t_token cur, t_args *args);
 int						count_cmd_tokens(t_token cur, t_cmd *c, char **err_str);
+void					handle_end_quote(char *str, t_token *cur,
+							t_token *nxt, int *i_ltr);
+int						open_fds(int *old_fd, int *new_fd,
+							char *filename, char *exp_file);
 int						free_and_null_args(t_args *args);
 int						free_and_reassign(char **dest, char **src);
 int						extract_cmd(char **str, t_ast **lst_nd, t_shell *sh);
@@ -219,6 +223,9 @@ int						extract_redirect(t_token *cur, t_cmd *c,
 int						expand_exit_status(char **tkn, t_shell *sh);
 int						expand_heredoc(char **filename, t_shell *sh);
 int						ms_heredoc(t_args *args, int offset, int expand);
+int						wait_to_store_file(pid_t pid,
+							char **temp_file, char **arg_tkn);
+int						create_heredoc_file(char *eof, char *temp_file);
 //	expand_tkn_arr
 int						expand_tkn_arr(t_args *args, t_shell *sh);
 // split_cmd_flags

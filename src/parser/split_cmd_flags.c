@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 14:08:43 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/18 14:12:34 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 19:56:56 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	split_len(char *str)
 	return (i_words);
 }
 
-static int extract_skip_section(char **str, char **dst, int len)
+static int	extract_skip_section(char **str, char **dst, int len)
 {
 	*dst = ms_strndup(*str, len);
 	if (!*dst)
@@ -41,7 +41,7 @@ static int extract_skip_section(char **str, char **dst, int len)
 
 static int	word_len(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] && str[i] != ' ')
@@ -73,7 +73,7 @@ int	split_cmd_flags(char *str, t_args *args, int alloc_len)
 	total_len = args->n + splt_len - 1;
 	if (total_len > alloc_len
 		&& !safe_malloc((void **)&new_arr, (total_len + 1) * sizeof(char *)))
-			return (0);
+		return (0);
 	else
 		new_arr = args->tkns;
 	new_arr[total_len] = NULL;
@@ -88,4 +88,3 @@ int	split_cmd_flags(char *str, t_args *args, int alloc_len)
 	args->n = total_len;
 	return (1);
 }
-

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 23:45:30 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/01 20:00:54 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 20:54:06 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,65 +46,53 @@ int	expand_here_tkn(char *b, char **value, t_shell *sh)
 	return (i);
 }
 
-int	expand_and_write(char **b, int new_fd, t_shell *sh)
+int	expand_and_write(char **b, int new_fd, t_shell *sh, int *i)
 {
-	int		i;
 	char	*value;
 
-	i = 0;
-	while ((*b)[i])
+	if ((*b)[*i] == '$' && (*b)[*i + 1] && (*b)[*i + 1] != ' '
+		&& (*b)[*i + 1] != '\'' && (*b)[*i + 1] != '\"')
 	{
-		if ((*b)[i] == '$' && (*b)[i + 1] && (*b)[i + 1] != ' '
-			&& (*b)[i + 1] != '\'' && (*b)[i + 1] != '\"')
-		{
-			write(new_fd, *b, i);
-			*b += i + 1;
-			value = NULL;
-			i = expand_here_tkn(*b, &value, sh);
-			if (i == ERROR)
-				return (0);
-			if (i == 0)
-				continue ;
-			if (value)
-				write(new_fd, value, ms_strlen(value));
-			if ((*b)[0] == '?' && value)
-				free(value);
-			*b += i;
-			i = 0;
-		}
-		else
-			i++;
+		write(new_fd, *b, *i);
+		*b += *i + 1;
+		value = NULL;
+		*i = expand_here_tkn(*b, &value, sh);
+		if (*i <= 0)
+			return (0);
+		if (value)
+			write(new_fd, value, ms_strlen(value));
+		if ((*b)[0] == '?' && value)
+			free(value);
+		*b += *i;
+		i = 0;
 	}
-	write(new_fd, *b, i);
-	*b += i;
-	return (1);
-}
-
-int	open_fds(int *old_fd, int *new_fd, char *filename, char *exp_file)
-{
-	*old_fd = open(filename, O_RDONLY);
-	if (*old_fd < 0)
-		return (perror("Error: cannot open heredoc file"), 0);
-	*new_fd = open(exp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (*new_fd < 0)
-		return (close(*old_fd),
-			perror("Error: cannot open new heredoc file"), 0);
+	else
+		i++;
 	return (1);
 }
 
 int	expand_into_new_file(int *fd, char *b, t_shell *sh)
 {
 	int		read_char;
+	int		i;
 
 	read_char = 1;
 	while (read_char)
 	{
 		read_char = read(fd[OLD], b, 1000);
+		if (read_char < 0)
+			return (1);
 		if (read_char > 0)
 			b[read_char] = '\0';
-		if (read_char < 0
-			|| !expand_and_write(&b, fd[NEW], sh))
-			return (1);
+		i = 0;
+		while (b[i])
+		{
+			if (!expand_and_write(&b, fd[NEW], sh, &i))
+				if (i == ERROR)
+					return (1);
+		}
+		write(fd[NEW], b, i);
+		*b += i;
 	}
 	return (0);
 }

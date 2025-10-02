@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/01 18:40:11 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 21:02:15 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,8 @@ void	new_line_to_null(char *str)
 }
 
 // @Parser extracts action nodes into ast using the next linear list pointers
-int	parser(char *str, t_shell *sh)
+int	parser(char *str, t_shell *sh, t_ast *cur)
 {
-	t_ast	*cur;
-
-	cur = NULL;
 	new_line_to_null(str);
 	while (*str && *str == ' ')
 		str++;

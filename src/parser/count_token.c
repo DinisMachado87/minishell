@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 13:52:37 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/01 18:34:36 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 20:50:43 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,16 +90,6 @@ int	count_token(char *str, t_token *cur, t_token *nxt)
 		i_ltr += count_double_quote_tkn(str + i_ltr);
 	else
 		i_ltr += count_base_tkn(str + i_ltr);
-	if (str[i_ltr] == cur->limiter)
-	{
-		if (cur->limiter != ' ')
-			i_ltr++;
-		nxt->limiter = ' ';
-	}
-	else
-		nxt->limiter = cur->limiter;
-	if (str[i_ltr] && str[i_ltr] == ' ' && (cur->limiter == ' '
-			|| nxt->limiter == ' '))
-		cur->space_after = SPACE_AFTER;
+	handle_end_quote(str, cur, nxt, &i_ltr);
 	return (i_ltr);
 }

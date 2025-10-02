@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:10:22 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/01 10:42:12 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/02 21:02:28 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	execute_subshell(t_shell *shell, t_ast *node)
 
 	ms_bzero((void *)&subshell, sizeof(t_shell));
 	init_env(&subshell, convert_env_to_list(shell->env));
-	if (parser(node->args[0].tkns[0], &subshell) < 0)
+	if (parser(node->args[0].tkns[0], &subshell, NULL) < 0)
 		return ;
 	execute_ast(&subshell, subshell.ast);
 	free_shell(&subshell);

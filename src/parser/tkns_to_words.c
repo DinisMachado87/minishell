@@ -6,13 +6,13 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 14:37:13 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/18 17:53:04 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 19:55:44 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	free_and_reassign(char **dest, char **src) 
+int	free_and_reassign(char **dest, char **src)
 {
 	free_and_null((void **)dest);
 	*dest = *src;
@@ -24,13 +24,12 @@ int	tkns_to_words(t_args *args, int alloc_len)
 {
 	int	i;
 	int	new_i;
+	int	interval;
 
 	i = 0;
 	new_i = 0;
 	while (i < args->n)
 	{
-		int		interval;
-
 		interval = 0;
 		while (i + interval < args->n && (args->tkns[i + interval][0] == '\0'
 			|| args->space[i + interval] == NO_SPACE_AFTER))

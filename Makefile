@@ -45,6 +45,7 @@ PRS_FILE_NAMES = ast_utils.c \
 				 free_utils.c \
 				 split_cmd_flags.c \
 				 count_token.c \
+				 count_utils.c \
 				 extract_cmd.c \
 				 extract_redirect.c \
 				 extract_utils.c \
@@ -52,6 +53,7 @@ PRS_FILE_NAMES = ast_utils.c \
 				 expand_heredoc.c \
 				 str_utils.c \
 				 heredoc.c \
+				 heredoc_utils.c \
 				 parser.c \
 				 print_ast.c \
 				 print_utils.c \

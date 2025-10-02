@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/30 09:44:45 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/02 21:00:45 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	prompt_loop(char **input, char **prompt, t_shell *shell)
 		free_and_null((void **)prompt);
 		if (*input && **input)
 		{
-			if (parser(*input, shell) < 0)
+			if (parser(*input, shell, NULL) < 0)
 				break ;
 			free_and_null((void **)input);
 			if (shell->ast)

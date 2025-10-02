@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 02:12:31 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/18 13:04:06 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 20:27:12 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,11 @@ int	ms_strlen(char *str)
 	while (str && str[len])
 		len++;
 	return (len);
+}
+
+void	*handle_error(char *err_msg, int *error)
+{
+	*error = -1;
+	perror(err_msg);
+	return (0);
 }

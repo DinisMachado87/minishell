@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 20:27:18 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/25 14:08:40 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/02 19:53:14 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	free_and_null(void **ptr)
 	return (1);
 }
 
-void free_and_null_str_arr(char	***address_str_arr)
+void	free_and_null_str_arr(char	***address_str_arr)
 {
 	int		i_str;
 	char	**str_arr;
@@ -38,7 +38,7 @@ void free_and_null_str_arr(char	***address_str_arr)
 
 int	free_and_null_args(t_args *args)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < args->n)
@@ -56,7 +56,8 @@ int	free_and_null_args(t_args *args)
 
 t_ast	*free_ast(t_shell *sh)
 {
-	t_ast *next_head;
+	t_ast	*next_head;
+
 	while (sh->list)
 	{
 		next_head = sh->list->next;
@@ -71,4 +72,3 @@ t_ast	*free_ast(t_shell *sh)
 	}
 	return (NULL);
 }
-

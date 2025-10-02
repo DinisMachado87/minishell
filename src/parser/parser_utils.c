@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:37:31 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/02 00:45:20 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 20:27:14 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,6 @@ int	strict_subtype(char *str)
 		i++;
 	}
 	return (CMD);
-}
-
-void	*handle_error(char *err_msg, int *error)
-{
-	*error = -1;
-	perror(err_msg);
-	return (0);
 }
 
 char	*ms_strcpy(char *str, int len)
