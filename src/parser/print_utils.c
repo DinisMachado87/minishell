@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 19:19:54 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/01 19:26:29 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 09:57:58 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,7 @@ const char	*g_redirect_g_subg_type_str[] = {
 
 static void	print_ast_str(char *name, char *element, int indent, char *new_line)
 {
-	int	i;
-
-	while (indent--)
+	while (0 < indent--)
 		printf("\t");
 	if (element)
 		printf("%s:%s:", name, element);
@@ -60,7 +58,7 @@ void	print_args_arr(char *print_str, t_args *args, int indent)
 	int	i;
 
 	i = 0;
-	while (indent--)
+	while (0 < indent--)
 		printf("\t");
 	printf("|%s:%d\t", print_str, args->n);
 	while (i < args->n)
@@ -76,7 +74,7 @@ void	print_args_arr(char *print_str, t_args *args, int indent)
 
 void	print_node_type(t_ast *node, char *name, int indent, char *new_line)
 {
-	while (indent--)
+	while (0 < indent--)
 		printf("\t");
 	if (node)
 		printf("%s:%s\t", name, g_type_str[node->type]);
@@ -85,7 +83,7 @@ void	print_node_type(t_ast *node, char *name, int indent, char *new_line)
 	printf("%s", new_line);
 }
 
-static void	print_ast_nd(t_ast *ast, char *testname, int indent)
+void	print_ast_nd(t_ast *ast, char *testname, int indent)
 {
 	if (!ast)
 		return ;
@@ -104,7 +102,7 @@ static void	print_ast_nd(t_ast *ast, char *testname, int indent)
 	print_node_type(ast->next, "|NEXT", indent, "");
 	print_node_type(ast->left, "LEFT", 0, "");
 	print_node_type(ast->right, "RIGHT", 0, "\n");
-	while (indent--)
+	while (0 < indent--)
 		printf("\t");
 	printf("=====\n\n");
 }

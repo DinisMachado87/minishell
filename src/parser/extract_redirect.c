@@ -37,8 +37,8 @@ static int	find_array_subtype(t_cmd *c)
 static int	extract_red_args(t_token *cur, t_args *args, int i_tkn)
 {
 	const char	*err_str = "Error malloc redirect args";
-	t_token	nxt;
-	int		len;
+	t_token		nxt;
+	int			len;
 
 	cur->space_after = NO_SPACE_AFTER;
 	while (i_tkn < args->n)
@@ -55,7 +55,7 @@ static int	extract_red_args(t_token *cur, t_args *args, int i_tkn)
 		*cur = nxt;
 	}
 	args->space[i_tkn - 1] = SPACE_AFTER;
-	return(len);
+	return (len);
 }
 
 int	copy_old_args(t_args *old_args, t_args *new_args)
@@ -109,5 +109,5 @@ int	extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args)
 	new_args->type[old_args.n] = orig_subtype;
 	if (orig_subtype == HEREDOC)
 		ms_heredoc(new_args, old_args.n, exp_heredoc);
-	return(1);
+	return (1);
 }

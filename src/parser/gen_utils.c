@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:59 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/18 02:13:17 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 18:52:39 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,42 +24,6 @@ void	ms_bzero(void *s, size_t n)
 	}
 }
 
-int	ms_strcmp(char *ref, char *str)
-{
-	if (!ref || !str)
-		return (1);
-	while (*ref && *str && *ref == *str)
-	{
-		ref++;
-		str++;
-	}
-	if (*ref)
-		return (1);
-	return (0);
-}
-
-int	ms_strncmp(char *s1, char *s2, int size)
-{
-	int i;
-	
-	i = 0;
-	while (i < size && s1[i] && s2[i] && s1[i] == s2[i] )
-		i++;	
-	if (i < size)
-		return (1);
-	return (0);
-}
-
-int	ms_strlen(char *str)
-{
-	int	len;
-
-	len = 0;
-	while (str && str[len])
-		len++;
-	return (len);
-}
-
 int	is_alphanum_or_underscore(char chr)
 {
 	if ((chr >= 'a' && chr <= 'z')
@@ -74,6 +38,6 @@ void	*safe_malloc(void **ptr, size_t size)
 {
 	*ptr = malloc(size);
 	if (!*ptr)
-		return(NULL);
+		return (NULL);
 	return (*ptr);
 }

@@ -16,7 +16,6 @@
 
 int	psynterr(char *str, t_shell *sh)
 {
-
 	write(STDERR_FILENO, "minishell: syntax error near unexpected token '", 48);
 	write(STDERR_FILENO, str, 1);
 	write(STDERR_FILENO, "'\n", 1);
@@ -29,21 +28,17 @@ void	*safe_alloc_zero(void **ptr, size_t size)
 {
 	*ptr = malloc(size);
 	if (!*ptr)
-		return(NULL);
+		return (NULL);
 	ms_bzero(*ptr, size);
 	return (*ptr);
 }
 
 int	allocate_ast_args(t_args *args, int n_strs)
 {
-	if (!safe_alloc_zero((void **)&args->tkns,
-					  (n_strs + 1) * sizeof(char *))
-		|| !safe_alloc_zero((void **)&args->exp,
-					  (n_strs + 1) * sizeof(int))
-		|| !safe_alloc_zero((void **)&args->space,
-					  (n_strs + 1) * sizeof(int))
-		|| !safe_alloc_zero((void **)&args->type,
-					  (n_strs + 1) * sizeof(int)))
+	if (!safe_alloc_zero((void **)&args->tkns, (n_strs + 1) * sizeof(char *))
+		|| !safe_alloc_zero((void **)&args->exp, (n_strs + 1) * sizeof(int))
+		|| !safe_alloc_zero((void **)&args->space, (n_strs + 1) * sizeof(int))
+		|| !safe_alloc_zero((void **)&args->type, (n_strs + 1) * sizeof(int)))
 		return (perror("Err allocating args array"), 0);
 	args->n = n_strs;
 	return (1);

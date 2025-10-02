@@ -40,4 +40,3 @@ t_ast	*extract_subshell(t_ast **ast, char **str)
 	*str += i_ltr + paretheses;
 	return (*ast);
 }
-

@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/01 19:31:40 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/02 10:27:02 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ void					print_nd_list(t_ast *ast, char *testname);
 void					print_args_arr(char *print_str, t_args *args,
 							int indent);
 // print_utils
-static void				print_ast_nd(t_ast *ast, char *testname, int indent);
+void					print_ast_nd(t_ast *ast, char *testname, int indent);
 // prompt_loop
 int						prompt_loop_wrapper(char *envp[]);
 void					execute_ast(t_shell *shell, t_ast *node);

@@ -12,7 +12,7 @@
 
 #include "../../include/minishell.h"
 
-int extract_token(t_token *cur, t_cmd *c, t_args *args)
+int	extract_token(t_token *cur, t_cmd *c, t_args *args)
 {
 	int		len;
 	t_token	nxt;
@@ -28,18 +28,18 @@ int extract_token(t_token *cur, t_cmd *c, t_args *args)
 	args->exp[c->i_tkn] = cur->expand;
 	c->i_tkn++;
 	*cur = nxt;
-	return(len);
+	return (len);
 }
 
 int	extract_cmd_core(t_token *cur, t_cmd *c, t_ast *ast)
 {
-	while(cur->limiter != ' ' || chr_after_spaces(cur))
+	int	sub_i;
+
+	while (cur->limiter != ' ' || chr_after_spaces(cur))
 	{
 		c->type = type(cur->str);
 		if (*cur->str && REDIRECT == c->type)
 		{
-			int	sub_i;
-
 			c->subtype = subtype(cur->str);
 			sub_i = c->subtype;
 			if (sub_i > OUT)
@@ -53,7 +53,7 @@ int	extract_cmd_core(t_token *cur, t_cmd *c, t_ast *ast)
 				return (0);
 		}
 		else
-			break;
+			break ;
 	}
 	return (1);
 }

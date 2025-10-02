@@ -54,6 +54,7 @@ PRS_FILE_NAMES = ast_utils.c \
 				 heredoc.c \
 				 parser.c \
 				 print_ast.c \
+				 print_utils.c \
 				 count_cmd_tokens.c \
 				 expand_cmd.c \
 				 extract_operator.c \
