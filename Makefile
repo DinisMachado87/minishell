@@ -1,6 +1,6 @@
 # ==== C Settings ====
 CC := gcc
-CFLAGS = -Wall -Wextra -Werror -I$(HEADER_DIR) -g -O0
+CFLAGS = -Wall -Wextra -Werror -I$(HEADER_DIR)
 RELEASE_FLAGS = $(CFLAGS) -DDEBUG=0
 DEBUG_FLAGS = $(CFLAGS) -g -O0 -DDEBUG=1
 HEADER_DIR = include/
@@ -88,7 +88,7 @@ DBG_MAIN_OBJ_FILE = $(DEBUG_OBJ_DIR)main.o
 DBG_OBJS = $(DBG_AST_OBJ_FILES) $(DBG_CMD_OBJ_FILES) $(DBG_HLP_OBJ_FILES) $(DBG_PRS_OBJ_FILES) $(DBG_BLT_OBJ_FILES) $(DBG_MAIN_OBJ_FILE)
 
 # ==== targets ====
-all: $(NAME) debug
+all: $(NAME)
 
 debug: $(DEBUG_NAME)
 

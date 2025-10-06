@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/02 21:00:45 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/06 16:46:47 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,20 @@ char	*get_prompt(void)
 
 void	prompt_loop(char **input, char **prompt, t_shell *shell)
 {
+	int	eof;
+
+	eof = 0;
 	while (1)
 	{
 		*prompt = get_prompt();
-		if (!*prompt || get_input(*prompt, input) == ERROR)
+		if (!*prompt || get_input(*prompt, input, &eof) == ERROR)
 			break ;
 		free_and_null((void **)prompt);
-		if (*input && **input)
+		if (*input)
 		{
-			if (parser(*input, shell, NULL) < 0)
+			if (*input && !(**input))
+				printf("\n");
+			else if (parser(*input, shell, NULL) < 0)
 				break ;
 			free_and_null((void **)input);
 			if (shell->ast)
@@ -56,6 +61,8 @@ void	prompt_loop(char **input, char **prompt, t_shell *shell)
 				free_ast(shell);
 			}
 		}
+		if (eof)
+			break ;
 	}
 }
 

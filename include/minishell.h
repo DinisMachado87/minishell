@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/02 20:59:47 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/06 16:26:47 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,7 +286,7 @@ void					set_handler(int rdline);
 void					free_shell(t_shell *shell);
 int						print_sys_err(char *syscall, char *component,
 							char *err_msg, int err);
-int						get_input(char *prompt, char **input);
+int						get_input(char *prompt, char **input, int *eof);
 void					execute_external(t_shell *shell, t_ast *node);
 void					execute_cmd(t_shell *shell, t_ast *node);
 int						setup_red_in(char *file, int type);

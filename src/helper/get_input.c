@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 09:13:46 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/06 15:29:20 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/06 16:26:29 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	store_or_cat_input(char **new_read, char **input)
 	return (0);
 }
 
-int	get_input(char *prompt, char **input)
+int	get_input(char *prompt, char **input, int *eof)
 {
 	char	*new_read;
 	int		even;
@@ -70,7 +70,10 @@ int	get_input(char *prompt, char **input)
 		else
 			new_read = readline("> ");
 		if (!new_read)
-			return (ERROR);
+		{
+			*eof = 1;
+			break ;
+		}
 		if (!store_or_cat_input(&new_read, input))
 			return (set_handler(0), ERROR);
 		even = str_pairs_even(*input);
