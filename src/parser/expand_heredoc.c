@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 23:45:30 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/02 20:54:06 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/06 23:50:09 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,29 +46,32 @@ int	expand_here_tkn(char *b, char **value, t_shell *sh)
 	return (i);
 }
 
-int	expand_and_write(char **b, int new_fd, t_shell *sh, int *i)
+int	expand_and_write(char **b, int new_fd, t_shell *sh, int i)
 {
 	char	*value;
 
-	if ((*b)[*i] == '$' && (*b)[*i + 1] && (*b)[*i + 1] != ' '
-		&& (*b)[*i + 1] != '\'' && (*b)[*i + 1] != '\"')
+	while ((*b)[i])
 	{
-		write(new_fd, *b, *i);
-		*b += *i + 1;
-		value = NULL;
-		*i = expand_here_tkn(*b, &value, sh);
-		if (*i <= 0)
-			return (0);
-		if (value)
-			write(new_fd, value, ms_strlen(value));
-		if ((*b)[0] == '?' && value)
-			free(value);
-		*b += *i;
-		i = 0;
+		if ((*b)[i] == '$' && (*b)[i + 1] && (*b)[i + 1] != ' '
+			&& (*b)[i + 1] != '\'' && (*b)[i + 1] != '\"')
+		{
+			write(new_fd, *b, i);
+			*b += i + 1;
+			value = NULL;
+			i = expand_here_tkn(*b, &value, sh);
+			if (i <= 0)
+				return (ERROR);
+			if (value)
+				write(new_fd, value, ms_strlen(value));
+			if ((*b)[0] == '?' && value)
+				free(value);
+			*b += i;
+			i = 0;
+		}
+		else
+			i++;
 	}
-	else
-		i++;
-	return (1);
+	return (i);
 }
 
 int	expand_into_new_file(int *fd, char *b, t_shell *sh)
@@ -77,22 +80,17 @@ int	expand_into_new_file(int *fd, char *b, t_shell *sh)
 	int		i;
 
 	read_char = 1;
+	i = 0;
 	while (read_char)
 	{
 		read_char = read(fd[OLD], b, 1000);
-		if (read_char < 0)
+		if (read_char <= 0)
+			return (read_char);
+		b[read_char] = '\0';
+		i = expand_and_write(&b, fd[NEW], sh, i);
+		if (i == ERROR)
 			return (1);
-		if (read_char > 0)
-			b[read_char] = '\0';
-		i = 0;
-		while (b[i])
-		{
-			if (!expand_and_write(&b, fd[NEW], sh, &i))
-				if (i == ERROR)
-					return (1);
-		}
 		write(fd[NEW], b, i);
-		*b += i;
 	}
 	return (0);
 }
