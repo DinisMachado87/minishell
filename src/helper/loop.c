@@ -6,34 +6,28 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 12:37:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/06 16:46:47 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/06 20:02:37 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*get_prompt(void)
+char	*get_prompt(t_shell *shell)
 {
-	char	*cwd;
 	char	*prompt;
 	char	*user;
+	char	*pwd;
 
-	cwd = getcwd(NULL, 0);
-	user = getenv("USER");
-	if (!cwd)
-		return (NULL);
-	prompt = malloc((ms_strlen(cwd) + ms_strlen(user) + 6));
+	user = get_env_node(shell->env, "USER")->value;
+	pwd = get_env_node(shell->env, "PWD")->value;
+	prompt = malloc((ms_strlen(pwd) + ms_strlen(user) + 6));
 	if (!prompt)
-	{
-		free(cwd);
 		return (NULL);
-	}
 	prompt[0] = '\0';
 	ms_strncat(prompt, user, ms_strlen(user));
 	ms_strncat(prompt, ":", 2);
-	ms_strncat(prompt, cwd, ms_strlen(cwd));
+	ms_strncat(prompt, pwd, ms_strlen(pwd));
 	ms_strncat(prompt, "$ ", 3);
-	free(cwd);
 	return (prompt);
 }
 
@@ -44,7 +38,7 @@ void	prompt_loop(char **input, char **prompt, t_shell *shell)
 	eof = 0;
 	while (1)
 	{
-		*prompt = get_prompt();
+		*prompt = get_prompt(shell);
 		if (!*prompt || get_input(*prompt, input, &eof) == ERROR)
 			break ;
 		free_and_null((void **)prompt);
