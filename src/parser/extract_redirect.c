@@ -40,7 +40,6 @@ static int	extract_red_args(t_token *cur, t_args *args, int i_tkn)
 	t_token		nxt;
 	int			len;
 
-	cur->space_after = NO_SPACE_AFTER;
 	while (i_tkn < args->n)
 	{
 		nxt.limiter = cur->limiter;
@@ -51,6 +50,7 @@ static int	extract_red_args(t_token *cur, t_args *args, int i_tkn)
 		args->tkns[i_tkn] = ms_strcpy(cur->str, len);
 		if (!args->tkns[i_tkn])
 			return (perror(err_str), 0);
+		args->exp[i_tkn] = cur->expand;
 		i_tkn++;
 		*cur = nxt;
 	}
