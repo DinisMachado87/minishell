@@ -1,9 +1,0 @@
-todo:
-    - Makefile:
-            - Modify the makefile so that when debug target is run, DEBUG will be set to 1
-            - Move .o-files into their own dir
-    - Create a free function for all the mallocs on my side (have a look at free_ast)
-    - Check for memleaks (for simple commands)
-    - restructure minishell in a flat and in a dynamic layout. (flat = the way it is right now but clean; dynamic = a extra dir per module; ref = https://www.lucavall.in/blog/how-to-structure-c-projects-my-experience-best-practices)
-    - What should happen to parser/main_parser.c?
-    - Merge (rework_makefile, suppress_valgrind_errors, cleanup_header) into main
