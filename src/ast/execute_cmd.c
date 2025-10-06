@@ -6,11 +6,11 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 10:35:13 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/01 16:24:52 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/06 15:47:21 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	setup_red_in(char *file, int type)
 {

@@ -6,11 +6,11 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 09:13:46 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/30 09:16:10 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/06 15:29:20 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	reassign_and_null(char **dst, char **src)
 {
@@ -68,7 +68,7 @@ int	get_input(char *prompt, char **input)
 		if (!*input)
 			new_read = readline(prompt);
 		else
-			new_read = readline(prompt);
+			new_read = readline("> ");
 		if (!new_read)
 			return (ERROR);
 		if (!store_or_cat_input(&new_read, input))
