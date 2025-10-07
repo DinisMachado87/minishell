@@ -14,7 +14,7 @@
 
 int	chr_after_spaces(t_token *tk)
 {
-	while (*tk->str && *tk->str == ' ')
+	while (*tk->str && is_space(*tk->str))
 		tk->str++;
 	if (!*tk->str)
 		return (0);
@@ -26,7 +26,7 @@ int	skip_redirect(t_token *cur, t_cmd *c)
 	c->subtype = subtype(cur->str);
 	if (!skip_red_sign_and_spaces(cur, c->subtype))
 		return (0);
-	while (*cur->str && *cur->str != ' ' && CMD == type(cur->str))
+	while (*cur->str && !is_space(*cur->str) && CMD == type(cur->str))
 		cur->str += count_token(cur->str, cur, cur);
 	return (1);
 }
@@ -34,7 +34,7 @@ int	skip_redirect(t_token *cur, t_cmd *c)
 int	count_redirect(t_token cur, t_args *args)
 {
 	args->n = 0;
-	while (*cur.str && *cur.str != ' ' && CMD == type(cur.str))
+	while (*cur.str && !is_space(*cur.str) && CMD == type(cur.str))
 	{
 		cur.str += count_token(cur.str, &cur, &cur);
 		args->n += 1;

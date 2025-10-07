@@ -22,7 +22,7 @@ void	handle_end_quote(char *str, t_token *cur, t_token *nxt, int *i_ltr)
 	}
 	else
 		nxt->limiter = cur->limiter;
-	if (str[*i_ltr] && str[*i_ltr] == ' ' && (cur->limiter == ' '
+	if (str[*i_ltr] && is_space(str[*i_ltr]) && (cur->limiter == ' '
 			|| nxt->limiter == ' '))
 		cur->space_after = SPACE_AFTER;
 }

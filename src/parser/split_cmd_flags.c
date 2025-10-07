@@ -19,10 +19,10 @@ static int	split_len(char *str)
 	i_words = 0;
 	while (*str)
 	{
-		while (*str && *str != ' ')
+		while (*str && !is_space(*str))
 			str++;
 		i_words++;
-		while (*str && *str == ' ')
+		while (*str && is_space(*str))
 			str++;
 	}
 	return (i_words);
@@ -34,7 +34,7 @@ static int	extract_skip_section(char **str, char **dst, int len)
 	if (!*dst)
 		return (0);
 	*str += len;
-	while (**str == ' ')
+	while (is_space(**str))
 		(*str)++;
 	return (1);
 }
@@ -44,7 +44,7 @@ static int	word_len(char *str)
 	int	i;
 
 	i = 0;
-	while (str[i] && str[i] != ' ')
+	while (str[i] && !is_space(str[i]))
 		i++;
 	return (i);
 }

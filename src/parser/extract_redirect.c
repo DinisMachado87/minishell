@@ -18,7 +18,7 @@ int	skip_red_sign_and_spaces(t_token *cur, int r_subtype)
 		cur->str += 2;
 	else
 		cur->str++;
-	while (*cur->str && *cur->str == ' ')
+	while (*cur->str && is_space(*cur->str))
 		cur->str++;
 	if (!*cur->str || type(cur->str) != CMD)
 		return (0);

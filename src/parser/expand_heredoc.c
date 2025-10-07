@@ -52,7 +52,7 @@ int	expand_and_write(char **b, int new_fd, t_shell *sh, int i)
 
 	while ((*b)[i])
 	{
-		if ((*b)[i] == '$' && (*b)[i + 1] && (*b)[i + 1] != ' '
+		if ((*b)[i] == '$' && (*b)[i + 1] && !is_space((*b)[i + 1])
 			&& (*b)[i + 1] != '\'' && (*b)[i + 1] != '\"')
 		{
 			write(new_fd, *b, i);

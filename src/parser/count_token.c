@@ -17,8 +17,8 @@ int	count_env_tkn(char *str, t_token *cur)
 	int	i_ltr;
 
 	i_ltr = 1;
-	if (!str[i_ltr] || str[i_ltr] == ' ' || str[i_ltr] == '\"'
-		|| str[i_ltr] == '\'')
+	if (!str[i_ltr] || is_space(str[i_ltr])
+		|| str[i_ltr] == '\"' || str[i_ltr] == '\'')
 		return (i_ltr);
 	cur->expand = EXPAND;
 	if (str[i_ltr] == '?')
@@ -45,7 +45,7 @@ int	count_double_quote_tkn(char *str)
 	i_ltr = 0;
 	while (str[i_ltr] && str[i_ltr] != '\"')
 	{
-		if (str[i_ltr] == '$' && !(!str[i_ltr + 1] || str[i_ltr + 1] == ' '
+		if (str[i_ltr] == '$' && !(!str[i_ltr + 1] || is_space(str[i_ltr + 1])
 				|| str[i_ltr + 1] == '\"'))
 			break ;
 		i_ltr++;
@@ -58,7 +58,7 @@ int	count_base_tkn(char *str)
 	int	i_ltr;
 
 	i_ltr = 0;
-	while (str[i_ltr] && type(str + i_ltr) == CMD && str[i_ltr] != ' ')
+	while (str[i_ltr] && type(str + i_ltr) == CMD && !is_space(str[i_ltr]))
 	{
 		if (str[i_ltr] == '\'' || str[i_ltr] == '\"' || str[i_ltr] == '$')
 			break ;

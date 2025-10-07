@@ -14,7 +14,7 @@
 
 int	is_end_of_string(char **str)
 {
-	while (**str == ' ')
+	while (is_space(**str))
 		(*str)++;
 	if (!**str || **str == '\n')
 		return (1);
@@ -34,7 +34,7 @@ void	new_line_to_null(char *str)
 int	parser(char *str, t_shell *sh, t_ast *cur)
 {
 	new_line_to_null(str);
-	while (*str && *str == ' ')
+	while (*str && is_space(*str))
 		str++;
 	while (*str)
 	{
