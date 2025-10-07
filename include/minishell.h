@@ -179,6 +179,7 @@ int						parser(char *str, t_shell *sh, t_ast *cur);
 int						cmd_expander(t_args *args, t_shell *sh);
 char					*unique_tmp(char **dest, char *str1, char *str2);
 // ast_utils
+int						is_space(char c);
 t_ast					*make_node(t_ast **ast);
 t_ast					*free_ast(t_shell *sh);
 void					free_and_null_str_arr(char ***address_str_arr);

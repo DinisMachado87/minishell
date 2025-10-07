@@ -12,6 +12,11 @@
 
 #include "../../include/minishell.h"
 
+int	is_space(char c)
+{
+	return ((c >= 9 && c <= 13) || c == 32);
+}
+
 t_ast	*make_node(t_ast **ast)
 {
 	t_ast	*new_node;

@@ -56,6 +56,26 @@ int	store_or_cat_input(char **new_read, char **input)
 	return (0);
 }
 
+void	skip_spaces(char *str)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (is_space(str[i]))
+		i++;
+	if (!i)
+		return ;
+	j = 0;
+	while (str[i])
+	{
+		str[j] = str[i];
+		i++;
+		j++;
+	}
+	str[j] = '\0';
+}
+
 int	get_input(char *prompt, char **input, int *eof)
 {
 	char	*new_read;
@@ -78,6 +98,7 @@ int	get_input(char *prompt, char **input, int *eof)
 			return (set_handler(0), ERROR);
 		even = str_pairs_even(*input);
 	}
+	skip_spaces(*input);
 	set_handler(0);
 	if (even != ERROR && *input && **input != '\0')
 		add_history(*input);
