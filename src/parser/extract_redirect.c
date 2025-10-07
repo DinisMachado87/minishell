@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 00:56:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/24 14:21:15 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/07 23:47:25 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,8 @@ int	extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args)
 	if (!extract_red_args(cur, new_args, old_args.n))
 		return (0);
 	new_args->type[old_args.n] = orig_subtype;
-	if (orig_subtype == HEREDOC)
-		ms_heredoc(new_args, old_args.n, exp_heredoc);
+	if (orig_subtype == HEREDOC
+		&& ms_heredoc(new_args, old_args.n, exp_heredoc))
+		return (0);
 	return (1);
 }

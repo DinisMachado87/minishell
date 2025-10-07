@@ -46,7 +46,7 @@ void	prompt_loop(char **input, char **prompt, t_shell *shell)
 		{
 			if (*input && **input
 				&& (parser(*input, shell, NULL) < 0))
-				break ;
+				free_ast(shell);
 			free_and_null((void **)input);
 			if (shell->ast)
 			{
