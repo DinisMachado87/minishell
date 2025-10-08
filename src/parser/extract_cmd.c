@@ -64,6 +64,7 @@ int	extract_cmd(char **str, t_ast **lst_nd, t_shell *sh)
 	t_cmd	c;
 
 	bzero((void *)&c, sizeof(t_cmd));
+	c.sh = sh;
 	cur.limiter = ' ';
 	cur.str = *str;
 	if (!count_cmd_tokens(cur, &c, &cur.str))
@@ -71,6 +72,7 @@ int	extract_cmd(char **str, t_ast **lst_nd, t_shell *sh)
 	if (!make_node(lst_nd)
 		|| !allocate_ast_args(&(*lst_nd)->args[0], c.n_cmd_tk))
 		return (0);
+	c.cur = *lst_nd;
 	(*lst_nd)->type = CMD;
 	if (!extract_cmd_core(&cur, &c, *lst_nd))
 		return (0);

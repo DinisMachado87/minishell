@@ -108,7 +108,7 @@ int	extract_redirect(t_token *cur, t_cmd *c, t_args *new_args, t_args old_args)
 		return (0);
 	new_args->type[old_args.n] = orig_subtype;
 	if (orig_subtype == HEREDOC
-		&& ms_heredoc(new_args, old_args.n, exp_heredoc))
+		&& ms_heredoc(new_args, old_args.n, exp_heredoc, c))
 		return (0);
 	return (1);
 }

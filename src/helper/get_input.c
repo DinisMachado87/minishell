@@ -63,7 +63,7 @@ void	skip_spaces(char *str)
 
 	i = 0;
 	if (!str)
-		return;
+		return ;
 	while (is_space(str[i]))
 		i++;
 	if (!i)

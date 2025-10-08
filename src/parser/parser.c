@@ -41,12 +41,7 @@ int	parser(char *str, t_shell *sh, t_ast *cur)
 		if (type(str) > REDIRECT)
 			return (psynterr(&str[0], sh));
 		if (!extract_subshell(&cur, &str) && !extract_cmd(&str, &cur, sh))
-		{
-			if (sh->exit_status == 2)
-				return (SYNTAX);
-			else
-				return (ERROR);
-		}
+			return (ERROR);
 		if (!sh->list)
 			sh->list = cur;
 		if (is_end_of_string(&str))

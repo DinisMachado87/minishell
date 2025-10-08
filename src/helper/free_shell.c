@@ -14,7 +14,7 @@
 
 void	free_shell(t_shell *shell)
 {
-	if (shell->ast)
+	if (shell->list)
 		free_ast(shell);
 	if (shell->env)
 		free_env(&shell->env);

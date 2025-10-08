@@ -145,15 +145,6 @@ typedef struct s_state_token
 	char				*str;
 }						t_token;
 
-typedef struct s_state_cmd
-{
-	int					n_cmd_tk;
-	int					i_tkn;
-	int					ltr;
-	int					type;
-	int					subtype;
-}						t_cmd;
-
 typedef struct s_env
 {
 	char				*key;
@@ -167,7 +158,19 @@ typedef struct s_shell
 	t_ast				*ast;
 	t_env				*env;
 	int					exit_status;
+	char				**input;
 }						t_shell;
+
+typedef struct s_state_cmd
+{
+	int					n_cmd_tk;
+	int					i_tkn;
+	int					ltr;
+	int					type;
+	int					subtype;
+	t_shell				*sh;
+	t_ast				*cur;
+}						t_cmd;
 
 // normaliser
 int						normalizer(char **str);
@@ -223,10 +226,14 @@ int						extract_redirect(t_token *cur, t_cmd *c,
 							t_args *new_args, t_args old_args);
 int						expand_exit_status(char **tkn, t_shell *sh);
 int						expand_heredoc(char **filename, t_shell *sh);
-int						ms_heredoc(t_args *args, int offset, int expand);
+void					set_and_save_signal(int signal, void (*handler)(int),
+							struct sigaction *old_signal);
+int						ms_heredoc(t_args *args, int offset,
+							int expand, t_cmd *c);
 int						wait_to_store_file(pid_t pid,
 							char **temp_file, char **arg_tkn);
-int						create_heredoc_file(char *eof, char *temp_file);
+int						create_heredoc_file(char *eof,
+							char *temp_file, t_cmd *c);
 //	expand_tkn_arr
 int						expand_tkn_arr(t_args *args, t_shell *sh);
 // split_cmd_flags
