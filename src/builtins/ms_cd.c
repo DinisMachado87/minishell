@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 09:29:54 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/06 20:00:35 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/08 11:20:57 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int	ms_cd(t_shell *shell, t_ast *node)
 	err_code = 0;
 	if (node->args[0].n > 2)
 		return (print_err("cd", "too many arguments", 1));
-	else if (node->args[0].n < 2)
-		return (1);
+	else if ((node->args[0].n < 2) || (!*node->args[0].tkns[1]))
+		return (0);
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (1);
@@ -33,7 +33,7 @@ int	ms_cd(t_shell *shell, t_ast *node)
 	if (err_code != 0)
 	{
 		free(pwd);
-		return (perror("cd"), 1);
+		return (print_sys_err("cd", node->args[0].tkns[1], strerror(errno), 1));
 	}
 	update_env_node(shell->env, "OLDPWD", pwd);
 	pwd = getcwd(NULL, 0);
