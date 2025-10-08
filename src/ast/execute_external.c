@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 10:18:49 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/01 16:01:27 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/08 12:01:33 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	execute_external_fork(t_shell *shell, t_ast *node)
 
 	status = 0;
 	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	cmd = get_cmd_path(shell, *node->args[0].tkns);
 	if (!cmd)
 	{
