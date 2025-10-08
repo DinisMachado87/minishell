@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   get_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:21:55 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/30 09:21:50 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/08 16:38:38 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ t_env	*get_env_node(t_env *head, char *key)
 	while (head)
 	{
 		if (ms_strcmp(head->key, key) == 0)
-			return (head);
+			break ;
 		head = head->next;
 	}
-	return (NULL);
+	return (head);
 }
 
 int	get_env_length(t_env *head)
