@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 09:13:46 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/07 02:58:34 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/08 11:39:25 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	skip_spaces(char *str)
 
 	i = 0;
 	if (!str)
-		return;
+		return ;
 	while (is_space(str[i]))
 		i++;
 	if (!i)
