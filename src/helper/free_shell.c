@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 19:27:58 by jlind             #+#    #+#             */
-/*   Updated: 2025/09/25 11:02:06 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/08 14:46:29 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	free_shell(t_shell *shell)
 {
-	if (shell->ast)
+	if (shell->list)
 		free_ast(shell);
 	if (shell->env)
 		free_env(&shell->env);
