@@ -44,10 +44,11 @@ void	prompt_loop(char **input, char **prompt, t_shell *shell)
 		free_and_null((void **)prompt);
 		if (*input)
 		{
-			if (*input && **input
-				&& (parser(*input, shell, NULL) < 0))
+			shell->input = input;
+			if (*input && **input && (parser(*input, shell, NULL) < 0))
 				free_ast(shell);
 			free_and_null((void **)input);
+			shell->input = NULL;
 			if (shell->ast)
 			{
 				execute_ast(shell, shell->ast);

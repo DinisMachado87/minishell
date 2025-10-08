@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 01:35:02 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/06 18:59:37 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/08 13:09:13 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,35 @@ char	*unique_tmp(char **dest, char *str1, char *str2)
 	return (*dest);
 }
 
-int	ms_heredoc(t_args *args, int offset, int expand)
+int	wait_to_store_file(pid_t pid, char **temp_file, char **arg_tkn)
+{
+	struct sigaction	old_sigint;
+	struct sigaction	old_sigquit;
+	int					status;
+
+	status = 0;
+	set_and_save_signal(SIGINT, SIG_IGN, &old_sigint);
+	set_and_save_signal(SIGQUIT, SIG_IGN, &old_sigquit);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+	{
+		free(*temp_file);
+		sigaction(SIGINT, &old_sigint, NULL);
+		sigaction(SIGQUIT, &old_sigquit, NULL);
+		return (0);
+	}
+	free_and_reassign(arg_tkn, temp_file);
+	sigaction(SIGINT, &old_sigint, NULL);
+	sigaction(SIGQUIT, &old_sigquit, NULL);
+	return (1);
+}
+
+int	ms_heredoc(t_args *args, int offset, int expand, t_cmd *c)
 {
 	pid_t		pid;
 	char		*temp_file;
 	int			i;
-	static int	uni = 0;
+	static char	uni = 'A';
 
 	if (!cat_str_arr(&args->tkns[offset], args->tkns + offset, args->n
 			- offset))
@@ -53,14 +76,14 @@ int	ms_heredoc(t_args *args, int offset, int expand)
 	while (args->tkns[offset + ++i])
 		free_and_null((void **)&args->tkns[offset + i]);
 	pid = fork();
-	if (pid == 0 && (!unique_tmp(&temp_file, TEMP_PREFIX, itoa(uni))
-			|| !create_heredoc_file(args->tkns[offset], temp_file)))
+	if (pid == 0 && (!unique_tmp(&temp_file, TEMP_PREFIX, &uni)
+			|| !create_heredoc_file(args->tkns[offset], temp_file, c)))
 		return (ERROR);
-	else if (pid > 0 && (!unique_tmp(&temp_file, TEMP_PREFIX, itoa(uni))
+	else if (pid > 0 && (!unique_tmp(&temp_file, TEMP_PREFIX, &uni)
 			|| !wait_to_store_file(pid, &temp_file, &args->tkns[offset])))
 		return (ERROR);
 	else if (pid < 0)
 		return (ERROR);
 	args->exp[offset] = !expand;
-	return (1);
+	return (0);
 }

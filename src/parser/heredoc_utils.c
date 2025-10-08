@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 19:40:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/02 20:23:27 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/08 10:48:38 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,27 @@ void	set_and_save_signal(int signal, void (*handler)(int),
 	sigaction(signal, &sa_struct, old_signal);
 }
 
-void	if_not_line(char *line, char *eof, int fd, char *temp_file)
+void	free_heredoc(char *temp_file, t_cmd *c)
+{
+	if (!c->sh->list)
+		c->sh->list = c->cur;
+	free_shell(c->sh);
+	free_and_null((void **)c->sh->input);
+	free_and_null((void **)&temp_file);
+}
+
+void	if_not_line(char *line, int fd, char *temp_file, t_cmd *c)
 {
 	if (!line)
 	{
-		write(STDERR_FILENO, "Warning: heredoc delimited by eof: ", 36);
-		write(STDERR_FILENO, eof, ms_strlen(eof));
-		write(STDERR_FILENO, "\n", 1);
 		close(fd);
 		unlink(temp_file);
-		free_and_null((void **)&temp_file);
-		exit(1);
+		free_heredoc(temp_file, c);
+		exit(130);
 	}
 }
 
-int	create_heredoc_file(char *eof, char *temp_file)
+int	create_heredoc_file(char *eof, char *temp_file, t_cmd *c)
 {
 	int		fd;
 	char	*line;
@@ -58,7 +64,7 @@ int	create_heredoc_file(char *eof, char *temp_file)
 	while (1)
 	{
 		line = readline("> ");
-		if_not_line(line, eof, fd, temp_file);
+		if_not_line(line, fd, temp_file, c);
 		if (!ms_strcmp(eof, line) && free_and_null((void **)&line))
 			break ;
 		else
@@ -69,29 +75,6 @@ int	create_heredoc_file(char *eof, char *temp_file)
 		}
 	}
 	close(fd);
-	free_and_null((void **)&temp_file);
+	free_heredoc(temp_file, c);
 	exit(0);
-}
-
-int	wait_to_store_file(pid_t pid, char **temp_file, char **arg_tkn)
-{
-	struct sigaction	old_sigint;
-	struct sigaction	old_sigquit;
-	int					status;
-
-	status = 0;
-	set_and_save_signal(SIGINT, SIG_IGN, &old_sigint);
-	set_and_save_signal(SIGQUIT, SIG_IGN, &old_sigquit);
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-	{
-		free(*temp_file);
-		sigaction(SIGINT, &old_sigint, NULL);
-		sigaction(SIGQUIT, &old_sigquit, NULL);
-		return (0);
-	}
-	free_and_reassign(arg_tkn, temp_file);
-	sigaction(SIGINT, &old_sigint, NULL);
-	sigaction(SIGQUIT, &old_sigquit, NULL);
-	return (1);
 }
