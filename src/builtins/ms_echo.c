@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 09:29:33 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/01 09:29:42 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/08 10:42:21 by jlind            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@ int	ms_echo(t_ast *node)
 	int	j;
 	int	newline;
 
+	if (!node->args[0].tkns[1])
+		return (write(1, "\n", 1), 0);
 	newline = 1;
 	i = 1;
-	if (!ms_strcmp(node->args[0].tkns[1], "-n"))
+	if (!ms_strncmp(node->args[0].tkns[1], "-n", 2))
 	{
 		newline = 0;
 		i = 2;
