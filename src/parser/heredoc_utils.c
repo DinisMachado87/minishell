@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 19:40:17 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/09 18:59:41 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/09 22:24:39 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ void	free_heredoc(char *temp_file, t_cmd *c)
 {
 	if (!c->sh->list)
 		c->sh->list = c->cur;
-	free_shell(c->sh);
 	free_and_null((void **)c->sh->input);
+	free_ast_in_heredoc_fork(c->sh);
 	free_and_null((void **)&temp_file);
 }
 

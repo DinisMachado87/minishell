@@ -43,6 +43,7 @@ HLP_FILE_NAMES = itoa.c  loop.c ms_strchr.c \
 				 get_env.c init_env.c update_env.c
 PRS_FILE_NAMES = ast_utils.c \
 				 free_utils.c \
+				 free_heredoc.c \
 				 split_cmd_flags.c \
 				 count_token.c \
 				 count_utils.c \

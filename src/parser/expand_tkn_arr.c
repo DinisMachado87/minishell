@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 14:30:09 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/02 21:12:30 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/09 23:12:05 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*get_env(char **expanded_value, t_env *head, char *key)
 	key++;
 	while (head)
 	{
-		if (ms_strncmp(head->key, key, ms_strlen(key)) == 0)
+		if (strict_cmp(head->key, key) == 0)
 		{
 			*expanded_value = head->value;
 			return (*expanded_value);

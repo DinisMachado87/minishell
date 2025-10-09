@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/06 16:26:47 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/09 23:05:01 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,12 +185,14 @@ char					*unique_tmp(char **dest, char *str1, char *str2);
 int						is_space(char c);
 t_ast					*make_node(t_ast **ast);
 t_ast					*free_ast(t_shell *sh);
+t_ast					*free_ast_in_heredoc_fork(t_shell *sh);
 void					free_and_null_str_arr(char ***address_str_arr);
 int						free_and_null(void **ptr);
 // parser_utils
 int						type(char *str);
 int						subtype(char *str);
 int						strict_subtype(char *str);
+int						strict_cmp(char *ref, char *str);
 char					*ms_strcpy(char *str, int len);
 // extract_utils
 int						psynterr(char *str, t_shell *sh);

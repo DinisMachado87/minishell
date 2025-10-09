@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:22:45 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/02 21:02:15 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/09 19:55:36 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ int	parser(char *str, t_shell *sh, t_ast *cur)
 	{
 		if (type(str) > REDIRECT)
 			return (psynterr(&str[0], sh));
-		if (!extract_subshell(&cur, &str) && !extract_cmd(&str, &cur, sh))
+		if (!extract_subshell(&cur, &str)
+			&& !extract_cmd(&str, &cur, sh))
 			return (ERROR);
 		if (!sh->list)
 			sh->list = cur;
