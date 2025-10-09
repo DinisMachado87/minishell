@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 13:52:37 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/02 20:50:43 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/09 23:24:53 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	count_env_tkn(char *str, t_token *cur)
 
 	i_ltr = 1;
 	if (!str[i_ltr] || is_space(str[i_ltr])
-		|| str[i_ltr] == '\"' || str[i_ltr] == '\'')
+		|| str[i_ltr] == '\"' || str[i_ltr] == '\'' || str[i_ltr] == '\(')
 		return (i_ltr);
 	cur->expand = EXPAND;
 	if (str[i_ltr] == '?')
@@ -60,7 +60,8 @@ int	count_base_tkn(char *str)
 	i_ltr = 0;
 	while (str[i_ltr] && type(str + i_ltr) == CMD && !is_space(str[i_ltr]))
 	{
-		if (str[i_ltr] == '\'' || str[i_ltr] == '\"' || str[i_ltr] == '$')
+		if (str[i_ltr] == '\'' || str[i_ltr] == '\"'
+			|| str[i_ltr] == '\(' || str[i_ltr] == '$')
 			break ;
 		i_ltr++;
 	}

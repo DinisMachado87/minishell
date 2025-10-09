@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/09 23:05:01 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/09 23:41:43 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ static const t_s_token	g_types[] = {
 {"unset", CMD, UNSET},
 {"env", CMD, ENV},
 {"exit", CMD, EXIT},
+{"\(", SUBSHELL, NONE},
 {0, 0, 0},
 };
 
