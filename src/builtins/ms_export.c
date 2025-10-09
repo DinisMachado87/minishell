@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 09:30:38 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/08 11:38:56 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/09 11:34:53 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	ms_export(t_shell *shell, t_ast *node)
 		return (print_env(shell, 1), 0);
 	equ = ms_strchr(node->args[0].tkns[1], '=');
 	if (!equ && !ms_isalpha(node->args[0].tkns[1]))
-		return (print_sys_err("export", node->args[0].tkns[1], 
+		return (print_sys_err("export", node->args[0].tkns[1],
 				"invalid identifier", 1));
 	if (!equ)
 		return (0);
