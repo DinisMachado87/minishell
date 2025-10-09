@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 14:36:35 by dimachad          #+#    #+#             */
-/*   Updated: 2025/09/17 20:59:18 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/09 19:03:39 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ t_ast	*extract_subshell(t_ast **ast, char **str)
 		i_ltr++;
 	if (!(*str)[i_ltr])
 		return (perror("ERROR: Missing ')'"), NULL);
-	(*ast)->args[0].tkns[0] = ms_strcpy(*str, i_ltr);
-	if (!(*ast)->args[0].tkns[0])
-		return (NULL);
 	if (!make_node(ast)
 		|| !allocate_ast_args(&(*ast)->args[0], 1))
+		return (NULL);
+	(*ast)->args[0].tkns[0] = ms_strcpy(*str, i_ltr);
+	if (!(*ast)->args[0].tkns[0])
 		return (NULL);
 	(*ast)->args[0].exp[0] = 0;
 	(*ast)->args[0].space[0] = 0;
