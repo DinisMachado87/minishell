@@ -6,7 +6,7 @@
 /*   By: dimachad <dimachad@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:31:32 by dimachad          #+#    #+#             */
-/*   Updated: 2025/10/09 23:41:43 by dimachad         ###   ########.fr       */
+/*   Updated: 2025/10/10 00:23:03 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ typedef struct s_state_cmd
 // normaliser
 int						normalizer(char **str);
 // str_pairs_even
-int						str_pairs_even(char *str);
+int						str_pairs_even(char *str, char **org_str);
 // parser
 int						parser(char *str, t_shell *sh, t_ast *cur);
 // cmd_expander

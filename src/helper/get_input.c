@@ -6,7 +6,7 @@
 /*   By: jlind <jlind@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 09:13:46 by jlind             #+#    #+#             */
-/*   Updated: 2025/10/08 11:39:25 by jlind            ###   ########.fr       */
+/*   Updated: 2025/10/10 00:21:03 by dimachad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	get_input(char *prompt, char **input, int *eof)
 		}
 		if (!store_or_cat_input(&new_read, input))
 			return (set_handler(0), ERROR);
-		even = str_pairs_even(*input);
+		even = str_pairs_even(*input, input);
 	}
 	skip_spaces(*input);
 	set_handler(0);
